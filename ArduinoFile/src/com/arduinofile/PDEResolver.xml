@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MIME-resolver PUBLIC "-//NetBeans//DTD MIME Resolver 1.0//EN" "http://www.netbeans.org/dtds/mime-resolver-1_0.dtd">
+<MIME-resolver>
+    <file>
+        <ext name="pde"/>
+        <resolver mime="text/x-arduino"/>
+    </file>
+    <file>
+        <ext name="ino"/>
+        <resolver mime="text/x-arduino"/>
+    </file>
+    <file>
+        <ext name="h"/>
+        <resolver mime="text/x-arduino"/>
+    </file>
+    <file>
+        <ext name="c"/>
+        <resolver mime="text/x-arduino"/>
+    </file>
+    <file>
+        <ext name="cpp"/>
+        <resolver mime="text/x-arduino"/>
+    </file>
+</MIME-resolver>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="com.arduinofile">
+    <module_version install_time="1354980134548" last="true" origin="installer" specification_version="1.0">
+        <file crc="1216946053" name="config/Modules/com-arduinofile.xml"/>
+        <file crc="2353836100" name="modules/com-arduinofile.jar"/>
+    </module_version>
+</module>

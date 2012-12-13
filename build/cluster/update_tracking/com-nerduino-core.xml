@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="com.nerduino.core">
+    <module_version install_time="1355327766512" last="true" origin="installer" specification_version="1.0">
+        <file crc="3739932745" name="config/Modules/com-nerduino-core.xml"/>
+        <file crc="3082014685" name="modules/com-nerduino-core.jar"/>
+        <file crc="1599375659" name="modules/ext/flamingo.jar"/>
+        <file crc="3124201117" name="modules/ext/jna.jar"/>
+        <file crc="778425460" name="modules/ext/org-netbeans-modules-cnd.jar"/>
+    </module_version>
+</module>

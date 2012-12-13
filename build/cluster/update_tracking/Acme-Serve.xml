@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="Acme.Serve">
+    <module_version install_time="1354980134931" last="true" origin="installer" specification_version="1.0">
+        <file crc="1066337121" name="config/Modules/Acme-Serve.xml"/>
+        <file crc="74944175" name="modules/Acme-Serve.jar"/>
+    </module_version>
+</module>

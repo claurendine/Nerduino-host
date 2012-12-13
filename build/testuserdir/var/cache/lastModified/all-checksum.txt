@@ -1,0 +1,12 @@
+home=1349093254000
+cluster=1355327491000
+harness=1342532822000
+ide=1342532824000
+java=1347202118000
+platform=1349093254000
+websvccommon=1342532832000
+PinkMatterRibbonPlatform=1347217877000
+user=1355327491000
+crc=7
+locale=en_US
+branding=nerduinoide

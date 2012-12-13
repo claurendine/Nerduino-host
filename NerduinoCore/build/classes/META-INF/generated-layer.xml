@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN"
+                            "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="System">
+            <file name="com-nerduino-actions-CreateNerduinoUSBAction.instance">
+                <!--com.nerduino.actions.CreateNerduinoUSBAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateNerduinoUSBAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateNerduinoUSBAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewUsbNerduino.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-CreatePointAction.instance">
+                <!--com.nerduino.actions.CreatePointAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreatePointAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreatePointAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewPoint.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-CreateScrollAction.instance">
+                <!--com.nerduino.actions.CreateScrollAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateScrollAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateScrollAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewScroll.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-CreateServiceAction.instance">
+                <!--com.nerduino.actions.CreateServiceAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateServiceAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateServiceAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewService.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-CreateSketchAction.instance">
+                <!--com.nerduino.actions.CreateSketchAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateSketchAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateSketchAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewSketch.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-CreateSkitAction.instance">
+                <!--com.nerduino.actions.CreateSkitAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateSkitAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateSkitAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewSkit.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-PingAction.instance">
+                <!--com.nerduino.actions.PingAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_PingAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.PingAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Ping.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-TopologyAction.instance">
+                <!--com.nerduino.actions.TopologyAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_TopologyAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.TopologyAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Topo.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-WebServerEnabledAction.instance">
+                <!--com.nerduino.actions.WebServerEnabledAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_WebServerEnabledAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.WebServerEnabledAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/HostEnabled.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ZigbeeEnabledAction.instance">
+                <!--com.nerduino.actions.ZigbeeEnabledAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ZigbeeEnabledAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ZigbeeEnabledAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/ZigbeeEnabled.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+        </folder>
+        <folder name="View">
+            <file name="com-nerduino-actions-ShowBuilderAction.instance">
+                <!--com.nerduino.actions.ShowBuilderAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowBuilderAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowBuilderAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Builder16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ShowExplorerAction.instance">
+                <!--com.nerduino.actions.ShowExplorerAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowExplorerAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowExplorerAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Explorer16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ShowOutputAction.instance">
+                <!--com.nerduino.actions.ShowOutputAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowOutputAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowOutputAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Output.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ShowPaletteAction.instance">
+                <!--com.nerduino.actions.ShowPaletteAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowPaletteAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowPaletteAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Palette16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ShowPropertiesAction.instance">
+                <!--com.nerduino.actions.ShowPropertiesAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowPropertiesAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowPropertiesAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-TestAction.instance">
+                <!--com.nerduino.actions.TestAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_TestAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.TestAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+        </folder>
+        <folder name="Window">
+            <file name="com-nerduino-core-ExplorerTopComponent.instance">
+                <!--com.nerduino.core.ExplorerTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.core.ExplorerTopComponent"/>
+                <attr name="preferredID" stringvalue="ExplorerTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.core.Bundle#CTL_ExplorerAction" name="displayName"/>
+            </file>
+            <file name="com-nerduino-core-OutputTopComponent.instance">
+                <!--com.nerduino.core.OutputTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.core.OutputTopComponent"/>
+                <attr name="preferredID" stringvalue="OutputTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.core.Bundle#CTL_OutputAction" name="displayName"/>
+            </file>
+            <file name="com-nerduino-core-PropertiesTopComponent.instance">
+                <!--com.nerduino.core.PropertiesTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.core.PropertiesTopComponent"/>
+                <attr name="preferredID" stringvalue="PropertiesTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.core.Bundle#CTL_PropertiesAction" name="displayName"/>
+            </file>
+            <file name="com-nerduino-core-ScriptingTestTopComponent.instance">
+                <!--com.nerduino.core.ScriptingTestTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.core.ScriptingTestTopComponent"/>
+                <attr name="preferredID" stringvalue="ScriptingTestTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.core.Bundle#CTL_ScriptingTestAction" name="displayName"/>
+            </file>
+            <file name="com-nerduino-processing-app-BuilderTopComponent.instance">
+                <!--com.nerduino.processing.app.BuilderTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.processing.app.BuilderTopComponent"/>
+                <attr name="preferredID" stringvalue="BuilderTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.processing.app.Bundle#CTL_BuilderAction" name="displayName"/>
+            </file>
+            <file name="com-nerduino-core-ServiceEditorTopComponent.instance">
+                <!--com.nerduino.services.ServiceEditorTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.services.ServiceEditorTopComponent"/>
+                <attr name="preferredID" stringvalue="ServiceEditorTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.services.Bundle#CTL_ServiceEditorAction" name="displayName"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="com-nerduino-core-ExplorerTopComponent.shadow">
+                <!--com.nerduino.core.ExplorerTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-ExplorerTopComponent.instance"/>
+            </file>
+            <file name="com-nerduino-core-OutputTopComponent.shadow">
+                <!--com.nerduino.core.OutputTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-OutputTopComponent.instance"/>
+            </file>
+            <file name="com-nerduino-core-PropertiesTopComponent.shadow">
+                <!--com.nerduino.core.PropertiesTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-PropertiesTopComponent.instance"/>
+            </file>
+            <file name="com-nerduino-core-ScriptingTestTopComponent.shadow">
+                <!--com.nerduino.core.ScriptingTestTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-ScriptingTestTopComponent.instance"/>
+            </file>
+            <file name="com-nerduino-processing-app-BuilderTopComponent.shadow">
+                <!--com.nerduino.processing.app.BuilderTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-processing-app-BuilderTopComponent.instance"/>
+            </file>
+            <file name="com-nerduino-core-ServiceEditorTopComponent.shadow">
+                <!--com.nerduino.services.ServiceEditorTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-ServiceEditorTopComponent.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="ExplorerTopComponent.settings">
+                <!--com.nerduino.core.ExplorerTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.core.ExplorerTopComponent"/>
+</settings>
+]]></file>
+            <file name="PropertiesTopComponent.settings">
+                <!--com.nerduino.core.PropertiesTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.core.PropertiesTopComponent"/>
+</settings>
+]]></file>
+            <file name="ScriptingTestTopComponent.settings">
+                <!--com.nerduino.core.ScriptingTestTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.core.ScriptingTestTopComponent"/>
+</settings>
+]]></file>
+            <file name="BuilderTopComponent.settings">
+                <!--com.nerduino.processing.app.BuilderTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.processing.app.BuilderTopComponent"/>
+</settings>
+]]></file>
+            <file name="ServiceEditorTopComponent.settings">
+                <!--com.nerduino.services.ServiceEditorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.services.ServiceEditorTopComponent"/>
+</settings>
+]]></file>
+        </folder>
+        <folder name="Modes">
+            <folder name="explorer">
+                <file name="ExplorerTopComponent.wstcref">
+                    <!--com.nerduino.core.ExplorerTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="ExplorerTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
+            </folder>
+            <folder name="navigator">
+                <file name="PropertiesTopComponent.wstcref">
+                    <!--com.nerduino.core.PropertiesTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="PropertiesTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
+                <file name="BuilderTopComponent.wstcref">
+                    <!--com.nerduino.processing.app.BuilderTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="BuilderTopComponent"/>
+  <state opened="false"/>
+</tc-ref>
+]]></file>
+            </folder>
+            <folder name="editor">
+                <file name="ScriptingTestTopComponent.wstcref">
+                    <!--com.nerduino.core.ScriptingTestTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="ScriptingTestTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
+                <file name="ServiceEditorTopComponent.wstcref">
+                    <!--com.nerduino.services.ServiceEditorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="ServiceEditorTopComponent"/>
+  <state opened="false"/>
+</tc-ref>
+]]></file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="xml">
+        <folder name="entities">
+            <folder name="com_nerduino_core">
+                <file name="Explorer" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.core.ExplorerTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.core//Explorer//EN"/>
+                </file>
+                <file name="Output" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.core.OutputTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.core//Output//EN"/>
+                </file>
+                <file name="Properties" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.core.PropertiesTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.core//Properties//EN"/>
+                </file>
+                <file name="ScriptingTest" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.core.ScriptingTestTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.core//ScriptingTest//EN"/>
+                </file>
+                <file name="ServiceEditor" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.services.ServiceEditorTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.core//ServiceEditor//EN"/>
+                </file>
+            </folder>
+            <folder name="com_nerduino_processing_app">
+                <file name="Builder" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.processing.app.BuilderTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.processing.app//Builder//EN"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="memory">
+            <folder name="com">
+                <folder name="nerduino">
+                    <folder name="core">
+                        <file name="ExplorerTopComponent">
+                            <!--com.nerduino.core.ExplorerTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_core/Explorer.instance"/>
+                        </file>
+                        <file name="OutputTopComponent">
+                            <!--com.nerduino.core.OutputTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_core/Output.instance"/>
+                        </file>
+                        <file name="PropertiesTopComponent">
+                            <!--com.nerduino.core.PropertiesTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_core/Properties.instance"/>
+                        </file>
+                        <file name="ScriptingTestTopComponent">
+                            <!--com.nerduino.core.ScriptingTestTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_core/ScriptingTest.instance"/>
+                        </file>
+                    </folder>
+                    <folder name="processing">
+                        <folder name="app">
+                            <file name="BuilderTopComponent">
+                                <!--com.nerduino.processing.app.BuilderTopComponent-->
+                                <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_processing_app/Builder.instance"/>
+                            </file>
+                        </folder>
+                    </folder>
+                    <folder name="services">
+                        <file name="ServiceEditorTopComponent">
+                            <!--com.nerduino.services.ServiceEditorTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_core/ServiceEditor.instance"/>
+                        </file>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="lookups">
+            <folder name="com_nerduino_core">
+                <file name="Explorer.instance">
+                    <!--com.nerduino.core.ExplorerTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.core.ExplorerTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.core.ExplorerTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+                <file name="Output.instance">
+                    <!--com.nerduino.core.OutputTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.core.OutputTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.core.OutputTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+                <file name="Properties.instance">
+                    <!--com.nerduino.core.PropertiesTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.core.PropertiesTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.core.PropertiesTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+                <file name="ScriptingTest.instance">
+                    <!--com.nerduino.core.ScriptingTestTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.core.ScriptingTestTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.core.ScriptingTestTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+                <file name="ServiceEditor.instance">
+                    <!--com.nerduino.services.ServiceEditorTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.services.ServiceEditorTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.services.ServiceEditorTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+            </folder>
+            <folder name="com_nerduino_processing_app">
+                <file name="Builder.instance">
+                    <!--com.nerduino.processing.app.BuilderTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.processing.app.BuilderTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.processing.app.BuilderTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

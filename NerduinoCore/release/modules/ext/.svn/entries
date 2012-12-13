@@ -1,0 +1,28 @@
+10
+
+dir
+0
+https://nerduino.sourcerepo.com/nerduino/NerduinoHost/NerduinoIDE/NerduinoCore/release/modules/ext
+https://nerduino.sourcerepo.com/nerduino/NerduinoHost
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+99d8c6d6-0b43-4dbe-940a-a2212f2657e5
+
