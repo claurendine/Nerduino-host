@@ -2,7 +2,6 @@ package com.nerduino.library;
 
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
-import com.nerduino.processing.app.SketchManager;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -194,6 +193,70 @@ public class NerduinoManager extends BaseManager
 		}
 		
 		return null;
+	}
+	
+	public Object getPointValue(String path)
+	{
+		// if the path includes a '.' delimiter then lookup an associated point
+		if (path.contains("."))
+		{
+			int p = path.indexOf(".");
+			
+			String name = path.substring(0, p);
+			String pointName = path.substring(p + 1);
+
+			NerduinoBase nerduino = NerduinoManager.Current.getNerduino(name);
+				
+			if (nerduino != null)
+			{
+				RemoteDataPoint point = nerduino.getPoint(pointName);
+
+				if (point != null)
+					return point.getValue();
+			}
+		}
+		else
+		{
+			String pointName = path;
+			
+			LocalDataPoint point = PointManager.Current.getPoint(pointName);
+			
+			if (point != null)
+				return point.getValue();
+		}
+		
+		return null;
+	}
+		
+	public void setPointValue(String path, String value)
+	{
+		// if the path includes a '.' delimiter then lookup an associated point
+		if (path.contains("."))
+		{
+			int p = path.indexOf(".");
+			
+			String name = path.substring(0, p);
+			String pointName = path.substring(p + 1);
+
+			NerduinoBase nerduino = NerduinoManager.Current.getNerduino(name);
+
+			if (nerduino != null)
+			{
+				RemoteDataPoint point = nerduino.getPoint(pointName);
+
+				if (point != null)
+					point.setValue(value);
+			}
+		}
+		else
+		{
+			String pointName = path;
+			
+			LocalDataPoint point = PointManager.Current.getPoint(pointName);
+			
+			if (point != null)
+				point.setValue(value);
+		}
 	}
 	
 	public boolean contains(NerduinoBase nerd)

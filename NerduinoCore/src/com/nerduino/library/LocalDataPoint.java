@@ -1,9 +1,7 @@
 package com.nerduino.library;
 
-import com.nerduino.processing.app.SourceFile;
 import com.nerduino.xbee.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;

@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module codename="org.mozilla.javascript">
-    <module_version install_time="1354980138096" last="true" origin="installer" specification_version="1.0">
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.mozilla.javascript">
+    <module_version install_time="1356733921017" last="true" origin="installer" specification_version="1.0">
         <file crc="3191734174" name="config/Modules/org-mozilla-javascript.xml"/>
         <file crc="3376366296" name="modules/ext/js.jar"/>
-        <file crc="3224018681" name="modules/org-mozilla-javascript.jar"/>
+        <file crc="29079960" name="modules/org-mozilla-javascript.jar"/>
     </module_version>
 </module>

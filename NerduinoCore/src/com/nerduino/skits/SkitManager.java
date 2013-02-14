@@ -114,24 +114,40 @@ public class SkitManager extends BaseManager
 	{
 		try
 		{
-			String filename =  WebHost.Current.getWebRoot() + "/SkitIndex.html";
+			String filename =  WebHost.Current.getWebRoot() + "/index.html";
 			
-			FileWriter fw = new FileWriter(filename);
+			FileWriter writer = new FileWriter(filename);
 			
-			fw.write("<html><head>My Skits</head><body><br/>");
+			writer.write("<!DOCTYPE html><html>\n");
 			
-			for(Node node : m_children.getNodes())
+			writer.write("<head><title>Nerduino</title><meta name='viewport' content='width=device-width, initial-scale=1'>\n"
+					+ "<link rel='stylesheet' href='http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css' />"
+					+ "<script src='http://code.jquery.com/jquery-1.8.2.min.js'></script>"
+					+ "<script src='http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js'></script></head>\n");
+			
+			//writer.write("<body><div data-role='page'><div data-role='header'><h1>Nerduino</h1></div>\n");
+			writer.write("<body><div data-role='page'><div data-role='header'><h1><img src='Nerduino32.png'></h1></div>\n");
+			writer.write("<ul data-role='listview' data-inset='true'>\n");
+			
+			Node[] nodes = SkitManager.Current.getChildren().getNodes();
+			
+			for(Node node : nodes)
 			{
 				Skit skit = (Skit) node;
+				String name = skit.getName();
 				
-				fw.write("<p style=\"margin-top: 0\">");
-				fw.write("<a href=\"" + skit.getName() + ".html\">" + skit.getName() + "</a>");
-				fw.write("</p>");
+				writer.write("<li><a href='");
+				writer.write(name);
+				writer.write(".html'>");
+				writer.write(name);
+				writer.write("</a></li>\n");
 			}
 			
-			fw.write("</body></html>");
+			writer.write("</ul>\n");			
+			writer.write("</div></div></body>\n");
+			writer.write("</html>");
 			
-			fw.close();
+			writer.close();
 		}
 		catch(IOException ex)
 		{

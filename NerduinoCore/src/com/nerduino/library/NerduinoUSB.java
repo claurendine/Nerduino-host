@@ -13,13 +13,11 @@ import com.nerduino.propertybrowser.SketchPropertyEditor;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.xbee.BitConverter;
 import com.nerduino.xbee.FrameReceivedListener;
-import com.nerduino.xbee.SerialBase;
+import com.nerduino.xbee.Serial;
 import com.nerduino.xbee.TransmitRequestFrame;
 import com.nerduino.xbee.ZigbeeFrame;
 import java.awt.Image;
-import java.io.File;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Undefined;
 import org.openide.nodes.PropertySupport;
@@ -32,7 +30,7 @@ import org.w3c.dom.Element;
 public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 {
 	public boolean m_configured;
-	SerialBase m_serial;
+	Serial m_serial;
 	String m_comPort;
 	int m_baudRate = 115200;
 	boolean m_checkedIn = false;
@@ -41,6 +39,9 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 	boolean m_receivedGetPoint = false;
 	boolean m_receivedGetPoints = false;
 	boolean m_active = false;
+	long m_lastBroadcast = 0;
+	long m_broadcastThrottle = 50;
+	boolean m_sending = false;
 	CommandResponse commandResponse;
 	Address m_incomingAddress = new Address();
 	
@@ -50,7 +51,7 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 
 		m_canDelete = true;
 
-		m_serial = new SerialBase();
+		m_serial = new Serial();
 
 		m_serial.addFrameReceivedListener(this);
 
@@ -261,7 +262,6 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 					}
 				}
 			}
-
 		}
 		else
 		{
@@ -269,9 +269,9 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 		}
 
 		return new PropertySet[]
-				{
-					pointsSheet, usbSheet, nerduinoSheet
-				};
+			{
+				pointsSheet, usbSheet, nerduinoSheet
+			};
 	}
 
 	@Override
@@ -844,49 +844,6 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 
 		sendFrame(frame);
 	}
-	
-
-	@Override
-	public void sendSetPointValue(short index, boolean value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Boolean, (byte) 1, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, byte value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Byte, (byte) 1, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, short value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Short, (byte) 2, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, int value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Integer, (byte) 4, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, float value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Float, (byte) 4, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, byte[] value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_Array, (byte) value.length, value);
-	}
-
-	@Override
-	public void sendSetPointValue(short index, String value)
-	{
-		sendSetPointValue(index, DataTypeEnum.DT_String, (byte) value.length(), value);
-	}
 
 	@Override
 	public void sendSetPointValue(short index, DataTypeEnum dataType, byte dataLength, Object value)
@@ -999,7 +956,7 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 		frame.Broadcast = false;
 		frame.DisableACK = true;
 		
-		byte[] data = new byte[9 + filterLength];
+		byte[] data = new byte[10 + filterLength];
 		
 		data[0] = (byte) (m_address.RoutingIndex / 0x100);
 		data[1] = (byte) (m_address.RoutingIndex & 0xff);
@@ -1013,7 +970,8 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 		data[8] = filterType;
 		data[9] = filterLength;
 		
-		System.arraycopy(filterValue, 0, data, 10, filterLength);
+		if (filterLength > 0)
+			System.arraycopy(filterValue, 0, data, 10, filterLength);
 		
 		frame.Data = data;
 		
@@ -1281,7 +1239,6 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 		frame.Data = data;
 		
 		sendFrame(frame);
-
 	}
 
 	@Override
@@ -1412,7 +1369,25 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 	@Override
 	public void sendFrame(ZigbeeFrame frame)
 	{
+		m_sending = true;
+		
+		// throttle broadcasts to prevent overloading the nerduino
+		while(System.currentTimeMillis() - m_lastBroadcast < m_broadcastThrottle)
+		{
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch(Exception e)
+			{
+			}
+		}
+		
+		m_lastBroadcast = System.currentTimeMillis();
+		
 		m_serial.sendFrame(frame);
+		
+		m_sending = false;
 	}
 	
 	void processResponse(byte[] data)
@@ -2284,7 +2259,4 @@ public class NerduinoUSB extends NerduinoBase implements FrameReceivedListener
 		
 		sendExecuteCommandResponse(responseToken, ResponseStatusEnum.RS_Complete.Value(), dataType, responseLength, response);
 	}
-
-	
-	
 }

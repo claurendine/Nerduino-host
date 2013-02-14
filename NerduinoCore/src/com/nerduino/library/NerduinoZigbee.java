@@ -322,47 +322,12 @@ public class NerduinoZigbee extends NerduinoBase
     }
     
 	@Override
-    public void sendSetPointValue(short index, boolean value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Boolean, (byte) 1, value);
-    }
+	public void sendSetPointValue(short index, DataTypeEnum dataType, byte dataLength, Object m_value)
+	{	
+    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, dataType, dataLength, m_value);
+	}
 
-	@Override
-    public void sendSetPointValue(short index, byte value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Byte, (byte) 1, value);
-    }
-
-	@Override
-    public void sendSetPointValue(short index, short value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Short, (byte) 2, value);
-    }
-
-	@Override
-    public void sendSetPointValue(short index, int value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Integer, (byte) 4, value);
-    }
-    
-	@Override
-    public void sendSetPointValue(short index, float value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Float, (byte) 4, value);
-    }
-
-	@Override
-    public void sendSetPointValue(short index, byte[] value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_Array, (byte) value.length, value);
-    }
-
-	@Override
-    public void sendSetPointValue(short index, String value)
-    {
-    	NerduinoHost.Current.sendSetPointValue(m_serialNumber, m_networkAddress, index, DataTypeEnum.DT_String, (byte) value.length(), value);
-    }
-    
+	
 	@Override
     public void sendUnregisterPointCallback(short index)
     {

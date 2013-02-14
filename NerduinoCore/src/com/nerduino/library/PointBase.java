@@ -86,8 +86,30 @@ public class PointBase extends TreeNode
 	
 	public float getFloat()
 	{
-		if (DataType == DataTypeEnum.DT_Float)
-			return (Float) m_value;
+		try
+		{
+			switch(DataType)
+			{
+				case DT_Boolean:
+					if ((Boolean) m_value == true)
+						return 1.0f;
+					else
+						return 0.0f;
+				case DT_Byte:
+					return ((Byte) m_value).floatValue();
+				case DT_Short:
+					return ((Short) m_value).floatValue();
+				case DT_Integer:
+					return ((Integer) m_value).floatValue();
+				case DT_Float:
+					return (Float) m_value;
+				case DT_String:
+					return Float.parseFloat((String) m_value);
+			}
+		}
+		catch(Exception e)
+		{
+		}
 		
 		return 0;
 	}

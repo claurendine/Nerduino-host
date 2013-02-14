@@ -3,5 +3,12 @@
     <WebHost Port="4444" Webroot="/Users/chaselaurendine/Documents/SvnProjects/WebServer"/>
     <NerduinoHost BaudRate="9600" CommPort=""/>
     <Scrolls/>
-    <Skits/>
+    <Skits>
+        <Node Mode="Structured" Name="HeatingCooling"/>
+        <Node Mode="Structured" Name="GarageDoor"/>
+        <Node Mode="Structured" Name="Grill"/>
+        <Node Mode="Structured" Name="MailBox"/>
+        <Node Mode="Structured" Name="Lighting"/>
+        <Node Mode="Structured" Name="Blinds"/>
+    </Skits>
 </root>

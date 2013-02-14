@@ -7,23 +7,7 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>Acme.Serve</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>com.arduinofile</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>com.fasterxml.jackson.databind</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -39,7 +23,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>javax.servlet</code-name-base>
+                    <code-name-base>org.codehaus.jackson</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -53,14 +37,6 @@
                     <run-dependency>
                         <release-version>1</release-version>
                         <specification-version>1.21.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.jfx.browser</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.3</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -407,12 +383,60 @@
             </module-dependencies>
             <public-packages/>
             <class-path-extension>
+                <runtime-relative-path>ext/websocket-api-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/websocket-api-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jetty-annotations-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-annotations-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jetty-continuation-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-continuation-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/websocket-common-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/websocket-common-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jetty-io-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-io-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jetty-http-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-http-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/servlet-api-3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/servlet-api-3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/websocket-servlet-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/websocket-servlet-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/flamingo.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/flamingo.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jetty-server-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-server-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jetty-util-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-util-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jna.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jna.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/websocket-server-9.0.0.RC0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/websocket-server-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/websocket-client-9.0.0.M3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/websocket-client-9.0.0.M3.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

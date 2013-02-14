@@ -4,12 +4,14 @@
  */
 package com.nerduino.skits;
 
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.Collection;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
@@ -60,6 +62,11 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 				
 				if (doc instanceof NbDocument.CustomToolbar)
 					toolbar = ((NbDocument.CustomToolbar) doc).createToolbar(pane);
+
+				String ct = pane.getContentType();
+				EditorKit ek = pane.getEditorKit();
+				Toolkit tk = pane.getToolkit();
+				
 			}
 	
 			if (toolbar == null)
@@ -69,6 +76,9 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 		return toolbar;
 	}
 
+				
+
+	
 	@Override
 	public void setMultiViewCallback(MultiViewElementCallback callback)
 	{

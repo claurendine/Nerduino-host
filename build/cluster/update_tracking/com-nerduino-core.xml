@@ -1,10 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module codename="com.nerduino.core">
-    <module_version install_time="1355327766512" last="true" origin="installer" specification_version="1.0">
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.nerduino.core">
+    <module_version install_time="1360672397072" last="true" origin="installer" specification_version="1.0">
         <file crc="3739932745" name="config/Modules/com-nerduino-core.xml"/>
-        <file crc="3082014685" name="modules/com-nerduino-core.jar"/>
+        <file crc="1640130567" name="modules/com-nerduino-core.jar"/>
         <file crc="1599375659" name="modules/ext/flamingo.jar"/>
+        <file crc="4259053810" name="modules/ext/javax.websocket-api-0.0.006.draft.jar"/>
+        <file crc="3198681824" name="modules/ext/jetty-all-8.1.8.v20121106.jar"/>
+        <file crc="895292835" name="modules/ext/jetty-annotations-9.0.0.M3.jar"/>
+        <file crc="2448041207" name="modules/ext/jetty-annotations-9.0.0.RC0.jar"/>
+        <file crc="1433117536" name="modules/ext/jetty-continuation-7.4.4.v20110707.jar"/>
+        <file crc="2583769535" name="modules/ext/jetty-continuation-9.0.0.M3.jar"/>
+        <file crc="1681909569" name="modules/ext/jetty-continuation-9.0.0.RC0.jar"/>
+        <file crc="142859793" name="modules/ext/jetty-http-7.4.4.v20110707.jar"/>
+        <file crc="2515928494" name="modules/ext/jetty-http-9.0.0.M3.jar"/>
+        <file crc="467032063" name="modules/ext/jetty-http-9.0.0.RC0.jar"/>
+        <file crc="32958138" name="modules/ext/jetty-io-7.4.4.v20110707.jar"/>
+        <file crc="3509575686" name="modules/ext/jetty-io-9.0.0.M3.jar"/>
+        <file crc="4246206775" name="modules/ext/jetty-io-9.0.0.RC0.jar"/>
+        <file crc="358706825" name="modules/ext/jetty-server-7.4.4.v20110707.jar"/>
+        <file crc="2209535866" name="modules/ext/jetty-server-9.0.0.M3.jar"/>
+        <file crc="700767912" name="modules/ext/jetty-server-9.0.0.RC0.jar"/>
+        <file crc="250524198" name="modules/ext/jetty-servlet-9.0.0.M3.jar"/>
+        <file crc="3537145030" name="modules/ext/jetty-util-7.4.4.v20110707.jar"/>
+        <file crc="3097329787" name="modules/ext/jetty-util-9.0.0.M3.jar"/>
+        <file crc="1784183387" name="modules/ext/jetty-util-9.0.0.RC0.jar"/>
+        <file crc="2543716519" name="modules/ext/jetty-websocket-7.4.4.v20110707.jar"/>
         <file crc="3124201117" name="modules/ext/jna.jar"/>
         <file crc="778425460" name="modules/ext/org-netbeans-modules-cnd.jar"/>
+        <file crc="1385982833" name="modules/ext/servlet-api-2.5.jar"/>
+        <file crc="1371539559" name="modules/ext/servlet-api-3.0.jar"/>
+        <file crc="2809333939" name="modules/ext/websocket-api-9.0.0.M3.jar"/>
+        <file crc="328491163" name="modules/ext/websocket-api-9.0.0.RC0.jar"/>
+        <file crc="1193937282" name="modules/ext/websocket-client-9.0.0.M3.jar"/>
+        <file crc="4292147083" name="modules/ext/websocket-common-9.0.0.M3.jar"/>
+        <file crc="124994509" name="modules/ext/websocket-common-9.0.0.RC0.jar"/>
+        <file crc="654955733" name="modules/ext/websocket-server-9.0.0.M3.jar"/>
+        <file crc="841805205" name="modules/ext/websocket-server-9.0.0.RC0.jar"/>
+        <file crc="2791579191" name="modules/ext/websocket-servlet-9.0.0.M3.jar"/>
+        <file crc="979284229" name="modules/ext/websocket-servlet-9.0.0.RC0.jar"/>
     </module_version>
 </module>

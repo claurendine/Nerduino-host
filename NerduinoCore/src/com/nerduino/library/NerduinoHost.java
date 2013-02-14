@@ -1581,6 +1581,11 @@ public class NerduinoHost extends TreeNode implements FrameReceivedListener
 			webRootProp.setShortDescription("The local file path that the Web Server uses to serve content from.");
 			webSheet.put(webRootProp);
 
+			Property httpAddressProp = new PropertySupport.Reflection(WebHost.Current, String.class, "HttpAddress");
+			httpAddressProp.setName("Http Address");
+			httpAddressProp.setShortDescription("The http path to engage this web server.");
+			webSheet.put(httpAddressProp);
+
 			arduinoSheet.setDisplayName("Arduino Settings");
 
 			Property arduinoSourcePathProp = new PropertySupport.Reflection(ArduinoManager.Current, String.class, "ArduinoPath");

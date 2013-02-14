@@ -4,7 +4,7 @@ import java.io.IOException;
 import javax.sql.rowset.serial.SerialException;
 
 
-public class XBee extends SerialBase
+public class XBee extends Serial
 {
     // Definitions
     public static int XSTICK = 0x30009;

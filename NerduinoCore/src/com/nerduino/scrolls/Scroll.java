@@ -53,7 +53,7 @@ public class Scroll extends TreeNode
 		FileObject multiviewsFolder = FileUtil.getConfigFile("scrollmultiviews");
 		FileObject[] kids = multiviewsFolder.getChildren();
 		MultiViewDescription[] descriptionArray = new MultiViewDescription[kids.length];
-		List<MultiViewDescription> listOfDescs = new ArrayList();
+		ArrayList<MultiViewDescription> listOfDescs = new ArrayList<MultiViewDescription>();
 		
 		for (FileObject kid : FileUtil.getOrder(Arrays.asList(kids), true))
 		{

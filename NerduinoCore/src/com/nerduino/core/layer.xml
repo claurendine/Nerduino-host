@@ -438,12 +438,18 @@
         </file>
     </folder>
 	<folder name="skitmultiviews">
+<!--
+        <file name="com-nerduino-processing-app-ArduinoMultiviewDescription">
+            <attr name="multiview" newvalue="com.nerduino.processing.app.ArduinoMultiviewDescription"/>
+            <attr name="position" intvalue="100"/>
+        </file>
+-->
         <file name="com-nerduino-skits-SkitMultiviewEditorDescription">
             <attr name="multiview" newvalue="com.nerduino.skits.SkitMultiviewEditorDescription"/>
             <attr name="position" intvalue="100"/>
         </file>
 <!--
-        <file name="com-nerduino-skits-SkitMultiviewBrowserDescription">
+		<file name="com-nerduino-skits-SkitMultiviewBrowserDescription">
             <attr name="multiview" newvalue="com.nerduino.skits.SkitMultiviewBrowserDescription"/>
             <attr name="position" intvalue="200"/>
         </file>

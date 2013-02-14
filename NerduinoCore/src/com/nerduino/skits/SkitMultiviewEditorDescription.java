@@ -7,6 +7,7 @@ package com.nerduino.skits;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.skits.Skit;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -93,31 +94,11 @@ public class SkitMultiviewEditorDescription implements MultiViewDescription, Con
 
 	private static synchronized FileObject skit2file(Skit skit) throws IOException
 	{
-		if (m_files == null)
-			m_files = FileUtil.createMemoryFileSystem();
+		String filepath = skit.getHtmlFileName();
+		File f = new File(filepath);
 		
-		String fileName = skit.getFileName();
+		FileObject file = FileUtil.toFileObject(f);
 		
-		FileObject file = m_files.findResource(fileName);
-		
-		if (file == null)
-		{
-			file = m_files.getRoot().createData(fileName);
-
-			OutputStream os = file.getOutputStream();
-
-			try
-			{
-				String program = skit.getSource();
-				
-				os.write(program.getBytes());
-			}
-			finally
-			{
-				os.close();
-			}
-		}
-
 		return file;
 	}
 }

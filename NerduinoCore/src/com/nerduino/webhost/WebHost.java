@@ -1,20 +1,27 @@
 package com.nerduino.webhost;
 
 import com.nerduino.core.AppManager;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class WebHost
 {
-	final MyServ srv = new MyServ();
+//	final MyServ srv;;
  	String m_webroot = "/Users/chaselaurendine/Documents/SvnProjects/WebServer";
 	int m_port = 4444;
 	Boolean m_enabled = true;
 	
 	public static WebHost Current;
 	
-	
+/*	
 	class MyServ extends Acme.Serve.Serve 
 	{
 		// Overriding method for public access
@@ -31,10 +38,37 @@ public class WebHost
 			super.addWarDeployer(deployerFactory, throttles);
 		}
 	};
-	
+*/	
 	
 	public WebHost() throws NoSuchMethodException 
     {
+		try 
+		{
+			Current = this;
+		
+            Server server = new Server(8081);
+	        
+			// Create the servlet handler and define the Chat servlet
+			
+			ResourceHandler resource_handler = new ResourceHandler();
+			resource_handler.setDirectoriesListed(true);
+			resource_handler.setWelcomeFiles(new String[]{ "index.html" });
+			resource_handler.setResourceBase(m_webroot);
+			
+			NerduinoWebSocketHandler dlh = new NerduinoWebSocketHandler();
+			
+			HandlerList handlers = new HandlerList();
+			handlers.setHandlers(new Handler[] { dlh, resource_handler, new DefaultHandler() });
+			server.setHandler(handlers);
+			
+			server.start();
+            server.join();
+        } 
+		catch (Throwable e) 
+		{
+            e.printStackTrace();
+        }
+
 		/*
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine jsEngine = mgr.getEngineByName("JavaScript");
@@ -51,20 +85,23 @@ public class WebHost
         {
             ex.printStackTrace();
         }
-        */
         
-		Current = this;
-		
 		setWebRoot(m_webroot);
 		
+		srv = new MyServ();
 		
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
 			public void run() {
 				srv.notifyStop();
 				srv.destroyAllServlets();
 			}
 		}));
+		
+		setEnabled(true);
+		
 		srv.serve();
+		*/
     }
 	
 	public Boolean getEnabled()
@@ -78,33 +115,26 @@ public class WebHost
 				
 		if (m_enabled)
 		{
-			AppManager.log("Configuring Web Host");
+			/*
+			Acme.Serve.Serve.PathTreeDictionary aliases = new Acme.Serve.Serve.PathTreeDictionary();
+			aliases.put("/*", new java.io.File(m_webroot));
+		    srv.setMappingTable(aliases);
+
 			
 			// setting properties for the server, and exchangeable Acceptors
 			java.util.Properties properties = new java.util.Properties();
-			
-		    properties.put("port", m_port);
+
+			properties.put("port", m_port);
 			properties.setProperty(Acme.Serve.Serve.ARG_NOHUP, "nohup");
 			srv.arguments = properties;
 			srv.addDefaultServlets(null); // optional file servlet
-			
-			NerduinoServlet nerdServlet = new NerduinoServlet();
-			srv.addServlet("/nerduino/*", nerdServlet);
-			
-			Acme.Serve.Serve.PathTreeDictionary aliases = new Acme.Serve.Serve.PathTreeDictionary();
-			
-			AppManager.log("Web port: " + ((Integer) m_port).toString());
-			AppManager.log("Web root: " + m_webroot);
-			
-			aliases.put("/*", new java.io.File(m_webroot));
-		
-	        //  note cast name will depend on the class name, since it is anonymous class
-		    srv.setMappingTable(aliases);
-			
-			AppManager.log("Web Host Enabled.");
-			AppManager.log("");
+			srv.addServlet("/nerduino/*", new NerduinoServlet());
+			//srv.addServlet("/*", new NerduinoServlet());
 			
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Web", "com/nerduino/resources/HostEnabled.png");
+			
+			//srv.serve();
+			*/
 		}
 		else
 		{
@@ -113,6 +143,29 @@ public class WebHost
 			
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Web", "com/nerduino/resources/HostDisabled.png");
 		}
+	}
+	
+	public String getHttpAddress()
+	{
+		String address = "";
+		
+		InetAddress ip;
+		
+		try 
+		{
+			ip = InetAddress.getLocalHost();
+			
+			address = "http://" + ip.getHostAddress() + ":" + Integer.toString(m_port) + "/";
+		} 
+		catch (UnknownHostException e) 
+		{
+		}
+		
+		return address;
+	}
+	
+	public void setHttpAddress(String address)
+	{
 	}
 	
 	public int getPort()
@@ -164,7 +217,7 @@ public class WebHost
 				}
 			}
 
-			setEnabled(true);
+			//setEnabled(true);
 		}
 	}
 

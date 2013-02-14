@@ -1,5 +1,6 @@
 package com.nerduino.library;
 
+
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -73,8 +74,8 @@ public class RemoteDataPoint extends PointBase
     {
         if (!isReadOnly() && m_value != value)
         {
-            m_value = value;
-            
+			super.setValue(value);
+			
             if (DataType == DataTypeEnum.DT_String)
                 DataLength = (byte) ((String) value).length();
             
@@ -211,6 +212,7 @@ public class RemoteDataPoint extends PointBase
 		m_registered = false;
     }
 	
+	/*
 	@Override
 	public boolean getBoolean()
 	{
@@ -279,7 +281,6 @@ public class RemoteDataPoint extends PointBase
 	}
 
 	
-	
 	@Override
 	public float getFloat()
 	{
@@ -312,7 +313,8 @@ public class RemoteDataPoint extends PointBase
 		if (DataType == DataTypeEnum.DT_String)
 			setValue(value);
 	}
-
+	*/
+	
 	public void publish()
 	{
 		// check the publish bit

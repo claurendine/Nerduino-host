@@ -4,6 +4,7 @@ import com.nerduino.actions.StandardAction;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.nodes.TreeNode;
+import com.nerduino.processing.app.ArduinoSourceEditor;
 import com.nerduino.webhost.WebHost;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
@@ -41,6 +42,7 @@ public class Skit extends TreeNode
 	boolean m_configured = false;
 	String m_skitMode = "Structured";
 	String m_html;
+	public ArduinoSourceEditor m_editor;
 
 	public String getFileName()
 	{
@@ -57,6 +59,11 @@ public class Skit extends TreeNode
 	public void setSource(String html)
 	{
 		m_html = html;
+	}
+
+	public File getFile()
+	{
+		return new File(getHtmlFileName());
 	}
 	
 	final class ConfigureAction extends StandardAction
@@ -103,7 +110,7 @@ public class Skit extends TreeNode
 		FileObject multiviewsFolder = FileUtil.getConfigFile("skitmultiviews");
 		FileObject[] kids = multiviewsFolder.getChildren();
 		MultiViewDescription[] descriptionArray = new MultiViewDescription[kids.length];
-		List<MultiViewDescription> listOfDescs = new ArrayList();
+		ArrayList<MultiViewDescription> listOfDescs = new ArrayList<MultiViewDescription>();
 		
 		for (FileObject kid : FileUtil.getOrder(Arrays.asList(kids), true))
 		{

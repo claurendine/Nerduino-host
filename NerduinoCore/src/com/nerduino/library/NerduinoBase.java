@@ -6,7 +6,6 @@ import com.nerduino.processing.app.BuilderTopComponent;
 import com.nerduino.processing.app.IBuildTask;
 import com.nerduino.processing.app.Sketch;
 import com.nerduino.processing.app.SketchManager;
-import com.nerduino.processing.app.SourceFolder;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.xbee.ZigbeeFrame;
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
@@ -357,34 +356,37 @@ public class NerduinoBase extends TreeNode
 	
 	public void sendSetPointValue(short index, boolean value)
 	{
+		sendSetPointValue(index, DataTypeEnum.DT_Boolean, (byte) 1, value);
 	}
     
     public void sendSetPointValue(short index, byte value)
     {
+		sendSetPointValue(index, DataTypeEnum.DT_Byte, (byte) 1, value);
     }
 
     public void sendSetPointValue(short index, short value)
     {
+		sendSetPointValue(index, DataTypeEnum.DT_Short, (byte) 2, value);
     }
 
     public void sendSetPointValue(short index, int value)
     {
-    }
-    
-    public void sendSetPointValue(short index, long value)
-    {
+		sendSetPointValue(index, DataTypeEnum.DT_Integer, (byte) 4, value);
     }
     
     public void sendSetPointValue(short index, float value)
     {
+		sendSetPointValue(index, DataTypeEnum.DT_Float, (byte) 4, value);
     }
 
     public void sendSetPointValue(short index, byte[] value)
     {
+		sendSetPointValue(index, DataTypeEnum.DT_Array, (byte) value.length, value);
     }
 
     public void sendSetPointValue(short index, String value)
     {
+		sendSetPointValue(index, DataTypeEnum.DT_String, (byte) value.length(), value);
     }
 	
 	public void sendSetPointValue(short index, DataTypeEnum dataType, byte dataLength, Object m_value)

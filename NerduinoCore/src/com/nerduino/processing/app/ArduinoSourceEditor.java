@@ -4,6 +4,7 @@
  */
 package com.nerduino.processing.app;
 
+import com.nerduino.skits.Skit;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.netbeans.core.spi.multiview.CloseOperationState;
@@ -24,6 +25,7 @@ public class ArduinoSourceEditor extends CloneableEditor implements MultiViewEle
 	
 	Sketch m_sketch;
 	String m_displayName = "";
+	Skit m_skit;
 
 	ArduinoSourceEditor(Lookup lookup)
 	{

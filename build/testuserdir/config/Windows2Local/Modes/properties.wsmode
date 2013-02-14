@@ -5,12 +5,13 @@
   <kind type="view" />
   <state type="joined"  />
   <constraints>
-    <path orientation="horizontal" number="60" weight="0.7"/>
+    <path orientation="horizontal" number="60" weight="0.8309648466716529"/>
     <path orientation="vertical" number="40" weight="0.7"/>
-    <path orientation="horizontal" number="80" weight="0.3"/>
+    <path orientation="horizontal" number="80" weight="0.2523364485981308"/>
     <path orientation="vertical" number="80" weight="0.5"/>
   </constraints>
   <bounds x="1440" y="628" width="288" height="359" />
   <frame state="0"/>
+    <active-tc  id="CssStylesTC" />
     <empty-behavior permanent="true"/>
 </mode>

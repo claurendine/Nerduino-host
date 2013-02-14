@@ -3,10 +3,10 @@
 <windowmanager version="2.1">
     <main-window>
   <joined-properties
-   x="94"
-   y="57"
-   width="1682"
-   height="1060"
+   x="433"
+   y="109"
+   width="1343"
+   height="945"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -18,10 +18,10 @@
    frame-state="0"
 />
   <separated-properties
-   x="212"
-   y="117"
-   width="1495"
-   height="94"
+   x="192"
+   y="112"
+   width="1536"
+   height="90"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -33,19 +33,22 @@
   </main-window>
     <editor-area state="joined" frame-state="0">
   <constraints>
-  <path orientation="horizontal" number="60" weight="0.7" />
+  <path orientation="horizontal" number="60" weight="0.8309648466716529" />
   <path orientation="vertical" number="40" weight="0.7" />
-  <path orientation="horizontal" number="40" weight="0.7" />
+  <path orientation="horizontal" number="40" weight="0.7441588785046729" />
+  <path orientation="vertical" number="40" weight="0.5" />
   </constraints>
-  <bounds x="616" y="282" width="784" height="518" />
+  <bounds x="633" y="270" width="806" height="495" />
     </editor-area>
     <screen width="1920" height="1200"/>
     <active-mode name="explorer"/>
     <toolbar configuration="Standard" preferred-icon-size="24"/>
     <tc-list>
-  <tc-id id="ExplorerTopComponent_1"/>
-  <tc-id id="StartUpBrowserTopComponent"/>
   <tc-id id="ExplorerTopComponent"/>
   <tc-id id="PropertiesTopComponent"/>
+  <tc-id id="CommonPalette"/>
+  <tc-id id="ScriptingTestTopComponent"/>
+  <tc-id id="BuilderTopComponent_1"/>
+  <tc-id id="CssStylesTC"/>
     </tc-list>
 </windowmanager>
