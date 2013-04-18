@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.xbee;
 
 import java.nio.ByteBuffer;
@@ -9,14 +29,14 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
 	public short SourceNetworkAddress;
 	public ReceiveOptionEnum Options;
 	public byte[] Data;
-	public Boolean EscapedMode = false;
+	//public Boolean EscapedMode = false;
 	
     public static int Count;
     
     // Constructors
-    public ZigbeeReceivePacketFrame(SerialBase parent)
+    public ZigbeeReceivePacketFrame()
     {
-        super(FrameTypeEnum.ZigbeeReceivePacket, parent);
+        super(FrameTypeEnum.ZigbeeReceivePacket);
     
         FrameType = FrameTypeEnum.ZigbeeReceivePacket;
 
@@ -24,6 +44,7 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
     }
 
     // Methods
+	@Override
 	public short getFrameDataLength()
 	{
 		if (Data == null)
@@ -119,6 +140,7 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
     }
 
     // Serialize Methods
+	@Override
     public void ReadFrame(byte[] data)
     {
     	int length = data.length;
@@ -140,7 +162,9 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
           		byte[] edata = new byte[length - 12];
 
           		for(int i = 0; i < length - 12; i++)
-          			edata[i] = bb.get();
+				{
+					edata[i] = bb.get();
+				}
           		
           		setEscapedData(edata);
           	}
@@ -149,7 +173,9 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
           		Data = new byte[length - 12];
 
           		for(int i = 0; i < length - 12; i++)
-          			Data[i] = bb.get();
+				{
+					Data[i] = bb.get();
+				}
           	}
         }
         else
@@ -158,6 +184,7 @@ public class ZigbeeReceivePacketFrame  extends ZigbeeFrame
         }
     }
 
+	@Override
     public void WriteFrame(ByteBuffer buffer)
     {
     	buffer.put(FrameType.Value());

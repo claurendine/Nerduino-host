@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.nodes;
 
 import com.nerduino.core.ExplorerTopComponent;
@@ -80,6 +100,20 @@ public class TreeNode extends AbstractNode
 		}
 
 //		NerduinoTreeView.Current.modelUpdated(this);
+	}
+
+	Component action1;
+	
+	public Component getAction1()
+	{
+		if (action1 == null)
+		{
+			action1 = new EmptyCommand();
+			
+			action1.setSize(60, 18);
+		}
+
+		return action1;
 	}
 
 	public void onRename(String oldName, String newName)
@@ -311,15 +345,13 @@ public class TreeNode extends AbstractNode
 	@Override
 	public Node cloneNode()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
 	public Image getIcon(int type)
 	{
 		java.net.URL imgURL = getClass().getResource(m_iconPath);
-
-
 
 		if (imgURL != null)
 		{
@@ -342,7 +374,6 @@ public class TreeNode extends AbstractNode
 	public HelpCtx getHelpCtx()
 	{
 		return null;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -383,19 +414,19 @@ public class TreeNode extends AbstractNode
 	@Override
 	public Transferable clipboardCopy() throws IOException
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
 	public Transferable clipboardCut() throws IOException
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
 	public Transferable drag() throws IOException
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
@@ -410,33 +441,28 @@ public class TreeNode extends AbstractNode
 		return m_canCopy && m_canDelete;
 	}
 
-//	@Override
-//	public PasteType[] getPasteTypes(Transferable t)
-//	{
-//		throw new UnsupportedOperationException("Not supported yet.");
-//	}
 	@Override
 	public PasteType getDropType(Transferable t, int action, int index)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
 	public NewType[] getNewTypes()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
 	public boolean hasCustomizer()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return false;
 	}
 
 	@Override
 	public Component getCustomizer()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override

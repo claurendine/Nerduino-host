@@ -1,13 +1,30 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.library;
 
 
 public enum MessageEnum {
-    MSG_Initialize(0x00),
-    
     MSG_GetMetaData(0x01),
-    MSG_GetNamedMetaData(0x02),
     MSG_GetMetaDataResponse(0x03),
-    MSG_SetMetaData(0x04),
+    MSG_SetName(0x04),
     MSG_ResetRequest(0x05),
     
     MSG_Ping(0x06),
@@ -29,10 +46,15 @@ public enum MessageEnum {
 	MSG_GetAddressResponse(0x31),
 	
     MSG_GetDeviceStatus(0x40),
-    MSG_GetDeviceStatusResponse(0x41);
+    MSG_GetDeviceStatusResponse(0x41),
     
-    
-    
+	LMSG_DeclarePoint(0x51),
+	LMSG_RegisterPoint(0x52),
+	LMSG_SetTransceiverData(0x53),
+	LMSG_GetTransceiverData(0x54),
+	LMSG_SetPointValue(0x55),
+	LMSG_RegisterAddress(0x56);
+	
     private final byte value;
     
     MessageEnum(int val)
@@ -49,16 +71,12 @@ public enum MessageEnum {
 	{
 		switch(b)
 		{
-			case 0:
-                return MSG_Initialize;
             case 0x01:
                 return MSG_GetMetaData;
-            case 0x02:
-                return MSG_GetNamedMetaData;
             case 0x03:
                 return MSG_GetMetaDataResponse;
             case 0x04:
-                return MSG_SetMetaData;
+                return MSG_SetName;
             case 0x05:
                 return MSG_ResetRequest;
             case 0x06:
@@ -97,6 +115,19 @@ public enum MessageEnum {
                 return MSG_GetDeviceStatus;
             case 0x41:
             	return MSG_GetDeviceStatusResponse;
+				
+			case 0x51:
+            	return LMSG_DeclarePoint;
+			case 0x52:
+            	return LMSG_RegisterPoint;
+			case 0x53:
+            	return LMSG_SetTransceiverData;
+			case 0x54:
+            	return LMSG_GetTransceiverData;
+			case 0x55:
+            	return LMSG_SetPointValue;
+			case 0x56:
+            	return LMSG_RegisterAddress;
 		}
 		
 		return null;

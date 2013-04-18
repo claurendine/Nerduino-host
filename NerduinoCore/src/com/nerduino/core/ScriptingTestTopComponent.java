@@ -1,7 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package com.nerduino.core;
 
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -17,6 +33,7 @@ import org.mozilla.javascript.Undefined;
 /**
  * Top component which displays something.
  */
+/*
 @ConvertAsProperties(
     dtd = "-//com.nerduino.core//ScriptingTest//EN",
 autostore = false)
@@ -26,7 +43,7 @@ autostore = false)
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true)
 @ActionID(category = "Window", id = "com.nerduino.core.ScriptingTestTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" )
 @TopComponent.OpenActionRegistration(
     displayName = "#CTL_ScriptingTestAction",
 preferredID = "ScriptingTestTopComponent")
@@ -36,6 +53,7 @@ preferredID = "ScriptingTestTopComponent")
 	"CTL_ScriptingTestTopComponent=ScriptingTest Window",
 	"HINT_ScriptingTestTopComponent=This is a ScriptingTest window"
 })
+*/
 public final class ScriptingTestTopComponent extends TopComponent
 {
 	Context m_context;
@@ -44,8 +62,8 @@ public final class ScriptingTestTopComponent extends TopComponent
 	public ScriptingTestTopComponent()
 	{
 		initComponents();
-		setName(Bundle.CTL_ScriptingTestTopComponent());
-		setToolTipText(Bundle.HINT_ScriptingTestTopComponent());
+		//setName(Bundle.CTL_ScriptingTestTopComponent());
+		//setToolTipText(Bundle.HINT_ScriptingTestTopComponent());
 
 		m_context = Context.enter();
 		m_scope = m_context.initStandardObjects();

@@ -1,7 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package com.nerduino.skits;
 
 import java.awt.Toolkit;
@@ -113,7 +129,7 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 	public void componentOpened()
 	{
 		super.componentOpened();
-		
+		/*
 		FileObject fo = FileUtil.getConfigFile("Actions/Window/org-netbeans-modules-palette-ShowPaletteAction.instance");
 		
 		if (fo != null && fo.isValid())
@@ -137,6 +153,7 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 			{
 			}
 		}
+		*/
 	}
 
 	public void componentShowing()
@@ -168,8 +185,10 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 		InstanceContent content = new InstanceContent();
 		Lookup temp = new AbstractLookup(content);
 		
+		/*
 		PaletteController controller = createPalette();
 		content.add(controller);
+		*/
 		
 		return new ProxyLookup(lookup, temp);
 	}
@@ -227,6 +246,7 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 		return o == null ? "null" : o.getClass() + "@" + Integer.toHexString(System.identityHashCode(o));
 	}
 
+	/*
 	public static PaletteController createPalette()
 	{
 		try
@@ -273,4 +293,5 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 		}
 		return null;
 	}
+	*/
 }

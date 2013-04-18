@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.xbee;
 
 import java.nio.ByteBuffer;
@@ -11,48 +31,48 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
     public static int Count;
     
     // Constructors
-    public ATCommandFrame(SerialBase parent)
-    {   
-    	super(FrameTypeEnum.ATCommand, parent);
+    public ATCommandFrame()
+    {
+    	super(FrameTypeEnum.ATCommand);
     }
 
-    public ATCommandFrame(String command, SerialBase parent)
+    public ATCommandFrame(String command)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
     	
     	Command = command;
     }
 
-    public ATCommandFrame(String command, Boolean data, SerialBase parent)
+    public ATCommandFrame(String command, Boolean data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 		
     	Data = BitConverter.GetBytes(data);
     }
 
-    public ATCommandFrame(String command, byte data, SerialBase parent)
+    public ATCommandFrame(String command, byte data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 
     	Data = BitConverter.GetBytes(data);
     }
 
-    public ATCommandFrame(String command, short data, SerialBase parent)
+    public ATCommandFrame(String command, short data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
     	
     	Data = BitConverter.GetBytes(data);
     }
 
-    public ATCommandFrame(String command, int data, SerialBase parent)
+    public ATCommandFrame(String command, int data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 
@@ -60,27 +80,27 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
     }
 
 
-    public ATCommandFrame(String command, float data, SerialBase parent)
+    public ATCommandFrame(String command, float data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 
     	Data = BitConverter.GetBytes(data);
     }
 
-    public ATCommandFrame(String command, double data, SerialBase parent)
+    public ATCommandFrame(String command, double data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 
     	Data = BitConverter.GetBytes(data);
     }
 
-    public ATCommandFrame(String command, String data, SerialBase parent)
+    public ATCommandFrame(String command, String data)
     {
-    	super(FrameTypeEnum.ATCommand, parent);
+    	super(FrameTypeEnum.ATCommand);
 
     	Command = command;
 
@@ -88,6 +108,7 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
     }
 
 
+	@Override
 	public void Initialize()
 	{
 		Count++;
@@ -96,6 +117,7 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
 	}
 
     // Methods
+	@Override
     public Boolean getHasError()
 	{
 		if (Command.length() != 2)
@@ -111,6 +133,7 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
 		return false;
 	}
 	
+	@Override
 	public short getFrameDataLength()
 	{
         if (Data != null)
@@ -134,6 +157,7 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
 	}	
     
     // Serialize Methods
+	@Override
     public void ReadFrame(byte[] data)
     {
     	int length = data.length;
@@ -154,7 +178,9 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
         	Data = new byte[length - 4];
  
         	for(int i = 0; i < length - 4; i++)
-        		Data[i] = bb.get();
+			{
+				Data[i] = bb.get();
+			}
         }
         else
         {
@@ -162,6 +188,7 @@ public class ATCommandFrame extends ZigbeeFrameWithResponse
         }
     }
 
+	@Override
     public void WriteFrame(ByteBuffer buffer)
     {
     	buffer.put(FrameType.Value());

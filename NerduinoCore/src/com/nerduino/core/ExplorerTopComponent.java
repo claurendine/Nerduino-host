@@ -1,16 +1,39 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package com.nerduino.core;
 
+import com.nerduino.nodes.EmptyCommand;
 import com.nerduino.nodes.RootNode;
 import com.nerduino.nodes.TreeNode;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JScrollBar;
+import javax.swing.table.TableModel;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.netbeans.swing.outline.Outline;
 import org.openide.actions.CopyAction;
 import org.openide.actions.CutAction;
 import org.openide.actions.DeleteAction;
@@ -19,6 +42,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
+import org.openide.explorer.view.Visualizer;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -31,9 +55,6 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.pushingpixels.flamingo.api.ribbon.JRibbon;
 
-/**
- * Top component which displays something.
- */
 @ConvertAsProperties(
     dtd = "-//com.nerduino.core//Explorer//EN",
 autostore = false)
@@ -71,6 +92,7 @@ public final class ExplorerTopComponent extends TopComponent
 		Current = this;
 
 		initComponents();
+		
 		setName(Bundle.CTL_ExplorerTopComponent());
 		setToolTipText(Bundle.HINT_ExplorerTopComponent());
 		putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
@@ -80,12 +102,19 @@ public final class ExplorerTopComponent extends TopComponent
 		AppManager.initialize();
 
 		initComponents();
+		
+		myInitComponents();
 
 		m_rootNode = new RootNode();
+		
+		outline1.setPreferredSize(new Dimension(16, 16));
+		
+		Outline o = outline1.getOutline();
+		
+		o.setRootVisible(false);
+		
 		m_manager.setRootContext(m_rootNode);
-
-		beanTreeView1.setRootVisible(false);
-
+		
 		Lookup lookup = ExplorerUtils.createLookup(m_manager, getActionMap());
 
 		associateLookup(lookup);
@@ -93,10 +122,106 @@ public final class ExplorerTopComponent extends TopComponent
 		m_result = lookup.lookupResult(TreeNode.class);
 		weakLookup = WeakListeners.create(LookupListener.class, this, m_result);
 		m_result.addLookupListener(weakLookup);
-
+		
 		AppManager.Current.initializeExplorer();
 	}
+	
+	javax.swing.JPanel jPanel;
+    javax.swing.JScrollPane jScrollPane1;
+    javax.swing.JScrollPane jScrollPane2;
+	org.openide.explorer.view.OutlineView outline1;
+	
+	void myInitComponents()
+	{
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+		jPanel = new javax.swing.JPanel();
 
+		outline1 = new org.openide.explorer.view.OutlineView()
+		{
+			@Override
+			public void paint(Graphics g)
+			{
+				super.paint(g);
+				
+				JScrollBar sb = this.getVerticalScrollBar();
+				int i = 0;
+								
+				if (sb != null)
+				{
+					i = sb.getValue();
+					
+					updateCommands(i);
+				}
+				
+				i = i;
+			}
+		};
+
+		
+        outline1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        
+        jScrollPane1.setViewportView(jPanel);
+        jScrollPane2.setViewportView(outline1);
+        
+		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+		jPanel.setPreferredSize(new Dimension(4,4));
+		
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        );
+	}
+	
+	EmptyCommand commandHeader = new EmptyCommand();
+	
+	void updateCommands(int offset)
+	{
+		jPanel.removeAll();
+		
+		int listoffset = offset / 22;
+		int displace = offset - listoffset * 22;
+		
+		int count = outline1.getHeight() / 22;
+		TableModel table = outline1.getOutline().getModel();
+		
+		commandHeader.setPreferredSize(new Dimension(60, 22 - displace));
+		commandHeader.setMaximumSize(new Dimension(60, 22 - displace));
+		commandHeader.setMinimumSize(new Dimension(60, 22 - displace));
+		commandHeader.setSize(60, 22 - displace);
+		
+		jPanel.add(commandHeader);
+
+		for(int i = 0; i < count; i++)
+		{
+			Object obj = table.getValueAt(i + listoffset, 0);
+			
+			if (obj != null)
+			{
+				TreeNode tn = (TreeNode) Visualizer.findNode(obj);
+				
+				jPanel.add(tn.getAction1());
+			}
+			else
+			{
+				jPanel.add(new EmptyCommand());				
+			}
+		}
+		
+		jPanel.validate();
+		jPanel.repaint();
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,39 +231,35 @@ public final class ExplorerTopComponent extends TopComponent
     private void initComponents()
     {
 
-        beanTreeView1 = new org.openide.explorer.view.BeanTreeView();
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(beanTreeView1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addGap(0, 412, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(beanTreeView1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 412, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.openide.explorer.view.BeanTreeView beanTreeView1;
     // End of variables declaration//GEN-END:variables
 
 	@Override
 	public void componentOpened()
-	{
-		// TODO add custom code on component opening
-		
+	{	
 		// convenient time to get the instance of the jribbon class
+		Object obj = WindowManager.getDefault().getMainWindow();
+		
 		JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
 		
 		AppManager.Current.setRibbon((JRibbon) frame.getRootPane().getLayeredPane().getComponent(0));
-		
  	}
 
 	@Override
 	public void componentClosed()
 	{
-		// TODO add custom code on component closing
 	}
 
 	@Override
@@ -232,19 +353,10 @@ public final class ExplorerTopComponent extends TopComponent
 		return m_rootNode;
 	}
 
-	void clearTree()
-	{
-		beanTreeView1.removeAll();
-	}
-
-	void expandAll()
-	{
-		beanTreeView1.expandAll();
-	}
-	
 	void expandNode(Node node)
 	{
-		beanTreeView1.expandNode(node);
+		//beanTreeView1.expandNode(node);
+		outline1.expandNode(node);
 	}
 
 
@@ -258,8 +370,6 @@ public final class ExplorerTopComponent extends TopComponent
 
 		if (!c.isEmpty())
 		{
-			Object[] objs = c.toArray();
-
 			for (Iterator it = c.iterator(); it.hasNext();)
 			{
 				Object obj = it.next();
@@ -288,4 +398,5 @@ public final class ExplorerTopComponent extends TopComponent
 			}
 		}
 	}
+
 }

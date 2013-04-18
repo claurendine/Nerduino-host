@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.library;
 
 import com.nerduino.core.BaseManager;
@@ -24,6 +44,16 @@ public class NerduinoManager extends BaseManager
 	public static NerduinoManager Current;
 	
 	File m_file;
+	
+	public Boolean getEnabled()
+	{
+		return false;
+	}
+	
+	public void setEnabled(Boolean val)
+	{
+		
+	}
 	
 	
 	// Constructors
@@ -72,7 +102,7 @@ public class NerduinoManager extends BaseManager
 							if (type.matches("USB"))
 								nerduino = new NerduinoUSB();
 							else if (type.matches("Zigbee"))
-								nerduino = new NerduinoZigbee();
+								nerduino = new NerduinoXBee();
 
 							nerduino.readXML(rootElement);
 
@@ -129,34 +159,34 @@ public class NerduinoManager extends BaseManager
 		}
 	}
 
-	public NerduinoZigbee getNerduino(long serialNumber, short networkAddress) 
+	public NerduinoXBee getNerduino(long serialNumber, short networkAddress) 
 	{
 		// TODO consider using a hash table for quick lookup
-		NerduinoZigbee nerd = getNerduino(serialNumber);
+		NerduinoXBee nerd = getNerduino(serialNumber);
 		
 		if (nerd == null)
 		{		
-			nerd = new NerduinoZigbee();
-        
-			nerd.m_serialNumber = serialNumber;
-			nerd.m_networkAddress = networkAddress;
-
+			nerd = new NerduinoXBee();
+			
+			nerd.m_address.SerialNumber = serialNumber;
+			nerd.m_address.NetworkAddress = networkAddress;
+			
 			addChild(nerd);
 		}
 		
 		return nerd;
 	}
 
-	public NerduinoZigbee getNerduino(long serialNumber) 
+	public NerduinoXBee getNerduino(long serialNumber) 
 	{
 		// TODO consider using a hash table for quick lookup
 		for(Node node : m_children.getNodes())
 		{
-			if (node instanceof NerduinoZigbee)
+			if (node instanceof NerduinoXBee)
 			{
-				NerduinoZigbee nerd = (NerduinoZigbee) node;
+				NerduinoXBee nerd = (NerduinoXBee) node;
 				
-				if (nerd.m_serialNumber == serialNumber)
+				if (nerd.m_address.SerialNumber == serialNumber)
 					return nerd;
 			}
 		}
@@ -164,16 +194,16 @@ public class NerduinoManager extends BaseManager
 		return null;
 	}
 
-	public NerduinoZigbee getNerduino(short networkAddress) 
+	public NerduinoXBee getNerduino(short networkAddress) 
 	{
 		// TODO consider using a hash table for quick lookup
 		for(Node node : m_children.getNodes())
 		{
-			if (node instanceof NerduinoZigbee)
+			if (node instanceof NerduinoXBee)
 			{
-				NerduinoZigbee nerd = (NerduinoZigbee) node;
+				NerduinoXBee nerd = (NerduinoXBee) node;
 				
-				if (nerd.m_networkAddress == networkAddress)
+				if (nerd.m_address.NetworkAddress == networkAddress)
 					return nerd;
 			}
 		}
@@ -209,7 +239,7 @@ public class NerduinoManager extends BaseManager
 				
 			if (nerduino != null)
 			{
-				RemoteDataPoint point = nerduino.getPoint(pointName);
+				PointBase point = nerduino.getPoint(pointName);
 
 				if (point != null)
 					return point.getValue();
@@ -242,7 +272,7 @@ public class NerduinoManager extends BaseManager
 
 			if (nerduino != null)
 			{
-				RemoteDataPoint point = nerduino.getPoint(pointName);
+				PointBase point = nerduino.getPoint(pointName);
 
 				if (point != null)
 					point.setValue(value);
@@ -304,7 +334,6 @@ public class NerduinoManager extends BaseManager
 		if (nu != null)
 		{
 			nu.setName(getUniqueName(nu.getName()));
-			nu.m_configured = true;
 			
 			nu.save();
 			

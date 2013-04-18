@@ -176,6 +176,19 @@ public class Sketch extends TreeNode implements IContext
 		load();
 	}
 
+	CompileAllCommand compileButton;
+	
+	@Override
+	public Component getAction1()
+	{
+		if (compileButton == null)
+		{
+			compileButton = new CompileAllCommand(this);
+		}
+		
+		return compileButton;
+	}
+	
 	public void cloneSketch(Sketch m_selectedSketch)
 	{
 		// make sure that the new project name is valid and unique
@@ -483,7 +496,10 @@ public class Sketch extends TreeNode implements IContext
 		try
 		{
 			m_compileCallback = callback;
-
+			m_compileCallback.setProgress(0);
+			m_compileCallback.setErrorCount(0);
+			m_compileCallback.setStatus("Compiling");
+			
 			build(m_verbose);
 		}
 		catch(RunnerException ex)

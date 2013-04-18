@@ -1,6 +1,27 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.library;
 
 import com.nerduino.nodes.TreeNode;
+import com.nerduino.xbee.BitConverter;
 import java.util.*;
 import org.openide.nodes.Children;
 
@@ -12,6 +33,7 @@ public class PointBase extends TreeNode
     public byte DataLength = 1;
     public byte Attributes = 0;
     protected Object m_value = (byte) 0;
+	NerduinoLight m_nerduino = null;
 	
     public byte Status = 0;
     protected List<ValueCallback> m_callbacks = new ArrayList<ValueCallback>();
@@ -120,7 +142,7 @@ public class PointBase extends TreeNode
 			setValue(value);
 	}
 
-	
+/*	
 	public String getString()
 	{
 		if (DataType == DataTypeEnum.DT_String)
@@ -133,6 +155,53 @@ public class PointBase extends TreeNode
 	{
 		if (DataType == DataTypeEnum.DT_String)
 			setValue(value);
+	}
+*/
+	
+	public byte[] getBytes()
+	{
+		byte[] data = null;
+		
+		switch(DataType)
+		{
+			case DT_Boolean:
+				data = BitConverter.GetBytes((Boolean) m_value);
+				
+				break;
+			case DT_Byte:
+				data = BitConverter.GetBytes((Byte) m_value);
+				
+				break;
+			case DT_Short:
+				data = BitConverter.GetBytes((Short) m_value);
+				
+				break;
+			case DT_Integer:
+				data = BitConverter.GetBytes((Integer) m_value);
+				
+				break;
+			case DT_Float:
+				data = BitConverter.GetBytes((Float) m_value);
+				
+				break;
+			/*
+			case DT_String:
+				m_value = value.toString();
+
+				DataLength = (byte) ((String) m_value).length();
+
+				break;
+			case DT_Array:
+				m_value = value;
+
+				if (value instanceof Byte[])
+					DataLength = (byte) ((Byte[]) value).length;
+
+				break;
+			*/
+		}
+		
+		return data;
 	}
 	
     public Object getValue()
@@ -183,6 +252,7 @@ public class PointBase extends TreeNode
 							m_value = Float.parseFloat((String)value);
 
 						break;
+					/*
 					case DT_String:
 						m_value = value.toString();
 
@@ -196,8 +266,14 @@ public class PointBase extends TreeNode
 							DataLength = (byte) ((Byte[]) value).length;
 
 						break;
+					*/
 				}
-
+				
+				if (m_nerduino != null)
+				{
+					m_nerduino.sendSetPointValue(Id, DataType, DataLength, value);
+				}
+				
 				// notify all callbacks of the new value
 				for(ValueCallback callback : m_callbacks)
 				{
@@ -214,22 +290,7 @@ public class PointBase extends TreeNode
 	public void setDataType(DataTypeEnum dataType)
 	{
 		DataType = dataType;
-		
-		switch(dataType)
-		{
-			case DT_Byte:
-				DataLength = 1;
-				break;
-			case DT_Short:
-				DataLength = 2;
-				break;
-			case DT_Integer:
-				DataLength = 4;
-				break;
-			case DT_Float:
-				DataLength = 4;
-				break;				
-		}
+		DataLength = dataType.getLength();
 	}
 	
 	public boolean isReadOnly()

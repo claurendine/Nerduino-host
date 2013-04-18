@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.webhost;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -7,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerduino.library.NerduinoBase;
 import com.nerduino.library.NerduinoManager;
 import com.nerduino.library.PointManager;
+import com.nerduino.library.RemoteDataPoint;
 import com.nerduino.skits.Skit;
 import com.nerduino.skits.SkitManager;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
@@ -73,6 +94,33 @@ public class DataLinkWebSocket extends WebSocketAdapter
 				if (command.equalsIgnoreCase("exit"))
 				{
 					closeMonitoringSession();
+				}
+				else if (command.equalsIgnoreCase("set"))
+				{
+					JsonNode data = rootNode.findValue("data");
+					
+					if (data != null)
+					{
+						int index = data.get("id").asInt();
+						
+						DataLink link = links[index];
+
+						if (link.status == 2)
+						{
+							String value = data.get("value").asText();
+
+							link.lastValue = Float.parseFloat(value);
+
+							if (link.localDataPoint != null)
+								link.localDataPoint.setValue(value);
+							else if (link.remoteDataPoint != null)
+								link.remoteDataPoint.setValue(value);
+						}
+					}
+					//else
+					//{
+					//	endpoint.sendString("Path/Value not provided!");
+					//}
 				}
 				else if (command.equalsIgnoreCase("monitor"))
 				{
@@ -149,7 +197,7 @@ public class DataLinkWebSocket extends WebSocketAdapter
 
 														if (nerduino != null)
 														{
-															link.remoteDataPoint = nerduino.getPoint(pointname);
+															link.remoteDataPoint = (RemoteDataPoint) nerduino.getPoint(pointname);
 
 															if (link.remoteDataPoint != null)
 															{
@@ -246,7 +294,7 @@ public class DataLinkWebSocket extends WebSocketAdapter
 													{
 														link.lastValue = link.currentValue;
 
-														String str = "{\"id\" : " + Integer.toString(i) + ", \"val\" : " + Double.toString(link.currentValue) + "}";
+														String str = "{\"id\" : " + Integer.toString(i) + ", \"val\" : " + Double.toString((double) link.currentValue) + "}";
 
 														endpoint.sendString(str);													
 													}
@@ -257,18 +305,9 @@ public class DataLinkWebSocket extends WebSocketAdapter
 
 										try
 										{
-											// throttle the loop
-											Thread.sleep(1);
-										}
-										catch(Exception e)
-										{
-											setMonitoring(false);
-										}
-
-										try
-										{
 											// throttle responses
-											Thread.sleep(50);
+											Thread.sleep(10);
+											//Thread.sleep(50);
 										}
 										catch(Exception e)
 										{
@@ -330,33 +369,6 @@ public class DataLinkWebSocket extends WebSocketAdapter
 							// if not found, report an unrecognized path
 							endpoint.sendString("Unrecognized path!");
 					}
-				}
-				else if (command.equalsIgnoreCase("set"))
-				{
-					JsonNode data = rootNode.findValue("data");
-					
-					if (data != null)
-					{
-						int index = data.get("id").asInt();
-						
-						DataLink link = links[index];
-
-						if (link.status == 2)
-						{
-							String value = data.get("value").asText();
-
-							link.lastValue = Float.parseFloat(value);
-
-							if (link.localDataPoint != null)
-								link.localDataPoint.setValue(value);
-							else if (link.remoteDataPoint != null)
-								link.remoteDataPoint.setValue(value);
-						}
-					}
-					//else
-					//{
-					//	endpoint.sendString("Path/Value not provided!");
-					//}
 				}
 				else
 				{

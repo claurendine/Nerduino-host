@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.library;
 
 
@@ -72,18 +92,48 @@ public class RemoteDataPoint extends PointBase
 	@Override
     public void setValue(Object value)
     {
-        if (!isReadOnly() && m_value != value)
+		Object val = value;
+		
+		if (value instanceof String)
+		{
+			switch(DataType)
+			{
+				case DT_Boolean:
+					if (value.equals("0"))
+						val = false;
+					else if (value.equals("1"))
+						val = true;
+					else
+						val = Boolean.parseBoolean((String)value);
+	
+					break;
+				case DT_Byte:
+					val = Byte.parseByte((String)value);
+					break;
+				case DT_Float:
+					val = Float.parseFloat((String)value);
+					break;
+				case DT_Integer:
+					val = Integer.parseInt((String)value);
+					break;
+				case DT_Short:
+					val = Short.parseShort((String)value);
+					break;
+			}
+		}
+		
+        if (!isReadOnly() && !m_value.equals(val))
         {
-			super.setValue(value);
+			super.setValue(val);
 			
             if (DataType == DataTypeEnum.DT_String)
                 DataLength = (byte) ((String) value).length();
             
             // send value update to the remote nerduino
-            Parent.sendSetPointValue(Id, DataType, DataLength, m_value);
+            Parent.sendSetPointValue(Id, DataType, DataLength, val);
 
 			if (Proxy != null)
-				Proxy.setValue(value);
+				Proxy.setValue(val);
 		}
     }
     
@@ -118,8 +168,12 @@ public class RemoteDataPoint extends PointBase
 
 			m_value = NerduinoHost.parseValue(data, 10, DataType, DataLength);
 
-			m_valueResponse = m_value;
+			//if (m_value != m_valueResponse)
+				m_valueResponse = m_value;
 
+//			InputOutput io = IOProvider.getDefault().getIO("Build", false);
+//			io.getOut().println("Update " + m_value.toString());
+			
 			if (Proxy != null)
 				Proxy.setValue(m_value);
 		}
@@ -200,14 +254,14 @@ public class RemoteDataPoint extends PointBase
     
     public void register(short responseToken, byte filterType, byte filterLength, byte[] filterValue)
     {
-		Parent.sendRegisterPointCallback(responseToken, Id, filterType, filterLength, filterValue);
+		Parent.sendRegisterPointCallback(Parent, responseToken, Id, filterType, filterLength, filterValue);
 		
 		m_registered = true;
     }
 
     public void unregister()
     {
-    	Parent.sendUnregisterPointCallback(Id);
+    	Parent.sendUnregisterPointCallback(Parent, Id);
 		
 		m_registered = false;
     }

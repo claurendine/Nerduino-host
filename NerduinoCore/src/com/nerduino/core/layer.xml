@@ -143,6 +143,7 @@
 	</folder>
 	
 	<folder name="Ribbon">
+		<attr name="iconBase" stringvalue="com/nerduino/resources/actions/print.png"/>
 		<folder name="AppMenu">
 			<file name="SaveAction.shadow">
 				<attr name="originalFile" stringvalue="Actions/File/org-openide-actions-SaveAction.instance"/>

@@ -1,3 +1,23 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.library;
 
 import com.nerduino.xbee.*;
@@ -14,7 +34,8 @@ import org.openide.util.Lookup;
 public class LocalDataPoint extends PointBase
 {
 	// Declarations
-	public RemoteDataPoint Proxy = null;
+	//public RemoteDataPoint Proxy = null;
+	public PointBase Proxy = null;
 	
 	static short nextIndex = 0;
 	
@@ -36,11 +57,60 @@ public class LocalDataPoint extends PointBase
 		dialog.setVisible(true);
 	}
 	
-    // Properties
+	public void onRegisterPointCallback(NerduinoBase requestedBy, short responseToken, byte filterType, byte filterLength, byte[] filterValue)
+	{
+    	// determine if this nerduino already has a registered callback, if so remove the existing 
+    	// callback and replace it with this new one
+		for(int i = 0; i < m_callbacks.size(); i++)
+		{
+			ValueCallback cb = m_callbacks.get(i);
+
+			if (cb.ResponseToken == responseToken && requestedBy == cb.Nerduino)
+			{
+				// remove this callback
+				m_callbacks.remove(i);
+				break;
+			}
+		}
+		
+    	ValueCallback callback = new ValueCallback();
+    	
+    	callback.ResponseToken = responseToken;
+		
+    	callback.FilterType = FilterTypeEnum.valueOf(filterType);
+    	callback.Nerduino = requestedBy;
+    	callback.DataPoint = this;
+        
+    	// make sure that the data types match
+    	switch (callback.FilterType)
+    	{
+            case FT_NoFilter:
+                break;
+    		case FT_PercentChange:
+    			if (callback.FilterDataType != DataTypeEnum.DT_Float)
+    				return; // not a valid data type
+                
+               	callback.FilterLength = filterLength;
+            	callback.FilterValue = NerduinoHost.parseValue(filterValue, 0, callback.FilterDataType, callback.FilterLength);
+                
+    			break;
+    		case FT_ValueChange:
+    			if (callback.FilterDataType != DataType)
+    				return; // not a valid data type
+                
+            	callback.FilterLength = filterLength;
+                callback.FilterValue = NerduinoHost.parseValue(filterValue, 0, callback.FilterDataType, callback.FilterLength);
+                
+                break;
+    	}
+    	
+    	m_callbacks.add(callback);
+    	
+    	// immediately send updated value
+    	callback.sendUpdate(m_value);
+	}
 	
-	
-    // Methods
-	void onRegisterPointCallback(NerduinoBase nerduino, byte[] data)
+	public void onRegisterPointCallback(NerduinoBase nerduino, byte[] data)
 	{
 		byte offset = 3;
 		
@@ -134,7 +204,7 @@ public class LocalDataPoint extends PointBase
     public void onRegisterPointCallback(ZigbeeReceivePacketFrame zrf)
     {
     	// lookup the nerduino that is to be called back
-    	NerduinoZigbee nerduino = NerduinoManager.Current.getNerduino(zrf.SourceAddress, zrf.SourceNetworkAddress);
+    	NerduinoXBee nerduino = NerduinoManager.Current.getNerduino(zrf.SourceAddress, zrf.SourceNetworkAddress);
     	
 		onRegisterPointCallback(nerduino, zrf.Data);
     }
@@ -142,7 +212,7 @@ public class LocalDataPoint extends PointBase
     public void onUnregisterPointCallback(ZigbeeReceivePacketFrame zrf)
     {
     	// lookup the nerduino that is to be called back
-    	NerduinoZigbee nerduino = NerduinoManager.Current.getNerduino(zrf.SourceAddress, zrf.SourceNetworkAddress);
+    	NerduinoXBee nerduino = NerduinoManager.Current.getNerduino(zrf.SourceAddress, zrf.SourceNetworkAddress);
     	
     	// determine if this nerduino already has a registered callback, if so remove the existing 
     	// callback and replace it with this new one

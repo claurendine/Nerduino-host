@@ -300,6 +300,8 @@ public class Compiler implements MessageConsumer
 
 		compileCallback.setStatus("Compile Complete...");
 		compileCallback.setProgress(100);
+
+		compileCallback.setCompileSuccess(true);
 		
 		return true;
 	}

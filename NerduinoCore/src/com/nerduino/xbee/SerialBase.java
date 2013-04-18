@@ -1,14 +1,32 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.nerduino.xbee;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Vector;
 
 
 public class SerialBase
 {
     public byte NextFrameID = 0;
+	public byte Protocol = 0; // 0 - zigbee, 1 = nerduino
 
     Vector<FrameReceivedListener> frameReceivedListeners = new Vector<FrameReceivedListener>();
     Vector<PacketReceivedListener> packetReceivedListeners = new Vector<PacketReceivedListener>();
@@ -107,14 +125,13 @@ public class SerialBase
     }
  
     // Declarations
-    //byte m_nextFrameID = 1;
-
     Object[] m_responses = new Object[256];
     ZigbeeFrameWithResponse[] m_responseFrames = new ZigbeeFrameWithResponse[256];
     
     Boolean m_enabled = false;
     
     byte[] m_buffer = new byte[4096];
+	byte[] m_data = new byte[64];
     int m_bufferLength;
     
     Boolean m_active = true;
@@ -150,61 +167,19 @@ public class SerialBase
     }
 
 	// Methods
+	public Boolean getEnabled()
+	{
+		return false;
+	}
+
+	public void setEnabled(Boolean value)
+	{
+	}
+
+	
 	public void writeData(byte[] data, int length)
 	{
-//		try 
-//		{
-//			m_outputStream.write(data, 0, length);
-//		} 
-//		catch (IOException e) 
-//		{
-//		}
 	}
-	
-    public byte[] sendString(String command)
-    {
-    	try
-    	{
-	        if (m_active)
-	        {
-	            m_bufferLength = 0;
-				
-				writeData(command.getBytes(), command.length());
-	    		
-	            // wait for a response
-	            Thread.sleep(100);
-	
-	            return m_buffer;	        	
-	        }
-    	} 
-    	catch (InterruptedException e) 
-    	{
-		}
-    	
-   		return new byte[0];
-    }
-
-    public byte[] sendData(byte[] data)
-    {
-    	try
-    	{
-		    if (m_active)
-	        {
-				writeData(data, data.length);
-				
-	            // wait for a response
-	            Thread.sleep(100);
-	
-	            return m_buffer;
-	        }
-    	}
-    	catch (InterruptedException e) 
-    	{
-		}    	
-
-    	return new byte[0];
-    }
-
     
 	public byte[] sendFrame(ZigbeeFrame frame)
 	{
@@ -245,7 +220,7 @@ public class SerialBase
         else
 		*/
         {
-			ATCommandFrame acf = new ATCommandFrame(command, data, this);
+			ATCommandFrame acf = new ATCommandFrame(command, data);
 			
 			return sendFrame(acf);
         }
@@ -269,7 +244,7 @@ public class SerialBase
 	        else
 			*/
 	        {
-				ATCommandFrame acf = new ATCommandFrame(command, this);
+				ATCommandFrame acf = new ATCommandFrame(command);
 				
 				sendFrame(acf);
 				
@@ -305,7 +280,7 @@ public class SerialBase
 	        else
 			*/
 	        {
-				ATCommandFrame acf = new ATCommandFrame(command, this);
+				ATCommandFrame acf = new ATCommandFrame(command);
 				
 				sendFrame(acf);
 				
@@ -341,7 +316,7 @@ public class SerialBase
 	        else
 			*/
 	        {
-				ATCommandFrame acf = new ATCommandFrame(command, this);
+				ATCommandFrame acf = new ATCommandFrame(command);
 				
 				sendFrame(acf);
 				
@@ -377,7 +352,7 @@ public class SerialBase
 	        else
 			*/
 	        {
-				ATCommandFrame acf = new ATCommandFrame(command, this);
+				ATCommandFrame acf = new ATCommandFrame(command);
 				
 				sendFrame(acf);
 				
@@ -412,7 +387,7 @@ public class SerialBase
 	        else
 			*/
 	        {
-				ATCommandFrame acf = new ATCommandFrame(command, this);
+				ATCommandFrame acf = new ATCommandFrame(command);
 				
 				sendFrame(acf);
 				
@@ -486,7 +461,7 @@ public class SerialBase
         else
 		*/
         {
-			ATCommandFrame acf = new ATCommandFrame(command, data, this);
+			ATCommandFrame acf = new ATCommandFrame(command, data);
 			
 			return sendFrame(acf);
         }
@@ -507,7 +482,7 @@ public class SerialBase
         else
 		*/
         {
-			ATCommandFrame acf = new ATCommandFrame(command, data, this);
+			ATCommandFrame acf = new ATCommandFrame(command, data);
 			
 			return sendFrame(acf);
         }
@@ -528,7 +503,7 @@ public class SerialBase
         else
 		*/
         {
-			ATCommandFrame acf = new ATCommandFrame(command, data, this);
+			ATCommandFrame acf = new ATCommandFrame(command, data);
 			
 			return sendFrame(acf);
         }
@@ -546,7 +521,7 @@ public class SerialBase
         else
 		*/
         {
-			ATCommandFrame acf = new ATCommandFrame(command, data, this);
+			ATCommandFrame acf = new ATCommandFrame(command, data);
 			
 			return sendFrame(acf);
         }
@@ -591,7 +566,7 @@ public class SerialBase
 				 if (command.length() < 2)
 				 	 return new byte[0];
 				 
-				 ATCommandFrame acf = new ATCommandFrame(command, this);
+				 ATCommandFrame acf = new ATCommandFrame(command);
 
 				 return sendFrame(acf);
 			 }
@@ -599,7 +574,89 @@ public class SerialBase
 	 	
     	return m_buffer;
     }
+	
+	public void parseNerduinoResponse()
+	{
+		while (m_bufferLength > 0)
+        {
+            // scan the buffer for the beginning of a frame
+            int start = -1;
+            
+            for (int i = 0; i < m_bufferLength; i++)
+            {
+                if (m_buffer[i] == (byte)0x7e)
+                {
+                    start = i;
+                    break;
+                }
+            }
+            
+            if (start < 0) // there is no frame data, so kick out
+                return;
 
+            if (start > 0) // strip off the data ahead of the frame
+            {
+                for (int i = start; i < m_bufferLength; i++)
+                {
+                    m_buffer[i - start] = m_buffer[i];
+                }
+
+                m_bufferLength -= start;
+            }
+            
+            // attempt to read the frame to see if it is complete
+            if (m_bufferLength < 4) // not enough data to be a complete frame, so kick out
+                return;
+            
+            // read the message target byte
+			byte target = m_buffer[1];
+			
+			if (target == 0 || target == 1)
+			{
+				// read the data length
+				byte offset = 2;
+				byte addressIndex = 0;
+				
+				if (target == 0)
+					addressIndex = m_buffer[offset++];
+				
+				byte message = m_buffer[offset++];
+				byte length = m_buffer[offset++];
+				
+				if (m_bufferLength < length + 4) // length + header 
+				    return; // incomplete frame, so kick out and wait till the buffer is full
+				
+				// read the data
+				for(int i = 0; i < length; i++)
+				{
+					m_data[i] =  m_buffer[offset++];
+				}
+				
+	            processNerduinoMessage(target, addressIndex, message, length, m_data);
+				
+				start = length + 4;
+			}
+			else
+			{
+				// bad data, skip these bytes
+				start = 2;
+			}
+            
+            // remove this frame from the buffer
+            if (m_bufferLength > start)
+            {
+                for (int i = start; i < m_bufferLength; i++)
+                {
+                    m_buffer[i - start] = m_buffer[i];
+                }
+
+                m_bufferLength -= start;
+            }
+            else
+                m_bufferLength = 0;
+        }
+	}
+	
     public void parseAPIResponse()
     {
         while (m_bufferLength > 0)
@@ -685,6 +742,11 @@ public class SerialBase
         if (m_responseFrames[frameid] != null)
             m_responseFrames[frameid].OnResponse(response);
     }
+	
+    public void processNerduinoMessage(byte target, byte addressIndex, byte message, byte length, byte[] m_data)
+	{
+		
+	}
 
     public void processFrame(byte[] data)
     {
@@ -696,7 +758,7 @@ public class SerialBase
         {
             case ATCommand:
                 {
-                    ATCommandFrame newframe = new ATCommandFrame(this);
+                    ATCommandFrame newframe = new ATCommandFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data); // data.length);
@@ -704,7 +766,7 @@ public class SerialBase
                 break;
             case ATCommandQueue:
                 {
-                    ATCommandQueueFrame newframe = new ATCommandQueueFrame(this);
+                    ATCommandQueueFrame newframe = new ATCommandQueueFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data); // data.length);
@@ -712,7 +774,7 @@ public class SerialBase
                 break;
             case TransmitRequest:
                 {
-                    TransmitRequestFrame newframe = new TransmitRequestFrame(this);
+                    TransmitRequestFrame newframe = new TransmitRequestFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data); // data.length);
@@ -720,7 +782,7 @@ public class SerialBase
                 break;
             case ExplicitAddressingZigbeeCommand:
                 {
-                    ExplicitAddressingZigbeeCommandFrame newframe = new ExplicitAddressingZigbeeCommandFrame(this);
+                    ExplicitAddressingZigbeeCommandFrame newframe = new ExplicitAddressingZigbeeCommandFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -728,7 +790,7 @@ public class SerialBase
                 break;
             case RemoteATCommandRequest:
                 {
-                    RemoteATCommandRequestFrame newframe = new RemoteATCommandRequestFrame(this);
+                    RemoteATCommandRequestFrame newframe = new RemoteATCommandRequestFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -736,7 +798,7 @@ public class SerialBase
                 break;
             case CreateSourceRoute:
                 {
-                    CreateSourceRouteFrame newframe = new CreateSourceRouteFrame(this);
+                    CreateSourceRouteFrame newframe = new CreateSourceRouteFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -744,7 +806,7 @@ public class SerialBase
                 break;
             case ATCommandResponse:
                 {
-                    ATCommandResponseFrame newframe = new ATCommandResponseFrame(this);
+                    ATCommandResponseFrame newframe = new ATCommandResponseFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -754,7 +816,7 @@ public class SerialBase
                 break;
             case ModemStatus:
                 {
-                    ModemStatusFrame newframe = new ModemStatusFrame(this);
+                    ModemStatusFrame newframe = new ModemStatusFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -764,7 +826,7 @@ public class SerialBase
                 break;
             case ZigbeeTransmitStatus:
                 {
-                    ZigbeeTransmitStatusFrame newframe = new ZigbeeTransmitStatusFrame(this);
+                    ZigbeeTransmitStatusFrame newframe = new ZigbeeTransmitStatusFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -772,7 +834,7 @@ public class SerialBase
                 break;
             case ZigbeeReceivePacket:
                 {
-                    ZigbeeReceivePacketFrame newframe = new ZigbeeReceivePacketFrame(this);
+                    ZigbeeReceivePacketFrame newframe = new ZigbeeReceivePacketFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -782,7 +844,7 @@ public class SerialBase
                 break;
             case ZigbeeExplicitRxIndicator:
                 {
-                    ZigbeeExplicitRxIndicatorFrame newframe = new ZigbeeExplicitRxIndicatorFrame(this);
+                    ZigbeeExplicitRxIndicatorFrame newframe = new ZigbeeExplicitRxIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -790,7 +852,7 @@ public class SerialBase
                 break;
             case ZigbeeIODataSampleRxIndicator:
                 {
-                    ZigbeeIODataSampleRxIndicatorFrame newframe = new ZigbeeIODataSampleRxIndicatorFrame(this);
+                    ZigbeeIODataSampleRxIndicatorFrame newframe = new ZigbeeIODataSampleRxIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -798,7 +860,7 @@ public class SerialBase
                 break;
             case XBeeSensorReadIndicator:
                 {
-                    XBeeSensorReadIndicatorFrame newframe = new XBeeSensorReadIndicatorFrame(this);
+                    XBeeSensorReadIndicatorFrame newframe = new XBeeSensorReadIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -806,7 +868,7 @@ public class SerialBase
                 break;
             case NodeIdentificationIndicator:
                 {
-                    NodeIdentificationIndicatorFrame newframe = new NodeIdentificationIndicatorFrame(this);
+                    NodeIdentificationIndicatorFrame newframe = new NodeIdentificationIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -814,7 +876,7 @@ public class SerialBase
                 break;
             case RemoteCommandResponse:
                 {
-                    RemoteCommandResponseFrame newframe = new RemoteCommandResponseFrame(this);
+                    RemoteCommandResponseFrame newframe = new RemoteCommandResponseFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -865,7 +927,7 @@ public class SerialBase
                 break;
             case OverTheAirFirmwareUpdateStatus:
                 {
-                    OverTheAirFirmwareUpdateStatusFrame newframe = new OverTheAirFirmwareUpdateStatusFrame(this);
+                    OverTheAirFirmwareUpdateStatusFrame newframe = new OverTheAirFirmwareUpdateStatusFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -873,7 +935,7 @@ public class SerialBase
                 break;
             case RouteRecordIndicator:
                 {
-                    RouteRecordIndicatorFrame newframe = new RouteRecordIndicatorFrame(this);
+                    RouteRecordIndicatorFrame newframe = new RouteRecordIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -881,7 +943,7 @@ public class SerialBase
                 break;
             case ManyToOneRouteRequestIndicator:
                 {
-                    ManyToOneRouteRequestIndicatorFrame newframe = new ManyToOneRouteRequestIndicatorFrame(this);
+                    ManyToOneRouteRequestIndicatorFrame newframe = new ManyToOneRouteRequestIndicatorFrame();
 
                     frame = newframe;
                     frame.ReadFrame(data);
@@ -897,7 +959,7 @@ public class SerialBase
 
     public void transmitRequest(long address, short networkAddress, TransmitRequestOptionEnum options, byte[] data)
     {
-		TransmitRequestFrame trf = new TransmitRequestFrame(this);
+		TransmitRequestFrame trf = new TransmitRequestFrame();
 
         trf.DestinationAddress = address;
         trf.DestinationNetworkAddress = networkAddress;
@@ -936,8 +998,16 @@ public class SerialBase
 			{
 				m_buffer[m_bufferLength++] = data[i];
 			}
-
-			parseAPIResponse();
+			
+			switch(Protocol)
+			{
+				case 0: // zigbee
+					parseAPIResponse();
+					break;
+				case 1: // nerduino
+					parseNerduinoResponse();
+					break;
+			}
 		}
     }
 	
@@ -956,7 +1026,7 @@ public class SerialBase
         else
 		*/
         {
-			RemoteATCommandRequestFrame racrf = new RemoteATCommandRequestFrame(this);
+			RemoteATCommandRequestFrame racrf = new RemoteATCommandRequestFrame();
 			
 			racrf.AutoGenerateFrameID = false;
 			racrf.FrameID = 0;
