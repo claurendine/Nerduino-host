@@ -21,7 +21,7 @@
 package com.nerduino.library;
 
 import com.nerduino.nodes.TreeNode;
-import com.nerduino.processing.app.ArduinoManager;
+import processing.app.ArduinoManager;
 import com.nerduino.propertybrowser.BaudRatePropertyEditor;
 import com.nerduino.propertybrowser.ComPortPropertyEditor;
 import com.nerduino.webhost.WebHost;
@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.ArrayList;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
@@ -41,13 +42,16 @@ public class NerduinoHost extends TreeNode
 {
 	// Declarations
 	Children m_hostPoints;
-	XBeeManager m_xbeeManager;
+	
+	ArrayList<FamilyBase> m_families = new ArrayList<FamilyBase>();
+	
 	protected NerduinoManager m_manager;
 	byte m_configurationToken = 0;
 	byte m_status = 0;
 	int m_sleepScanRate = 5;
+	
 	public static NerduinoHost Current;
-
+	
 	// Constructors
 	public NerduinoHost()
 	{
@@ -58,9 +62,13 @@ public class NerduinoHost extends TreeNode
 
 		Current = this;
 
+		addFamily(new FamilyTcp());
+		addFamily(new FamilyXBee());
+		addFamily(new FamilyUSB());
+		addFamily(new FamilyBluetooth());
+		
 		m_manager = new NerduinoManager();
-		m_xbeeManager = new XBeeManager();
-
+		
 		Thread sleepThread = new Thread(new Runnable()
 		{
 			@Override
@@ -79,9 +87,7 @@ public class NerduinoHost extends TreeNode
 					catch(InterruptedException ie)
 					{
 						if (running == false)
-						{
 							break;
-						}
 					}
 				}
 			}
@@ -91,6 +97,11 @@ public class NerduinoHost extends TreeNode
 		sleepThread.start();
 	}
 
+	void addFamily(FamilyBase family)
+	{
+		m_families.add(family);
+	}
+	
 	public int getHostPointCount()
 	{
 		return m_hostPoints.getNodesCount();
@@ -117,7 +128,10 @@ public class NerduinoHost extends TreeNode
 			{
 				Element config = (Element) nl.item(0);
 
-				m_xbeeManager.readXML(config);
+				for(FamilyBase family : m_families)
+				{
+					family.readXML(config);
+				}
 			}
 		}
 	}
@@ -126,8 +140,11 @@ public class NerduinoHost extends TreeNode
 	public void writeXML(Document doc, Element node)
 	{
 		Element element = doc.createElement("NerduinoHost");
-		
-		m_xbeeManager.writeXML(doc, element);
+
+		for(FamilyBase family : m_families)
+		{
+			family.writeXML(doc, element);
+		}
 		
 		node.appendChild(element);
 	}
@@ -136,85 +153,96 @@ public class NerduinoHost extends TreeNode
 	public PropertySet[] getPropertySets()
 	{
 		final Sheet.Set webSheet = Sheet.createPropertiesSet();
-		final Sheet.Set xbeeSheet = Sheet.createPropertiesSet();
+		//final Sheet.Set xbeeSheet = Sheet.createPropertiesSet();
 		final Sheet.Set arduinoSheet = Sheet.createPropertiesSet();
-
+		final Sheet.Set tcpSheet = Sheet.createPropertiesSet();
+		
 		try
 		{
+			/*
 			xbeeSheet.setDisplayName("Zigbee Device Settings");
-
-			Property enabledProp = new PropertySupport.Reflection(this, Boolean.class, "Enabled");
+			
+			Property<Boolean> enabledProp = new PropertySupport.Reflection<Boolean>(m_xbeeManager, Boolean.class, "Enabled");
 			enabledProp.setName("Enabled");
 			enabledProp.setShortDescription("Enable/Disable the communications through the zigbee device. See the output window for diagnostics.");
 			xbeeSheet.put(enabledProp);
-
-			PropertySupport.Reflection portProp = new PropertySupport.Reflection(this, String.class, "ComPort");
+			
+			PropertySupport.Reflection<String> portProp = new PropertySupport.Reflection<String>(m_xbeeManager, String.class, "ComPort");
 			portProp.setName("Com Port");
 			portProp.setShortDescription("The serial port used to communicate to the zigbee device.");
 			portProp.setPropertyEditorClass(ComPortPropertyEditor.class);
 			xbeeSheet.put(portProp);
-
-			PropertySupport.Reflection baudProp = new PropertySupport.Reflection(this, int.class, "BaudRate");
+			
+			PropertySupport.Reflection<Integer> baudProp = new PropertySupport.Reflection<Integer>(m_xbeeManager, int.class, "BaudRate");
 			baudProp.setName("Baud Rate");
 			baudProp.setShortDescription("The baud rate used to communicate to the zigbee device.");
 			baudProp.setPropertyEditorClass(BaudRatePropertyEditor.class);
 			xbeeSheet.put(baudProp);
 
-			Property discoveryProp = new PropertySupport.Reflection(this, int.class, "DiscoverRate");
+			Property<Integer> discoveryProp = new PropertySupport.Reflection<Integer>(m_xbeeManager, int.class, "DiscoverRate");
 			discoveryProp.setName("Discovery Rate");
 			discoveryProp.setShortDescription("The interval in seconds that the zigbee radio poles for nearby zigbee devices.");
 			xbeeSheet.put(discoveryProp);
-
-
+			*/
+			
 			webSheet.setDisplayName("Local Web Server Settings");
-
-			Property webEnabledProp = new PropertySupport.Reflection(WebHost.Current, Boolean.class, "Enabled");
-			webEnabledProp.setName("Enable/Disable the Web Server.");
-			webEnabledProp.setShortDescription("Enable/Disable");
+			
+			Property<Boolean> webEnabledProp = new PropertySupport.Reflection<Boolean>(WebHost.Current, Boolean.class, "Enabled");
+			webEnabledProp.setName("Enable Web Server");
+			webEnabledProp.setShortDescription("Enable/Disable the Web Server.");
 			webSheet.put(webEnabledProp);
-
-			Property webPortProp = new PropertySupport.Reflection(WebHost.Current, int.class, "Port");
-			webPortProp.setName("Port");
+			
+			Property<Integer> webPortProp = new PropertySupport.Reflection<Integer>(WebHost.Current, int.class, "Port");
+			webPortProp.setName("Web Server Port");
 			webPortProp.setShortDescription("The network port used to listen for incoming web requests.");
 			webSheet.put(webPortProp);
-
-			Property webRootProp = new PropertySupport.Reflection(WebHost.Current, String.class, "WebRoot");
+			
+			Property<String> webRootProp = new PropertySupport.Reflection<String>(WebHost.Current, String.class, "WebRoot");
 			webRootProp.setName("Root Path");
 			webRootProp.setShortDescription("The local file path that the Web Server uses to serve content from.");
 			webSheet.put(webRootProp);
-
-			Property httpAddressProp = new PropertySupport.Reflection(WebHost.Current, String.class, "HttpAddress");
+			
+			Property<String> httpAddressProp = new PropertySupport.Reflection<String>(WebHost.Current, String.class, "HttpAddress");
 			httpAddressProp.setName("Http Address");
 			httpAddressProp.setShortDescription("The http path to engage this web server.");
 			webSheet.put(httpAddressProp);
-
+			
 			arduinoSheet.setDisplayName("Arduino Settings");
-
-			Property arduinoSourcePathProp = new PropertySupport.Reflection(ArduinoManager.Current, String.class, "ArduinoPath");
+			
+			Property<String> arduinoSourcePathProp = new PropertySupport.Reflection<String>(ArduinoManager.Current, String.class, "ArduinoPath");
 			arduinoSourcePathProp.setName("Arduino Path");
 			arduinoSourcePathProp.setShortDescription("Installed Arduino Data Path");
 			arduinoSheet.put(arduinoSourcePathProp);
+			
+			tcpSheet.setDisplayName("TCP Discovery Settings");
+			
+			Property<Boolean> tcpEnabledProp = new PropertySupport.Reflection<Boolean>(FamilyTcp.Current, Boolean.class, "Enabled");
+			tcpEnabledProp.setName("Enable Discovery");
+			tcpEnabledProp.setShortDescription("Enable/Disable the Tcp Discovery.");
+			tcpSheet.put(tcpEnabledProp);
+			
+			Property<Integer> tcpPortProp = new PropertySupport.Reflection<Integer>(FamilyTcp.Current, int.class, "Port");
+			tcpPortProp.setName("Discovery Port");
+			tcpPortProp.setShortDescription("Tcp Listening Port");
+			tcpSheet.put(tcpPortProp);	
 		}
 		catch(NoSuchMethodException ex)
 		{
-			int i = 0;
 		}
-
+		
 		return new PropertySet[]
 				{
-					arduinoSheet, xbeeSheet, webSheet
+					arduinoSheet, tcpSheet, webSheet
 				};
 	}
 	
 	public static Object parseValue(byte[] data, int offset, DataTypeEnum dtype, byte dlength)
 	{
 		Object value = null;
-
+		
 		if (dlength == 0)
-		{
 			return null;
-		}
-
+		
 		switch(dtype)
 		{
 			case DT_Boolean:
@@ -223,68 +251,48 @@ public class NerduinoHost extends TreeNode
 			case DT_Byte:
 				value = data[offset];
 				break;
-			/*
-			case DT_Array:
-			{
-				byte[] vdata = new byte[dlength];
-
-				for (int i = 0; i < dlength; i++)
-				{
-					vdata[i] = data[offset + i];
-				}
-
-				value = vdata;
-			}
-				break;
-			*/
 			case DT_Float:
-				//value = convertByteArrayToFloat(data, offset);
 				value = BitConverter.GetFloat(data, offset);
-
 				break;
 			case DT_Short:
 				value = BitConverter.GetShort(data, offset);
-
 				break;
 			case DT_Integer:
 				value = BitConverter.GetInt(data, offset);
-
 				break;
 			case DT_String:
 			{
 				StringBuilder sb = new StringBuilder();
-
+				
 				for (int i = 0; i < dlength; i++)
 				{
 					sb.append((char) data[offset + i]);
 				}
-
+				
 				value = sb.toString();
 			}
-
+			
 			break;
 		}
-
+		
 		return value;
 	}
-
+	
 	public static float convertByteArrayToFloat(byte[] b, int offset)
 	{
 		if (b.length < offset + 4)
-		{
 			return 0.0F;
-		}
-
+		
 		DataInputStream dis = null;
-
+		
 		float f = 0.0F;
-
+		
 		try
 		{
 			dis = new DataInputStream(new ByteArrayInputStream(b));
-
+			
 			dis.skipBytes(offset);
-
+			
 			// Effectively performs:
 			// * readInt call
 			// * Float.intBitsToFloat call
@@ -311,108 +319,67 @@ public class NerduinoHost extends TreeNode
 				}
 			}
 		}
-
+		
 		return f;
 	}
-	
 	
 	public static byte[] toBytes(Object object)
 	{
 		if (object instanceof Boolean)
 		{
 			byte[] data = new byte[1];
-
+			
 			if ((Boolean) object == true)
 				data[0] = (byte) 1;
 			else
 				data[0] = (byte) 0;
-				
-				
+			
 			return data;
 		}
-
+		
 		if (object instanceof Byte)
 		{
 			byte[] data = new byte[1];
-
+			
 			data[0] = (byte) ((Byte) object);
-
+			
 			return data;
 		}
-
+		
 		if (object instanceof Short)
 		{
-			byte[] data = new byte[2];
-
 			short val = (short) ((Short) object);
-
-			data[0] = (byte) ((val >> 8) & 0xff);
-			data[1] = (byte) (val & 0xff);
-
+			byte[] data = BitConverter.GetBytes(val);
+			
 			return data;
 		}
-
+		
 		if (object instanceof Integer)
 		{
-			byte[] data = new byte[4];
-
 			int val = (int) ((Integer) object);
-
-			data[0] = (byte) ((val >> 24) & 0xff);
-			data[1] = (byte) ((val >> 16) & 0xff);
-			data[2] = (byte) ((val >> 8) & 0xff);
-			data[3] = (byte) (val & 0xff);
-
+			byte[] data = BitConverter.GetBytes(val);
+			
 			return data;
 		}
-
-
-		if (object instanceof Long)
-		{
-			byte[] data = new byte[8];
-
-			long val = (long) ((Long) object);
-
-			data[0] = (byte) ((val >> 56) & 0xff);
-			data[1] = (byte) ((val >> 48) & 0xff);
-			data[2] = (byte) ((val >> 40) & 0xff);
-			data[3] = (byte) ((val >> 32) & 0xff);
-			data[4] = (byte) ((val >> 24) & 0xff);
-			data[5] = (byte) ((val >> 16) & 0xff);
-			data[6] = (byte) ((val >> 8) & 0xff);
-			data[7] = (byte) (val & 0xff);
-
-			return data;
-		}
-
+		
 		if (object instanceof Float)
 		{
-			byte[] data = new byte[4];
-
 			float f = (float) ((Float) object);
-			int fi = Float.floatToRawIntBits(f);
-
-			data[0] = (byte) ((fi >> 24) & 0xff);
-			data[1] = (byte) ((fi >> 16) & 0xff);
-			data[2] = (byte) ((fi >> 8) & 0xff);
-			data[3] = (byte) (fi & 0xff);
-
+			byte[] data = BitConverter.GetBytes(f);
+			
 			return data;
 		}
-
+		
 		if (object instanceof String)
 		{
 			String s = (String) object;
-
+			
 			return s.getBytes();
 		}
-
+		
 		if (object instanceof byte[])
-		{
 			return (byte[]) object;
-		}
-
+		
 		return null;
 	}
-
 }

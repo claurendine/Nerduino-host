@@ -20,31 +20,33 @@
 
 package com.nerduino.library;
 
-import com.nerduino.processing.app.ArduinoManager;
-import com.nerduino.processing.app.Preferences;
-import com.nerduino.processing.app.SerialException;
-import com.nerduino.processing.app.Sketch;
-import com.nerduino.processing.app.debug.RunnerException;
+import processing.app.ArduinoManager;
+import processing.app.Preferences;
+import processing.app.SerialException;
+import processing.app.Sketch;
+import processing.app.debug.RunnerException;
 import com.nerduino.propertybrowser.BaudRatePropertyEditor;
 import com.nerduino.propertybrowser.ComPortPropertyEditor;
 import com.nerduino.propertybrowser.DeviceTypePropertyEditor;
 import com.nerduino.propertybrowser.SketchPropertyEditor;
-import com.nerduino.xbee.FrameReceivedListener;
 import com.nerduino.xbee.Serial;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import org.openide.awt.StatusDisplayer;
 import org.openide.nodes.Sheet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
-public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
+public class NerduinoUSB extends NerduinoLight
 {
 	Serial m_serial;
 	String m_comPort;
 	int m_baudRate = 115200;
-	NerduinoBase[] m_targets = new NerduinoBase[255];
 	NerduinoUSB m_nerduino;
+	
+	byte[] outBuffer = new byte[128];
+	byte[] endBuffer = new byte[3];
 	
 	public NerduinoUSB()
 	{
@@ -62,10 +64,39 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 			}
 		};
 		
-		m_serialBase = m_serial;
 		m_serial.Protocol = 1;
+	}
+
+	@Override
+	public void openComPort()
+	{
+		m_serial.setEnabled(true);
+	}
+	
+	@Override
+	public void closeComPort()
+	{
+		m_serial.setEnabled(false);
+	}
+
+	@Override
+	public boolean isReadyToSend()
+	{
+		return m_serial.getEnabled();
+	}
+
+	@Override
+	public boolean configureNewNerduino()
+	{
+		setName(getUniqueName(getName()));
 		
-		m_serial.addFrameReceivedListener(this);
+		// show the configure dialog
+		NerduinoUSBConfigDialog dialog = new NerduinoUSBConfigDialog(new javax.swing.JFrame(), true);
+		
+		dialog.setNerduinoUSB(this);
+		dialog.setVisible(true);
+		
+		return (dialog.m_nerduino != null);
 	}
 
 	void processMessage(byte targethandler, byte addressIndex, byte message, byte length, byte[] data)
@@ -77,40 +108,74 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 			NerduinoBase nerduino = null;
 			
 			if (addressIndex > 0)
-				nerduino = m_targets[addressIndex];
+				nerduino = m_addresses[addressIndex];
 			
 			switch(message)
 			{
 				case 0x06: // MSG_Ping;
-				{
-					if (nerduino != null)
-						nerduino.sendPing(this, addressIndex);
-				}
-					break;
-				
-				case 0x10: // MSG_ExecuteCommand;
-				{
-					// TODO validate the payload format 
 					if (nerduino != null)
 					{
-						byte returndatatype = data[1];
-						byte commandlength = data[2];
+						if (m_verbose)
+							fireCommandUpdate(this, "Ping", CommandMessageTypeEnum.OutgoingCommand);
+
+						short responseToken = (short) ((int) data[0] * 0x100 + (int) data[1]);
 						
-						byte[] bytes = new byte[commandlength];
-						
-						System.arraycopy(data, 3, bytes, 0, commandlength);
-						
-						CommandResponse response = nerduino.sendExecuteCommand(this, (short) 0, returndatatype, commandlength, bytes);
-						
-						// TODO report the response to the client
+						nerduino.sendPing(this, responseToken);
 					}
+					break;				
+				case 0x10: // MSG_ExecuteCommand;
+				{
+					short responseToken = (short) ((int) data[0] * 0x100 + (int) data[1]);
+
+					byte returndatatype = data[2];
+					byte commandlength = data[3];
+
+					byte[] bytes = new byte[commandlength];
+
+					System.arraycopy(data, 4, bytes, 0, commandlength);
+
+
+					StringBuilder sb = new StringBuilder();
+
+					for (int i = 0; i < commandlength; i++)
+					{
+						sb.append((char) data[4 + i]);
+					}
+
+					if (m_verbose)
+						fireCommandUpdate(this, "Execute  " + sb.toString(), CommandMessageTypeEnum.OutgoingCommand);
 					else
-						onExecuteCommand(data, 0);
+						fireCommandUpdate(sb.toString(), CommandMessageTypeEnum.OutgoingCommand);
+
+					
+					if (nerduino != null)
+					{
+						CommandResponse response = nerduino.sendExecuteCommand(this, responseToken, returndatatype, commandlength, bytes);
+
+						// TODO report the response to the client
+						byte[] rdata = new byte[response.DataLength];
+
+						if (response.Status == ResponseStatusEnum.RS_Complete)
+						{
+							for(int i = 0; i < response.DataLength; i++)
+							{
+								rdata[i] = response.Data.get(i);
+							}
+						}
+						
+						sendExecuteCommandResponse(responseToken, response.Status.Value(), response.DataType.Value(), (byte) response.DataLength, rdata);
+					}
+					
+					//TODO  add code to execute a script on the host
+//						onExecuteCommand(nerduino, data, 0);
+//					else
+//						onHostExecuteCommand(data, 0);
 				}
 					break;
 				case 0x11: // MSG_ExecuteCommandResponse;
-				{
-					// TODO validate the payload format 
+					if (m_verbose)
+						fireCommandUpdate(this, "ExecuteCommandResponse", CommandMessageTypeEnum.OutgoingCommand);
+
 					if (nerduino != null)
 					{
 						short responseToken = (short) ((int) data[1] * 0x100 + (int) data[2]);
@@ -125,66 +190,91 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 					}
 					else
 						onExecuteCommandResponse(data, 0);
-				}
-					break;
-					
+				
+					break;	
 				case 0x22: // MSG_GetPointValue;
-				{
-					// TODO validate the payload format 
+					if (m_verbose)
+						fireCommandUpdate(this, "GetPointValue", CommandMessageTypeEnum.OutgoingCommand);
+
 					if (nerduino != null)
 					{
-						byte namelength = data[1];
+						short responseToken = (short) ((int) data[0] * 0x100 + (int) data[1]);
+						byte lookuptype = data[2];
 						
-						StringBuilder sb = new StringBuilder();
-						byte offset = 2;
-						
-						for(int i = 0; i < namelength; i++)
+						if (lookuptype == 0) // by name
 						{
-							sb.append((char) data[offset++]);
+							byte namelength = data[3];
+							
+							StringBuilder sb = new StringBuilder();
+							byte offset = 4;
+							
+							for(int i = 0; i < namelength; i++)
+							{
+								sb.append((char) data[offset++]);
+							}
+							
+							String pointname = sb.toString();
+							
+							nerduino.sendGetPointValue(this, responseToken, pointname);						
 						}
-						
-						String pointname = sb.toString();
-						
-						nerduino.sendGetPointValue(this, (short) 0, pointname);
+						else if (lookuptype == 1) // by index
+						{
+							short pointid = (short) ((int) data[3] * 0x100 + (int) data[4]);
+							
+							nerduino.sendGetPointValue(this, responseToken, pointid);
+						}
 					}
 					else
-						onGetPointValue(data, 1);
-				}
+						onHostGetPointValue(this, data, 0);
+				
 					break;
 				case 0x26: // MSG_SetPointValue;
-				{
-					// TODO validate the payload format 					
-					if (nerduino != null)
-					{
-						short pointindex = (short) ((int) data[1] * 0x100 + (int) data[2]);
-						
-						DataTypeEnum datatype = DataTypeEnum.valueOf(data[3]);
-						byte datalength = data[4];
-						
-						byte[] bytes = new byte[datalength];
-						
-						System.arraycopy(data, 5, bytes, 0, datalength);
-						
-						nerduino.sendSetPointValue(pointindex, datatype, datalength, bytes);
-					}
-					else
-						onSetPointValue(data, 1);
-				}
-					break;
+					if (m_verbose)
+						fireCommandUpdate(this, "SetPointValue", CommandMessageTypeEnum.OutgoingCommand);
 
-				case 0x40: // MSG_GetDeviceStatus;
-					// TODO validate the payload format 
 					if (nerduino != null)
 					{
-						short responseToken = (short) ((int) data[1] * 0x100 + (int) data[2]);
+						byte lookuptype = data[0];
 						
-						// TODO  make sure that this message is intended to 
-						// originate from a nerduino, if so make sure that other 
-						// protocols also react to this message
-						//nerduino.sendGetDeviceStatus(responseToken);
+						if (lookuptype == 0) // by name
+						{
+							byte namelength = data[1];
+							
+							StringBuilder sb = new StringBuilder();
+							byte offset = 2;
+							
+							for(int i = 0; i < namelength; i++)
+							{
+								sb.append((char) data[offset++]);
+							}
+							
+							String pointname = sb.toString();
+							
+							DataTypeEnum dtype = DataTypeEnum.valueOf(data[offset++]);
+							byte datalength = dtype.getLength();
+							byte[] bytes = new byte[datalength];
+							
+							System.arraycopy(data, offset, bytes, 0, datalength);
+							
+							nerduino.sendSetPointValue(null, pointname, dtype, bytes);
+						}
+						else if (lookuptype == 1) // by index
+						{
+							byte offset = 1;
+							
+							short pointid = (short) ((int) data[offset++] * 0x100 + (int) data[offset++]);
+							DataTypeEnum dtype = DataTypeEnum.valueOf(data[offset++]);
+							byte datalength = dtype.getLength();
+							byte[] bytes = new byte[datalength];
+							
+							System.arraycopy(data, offset, bytes, 0, datalength);
+							
+							nerduino.sendSetPointValue(null, pointid, dtype, bytes);
+						}
 					}
 					else
-						onGetDeviceStatus(data, 1);
+						onHostSetPointValue(data, 0);
+					
 					break;
 			}
 		}
@@ -226,27 +316,6 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		}
 	}
 	
-	public void onLightSetProxyData(byte[] data, short offset)
-	{
-		// TODO validate the payload format
-		byte dataid = data[offset++];
-		byte datalength = data[offset++];
-
-		byte[] bytes = new byte[datalength];
-
-		System.arraycopy(data, offset, bytes, 0, datalength);
-	}
-	
-	@Override
-	public void onLightGetProxyData(byte[] data, int offset)
-	{
-		// TODO validate the payload format
-		byte dataid = data[offset++];
-
-		// TODO add this handler
-		//onGetTransceiverData(dataid);
-	}
-	
 	@Override
 	public void onLightDeclarePoint(byte[] data, int offset)
 	{
@@ -269,23 +338,30 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		
 		Object value = NerduinoHost.parseValue(data, offset, dtype, datalength);
 		
+		if (m_verbose)
+			fireCommandUpdate("N: LightDeclarePoint  " + pointname, CommandMessageTypeEnum.IncomingCommand);
+
 		onDeclarePoint(datatype, readonly, publish, pointname, value);
 	}
 	
+	@Override
 	public void	onLightRegisterAddress(byte[] data, int offset)
 	{
 		byte index = data[offset++];
 		byte namelength = data[offset++];
-
+		
 		StringBuilder sb = new StringBuilder();
-
+		
 		for(int i = 0; i < namelength; i++)
 		{
 			sb.append((char) data[offset++]);
 		}
-
+		
 		String nerduinoname = sb.toString();
-
+		
+		if (m_verbose)
+			fireCommandUpdate("N: LightRegisterAddress  " + nerduinoname, CommandMessageTypeEnum.IncomingCommand);
+		
 		onRegisterAddress(index, nerduinoname);
 	}
 	
@@ -303,35 +379,36 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		
 		String pointpath = sb.toString();
 		
+		if (m_verbose)
+			fireCommandUpdate("N: RegisterPoint  " + pointpath, CommandMessageTypeEnum.IncomingCommand);
+
 		onRegisterPoint(datatype, pointpath);
 	}	
-	
-	byte[] outBuffer = new byte[128];
-	byte[] endBuffer = new byte[3];
 	
 	@Override
 	public void sendMessage(byte message, byte length, byte[] data)
 	{
-		if (m_serial.getEnabled())
+		if (isReadyToSend())
 		{
 			outBuffer[0] = 0x7e;
 			outBuffer[1] = 0x0;
 			outBuffer[2] = (byte) (length + 1);
 			outBuffer[3] = message;
 			
-			m_serial.writeData(outBuffer, 4);
-			m_serial.writeData(data, length);
-			//byte offset = 4;
-			
-			//for(int i = 0; i < length; i++)
-			//	outBuffer[offset++] = data[i];
-			
-			//m_serial.writeData(outBuffer, length + 4);
+			if (length > 0)
+				System.arraycopy(data, 0, outBuffer, 4, length);
+		
+			m_serial.writeData(outBuffer, 4 + length);
 		}
 	}
-
 	
-		
+	@Override
+	public void writeData(byte length, byte[] data)
+	{
+		if (isReadyToSend())
+			m_serial.writeData(data, length);
+	}
+	
 	public String getComPort()
 	{
 		return m_comPort;
@@ -340,11 +417,12 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 	public void setComPort(String port)
 	{
 		m_comPort = port;
-
-		setActive(false);
-
+		
+		closeComPort();
+		
 		m_serial.setComPort(port);
-
+		
+		fireUpdate();
 		save();
 	}
 
@@ -356,10 +434,11 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 	public void setBaudRate(int value)
 	{
 		m_baudRate = value;
-		setActive(false);
-
+		closeComPort();
+		
 		m_serial.setBaudRate(value);
 
+		fireUpdate();
 		save();
 	}
 
@@ -404,11 +483,10 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		super.readXML(node);
 
 		m_comPort = node.getAttribute("Port");
-		
 		m_baudRate = Integer.valueOf(node.getAttribute("BaudRate"));
 		
 		m_serial.setBaudRate(m_baudRate);
-		m_serial.setComPort(m_comPort);
+		m_serial.setComPort(m_comPort);	
 	}
 
 	@Override
@@ -418,6 +496,7 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		
 		element.setAttribute("Port", m_comPort);
 		element.setAttribute("BaudRate", Integer.toString(m_baudRate));
+		
 		element.setAttribute("USB", "true");
 		element.setAttribute("Type", "USB");
 	}
@@ -444,38 +523,100 @@ public class NerduinoUSB extends NerduinoLight implements FrameReceivedListener
 		
 		return sets;
 	}
+	
+	@Override
+	public Serial getSerialMonitor()
+	{
+		if (m_serial == null && m_comPort != null && m_comPort!="")
+		{
+			m_serial = new Serial();
+			
+			m_serial.setComPort(m_comPort);
+		}
+	
+		return m_serial;
+	}
 
+	@Override
+	public void resetBoard()
+	{
+		//m_serial.resetPort();
+	}
+
+	
 	@Override
 	public String upload(Sketch sketch)
 	{
+		setStatus(NerduinoStatusEnum.Uninitialized);
+
 		m_points.clear();
 		
-		m_serial.setEnabled(false);
+		closeComPort();
 
 		Preferences.set("serial.port", m_comPort);
 
 		try
 		{
-			String classname;
+			fireUploadStatusUpdate(true, false, 0, "");
+			
+			boolean success = sketch.upload(ArduinoManager.Current.getBuildPath(), sketch.getPrimaryClassName(), false);
 
-			classname = sketch.upload(ArduinoManager.Current.getBuildPath(), sketch.getPrimaryClassName(), false);
-
-			if (classname == null)
+			if (!success)
 			{
+				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
+				
+				fireUploadStatusUpdate(false, false, 0, "Upload failed for unknown reason!");
+				
 				return "Upload failed for unknown reason!";
 			}
 			else
 			{
+				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Completed!");
+
+				fireUploadStatusUpdate(false, true, 0, "");
+				
+				//openComPort();
+
 				return null;
 			}
 		}
 		catch(RunnerException ex)
 		{
+			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
+
+			fireUploadStatusUpdate(false, false, 0, "Runner Exception!");
+
 			return ex.getMessage();
 		}
 		catch(SerialException ex)
 		{
+			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
+			
+			fireUploadStatusUpdate(false, false, 0, "Serial Port Exception!");
+			
 			return ex.getMessage();
 		}
 	}
+	
+	@Override
+	public String getHTML()
+	{
+		String htmlString = "<html>\n"
+                          + "<body>\n"
+                          + "<h1>Nerduino: " + this.getName() + "  (USB Connection: " + getComPort() + ")</h1>\n"
+                          + "<h2>" 
+						  + "Status: " + this.getStatus().toString() + "<br>"
+                          + "Board: " + this.getBoardType() + "<br>"
+                          + "Sketch: " + this.getSketch() + "<br>"
+						  + "</h2>\n"
+                          + "<a href='ping'>Ping</a>\n"
+                          + "<a href='reset'>Reset</a>\n"
+                          + "<a href='verify'>Verify</a>\n"
+                          + "<a href='upload'>Upload</a>\n"
+                          + "<a href='engage'>Engage</a>\n"
+						  + "</body>\n";
+		
+		return htmlString;
+	}
+
 }

@@ -34,6 +34,10 @@ public class NerduinoXBee extends NerduinoFull
     short m_parentAddress;
     byte m_signalStrength;
 	
+	Serial m_serialProgrammer;
+	String m_comPort;
+	int m_baudRate = 115200;
+	
     // Constructors
     public NerduinoXBee()
     {
@@ -42,12 +46,45 @@ public class NerduinoXBee extends NerduinoFull
     	//touch();
     }
 
-	// Methods
-    public void onGetMetaDataResponse(ZigbeeReceivePacketFrame zrf)
-    {
-		onGetMetaDataResponse(zrf.Data, 4);
-    }
+	@Override
+	public boolean configureNewNerduino()
+	{
+		setName(getUniqueName(getName()));
+		
+		// show the configure dialog
+		NerduinoXBeeConfigDialog dialog = new NerduinoXBeeConfigDialog(new javax.swing.JFrame(), true);
+		
+		dialog.setNerduinoXBee(this);
+		dialog.setVisible(true);
+		
+		return (dialog.m_nerduino != null);
+	}
 
+	public String getComPort()
+	{
+		return m_comPort;
+	}
+
+	public void setComPort(String port)
+	{
+		m_comPort = port;
+		
+		save();
+	}
+
+	public int getBaudRate()
+	{
+		return m_baudRate;
+	}
+
+	public void setBaudRate(int value)
+	{
+		m_baudRate = value;
+		
+		save();
+	}
+	
+	// Methods
     public void onPingResponse(ZigbeeReceivePacketFrame zrf)
     {
     	onPingResponse(zrf.Data, 4);
@@ -75,19 +112,6 @@ public class NerduinoXBee extends NerduinoFull
         onGetPointValueResponse(zrf.Data, 4);
     }
     
-	@Override
-    public boolean getMetaData()
-    {
-		// TODO  this implementation may need to be moved to NerduinoFull
-    	// mark all existing points as invalid
-        for (PointBase point : m_points)
-        {
-			((RemoteDataPoint) point).Validated = false;
-        }
-        
-        return super.getMetaData();
-    }
-
 	@Override
 	public void checkStatus() 
 	{
@@ -156,10 +180,8 @@ public class NerduinoXBee extends NerduinoFull
 		
 		setStatus(NerduinoStatusEnum.Offline);
 		
-		str = node.getAttribute("Configuration");
-
-		if (str != null && str.length() > 0)
-			m_configurationToken = Byte.decode(str);		
+		m_comPort = node.getAttribute("Port");		
+		m_baudRate = Integer.valueOf(node.getAttribute("BaudRate"));
 	}
 	
 	@Override
@@ -169,9 +191,11 @@ public class NerduinoXBee extends NerduinoFull
 		{
 			element.setAttribute("Name", m_name);
 			element.setAttribute("SerialNumber", ((Long) m_address.SerialNumber).toString());
-			element.setAttribute("Configuration", ((Byte) m_configurationToken).toString());
 			
-			element.setAttribute("Type", "Zigbee");
+			element.setAttribute("Type", "XBee");
+			
+			element.setAttribute("Port", m_comPort);
+			element.setAttribute("BaudRate", Integer.toString(m_baudRate));
 		}
 	}
 }

@@ -20,7 +20,7 @@
 
 package com.nerduino.library;
 
-
+@SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
 public class LocalDataPointConfigDialog extends javax.swing.JDialog
 {
 	// Declarations

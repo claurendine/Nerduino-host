@@ -3,11 +3,46 @@ package com.nerduino.actions;
 @javax.annotation.Generated(value="org.netbeans.modules.openide.util.NbBundleProcessor")
 class Bundle {
     /**
+     * @return <i>About</i>
+     * @see AboutAction
+     */
+    static String CTL_AboutAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_AboutAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
+     * @see CompileAction
+     */
+    static String CTL_CompileAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CompileAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
+     * @see CreateNerduinoBTAction
+     */
+    static String CTL_CreateNerduinoBTAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateNerduinoBTAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
+     * @see CreateNerduinoTCPAction
+     */
+    static String CTL_CreateNerduinoTCPAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateNerduinoTCPAction");
+    }
+    /**
      * @return <i>Nerduino</i>
      * @see CreateNerduinoUSBAction
      */
     static String CTL_CreateNerduinoUSBAction() {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateNerduinoUSBAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
+     * @see CreateNerduinoXBeeAction
+     */
+    static String CTL_CreateNerduinoXBeeAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateNerduinoXBeeAction");
     }
     /**
      * @return <i>Skit</i>
@@ -45,6 +80,13 @@ class Bundle {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateSkitAction");
     }
     /**
+     * @return <i>Nerduino</i>
+     * @see EngageAction
+     */
+    static String CTL_EngageAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_EngageAction");
+    }
+    /**
      * @return <i>Ping</i>
      * @see PingAction
      */
@@ -52,32 +94,11 @@ class Bundle {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_PingAction");
     }
     /**
-     * @return <i>Builder</i>
-     * @see ShowBuilderAction
-     */
-    static String CTL_ShowBuilderAction() {
-        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowBuilderAction");
-    }
-    /**
      * @return <i>Show Explorer</i>
      * @see ShowExplorerAction
      */
     static String CTL_ShowExplorerAction() {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowExplorerAction");
-    }
-    /**
-     * @return <i>Output</i>
-     * @see ShowOutputAction
-     */
-    static String CTL_ShowOutputAction() {
-        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowOutputAction");
-    }
-    /**
-     * @return <i>Palette</i>
-     * @see ShowPaletteAction
-     */
-    static String CTL_ShowPaletteAction() {
-        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowPaletteAction");
     }
     /**
      * @return <i>Show Properties</i>
@@ -99,6 +120,13 @@ class Bundle {
      */
     static String CTL_TopologyAction() {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_TopologyAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
+     * @see UploadAction
+     */
+    static String CTL_UploadAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_UploadAction");
     }
     /**
      * @return <i>Web</i>

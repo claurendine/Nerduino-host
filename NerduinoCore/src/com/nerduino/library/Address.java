@@ -20,8 +20,17 @@
 
 package com.nerduino.library;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import org.openide.util.Exceptions;
+
 public class Address
 {
+	public InetAddress IPAddress;
 	public long SerialNumber;
 	public short NetworkAddress;
 	public short RoutingIndex;
@@ -31,6 +40,15 @@ public class Address
 		SerialNumber = 0L;
 		NetworkAddress = 0;
 		RoutingIndex = 0;
+
+		try
+		{
+			IPAddress = getHostAddress();			
+		}
+		catch(UnknownHostException ex)
+		{
+		//	Exceptions.printStackTrace(ex);
+		}
 	}
 
 	public Address(long serialNumber, short networkAddress, short routingIndex)
@@ -38,5 +56,63 @@ public class Address
 		SerialNumber = serialNumber;
 		NetworkAddress = networkAddress;
 		RoutingIndex = routingIndex;
+		
+		try
+		{
+			IPAddress = getHostAddress();
+		}
+		catch(UnknownHostException ex)
+		{
+		//	Exceptions.printStackTrace(ex);
+		}
 	}
+	
+	public Address(InetAddress address, short routingIndex)
+	{
+		SerialNumber = 0;
+		NetworkAddress = 0;
+		RoutingIndex = routingIndex;
+		IPAddress = address;
+	}
+	
+	private InetAddress getHostAddress() throws UnknownHostException
+	{
+		InetAddress ret = null;
+		
+		try
+		{
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements())
+			{
+				NetworkInterface current = interfaces.nextElement();
+				//System.out.println(current);
+				
+				if (!current.isUp() || current.isLoopback() || current.isVirtual())
+				{
+					continue;
+				}
+				Enumeration<InetAddress> addresses = current.getInetAddresses();
+				while (addresses.hasMoreElements())
+				{
+					InetAddress current_addr = addresses.nextElement();
+					if (current_addr.isLoopbackAddress())
+					{
+						continue;
+					}
+					if (current_addr instanceof Inet4Address)
+						ret = current_addr;
+				}
+			}
+		}
+		catch(SocketException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		
+		if (ret != null)
+			return ret;
+		
+		return InetAddress.getLocalHost();
+	}
+
 }

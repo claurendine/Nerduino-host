@@ -20,6 +20,7 @@
 
 package com.nerduino.actions;
 
+/*
 import com.nerduino.processing.app.BuilderTopComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,3 +52,4 @@ public final class ShowBuilderAction implements ActionListener
 		}
 	}
 }
+*/

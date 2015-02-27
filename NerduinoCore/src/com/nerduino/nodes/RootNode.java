@@ -27,6 +27,7 @@ import org.openide.nodes.Children;
 import org.openide.util.Utilities;
 
 
+@SuppressWarnings({"deprecation", "rawtypes"})
 public class RootNode extends AbstractNode 
 {
 	ArrayList m_nodes = new ArrayList();

@@ -20,23 +20,18 @@
 
 package com.nerduino.xbee;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import javax.sql.rowset.serial.SerialException;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+import org.openide.util.Exceptions;
+
+//import javax.sql.rowset.serial.SerialException;
 
 
 public class Serial extends SerialBase implements SerialPortEventListener
 {    
     SerialPort m_port;
-    InputStream m_inputStream;
-    OutputStream m_outputStream;
     
     String m_comPort;
     int m_baudRate = 9600;
@@ -54,6 +49,28 @@ public class Serial extends SerialBase implements SerialPortEventListener
         m_inBuffer = new byte[256];
     }
 
+	boolean m_rts;
+			
+	
+	public boolean getRTS()
+	{
+		return m_rts;
+	}
+	
+	public void setRTS(boolean val)
+	{
+		try
+		{
+			m_rts = val;
+			m_port.setRTS(val);
+			m_port.setDTR(val);
+		}
+		catch(SerialPortException ex)
+		{
+			Exceptions.printStackTrace(ex);
+		}
+	}
+	
     // Properties
     public String getComPort()
     {
@@ -102,7 +119,7 @@ public class Serial extends SerialBase implements SerialPortEventListener
 	        {
 	            connect();
 	        } 
-        	catch (SerialException e) 
+        	catch (Exception e) 
         	{
 				m_enabled = false;
             }
@@ -111,51 +128,28 @@ public class Serial extends SerialBase implements SerialPortEventListener
             disconnect();
     }
 
-	
 	// Methods
-    void connect() throws SerialException
+    void connect() throws Exception
     {
-        // open the serial port
-        //m_port.Close();
-
-    	try 
-    	{
-            Enumeration<?> portList;
-			portList = CommPortIdentifier.getPortIdentifiers();
-    	    while (portList.hasMoreElements()) 
-    	    {
-    	        CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
-
-    	        if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL
-						&& portId.getName().equals(m_comPort)) 
-				{
-				   m_port = (SerialPort)portId.open("xbee", 2000);
-				   m_inputStream = m_port.getInputStream();
-				   m_outputStream = m_port.getOutputStream();
-				   m_port.setSerialPortParams(m_baudRate, m_dataBits, m_stopBits, m_parity);
-				   m_port.addEventListener(this);
-				   m_port.notifyOnDataAvailable(true);
-				   m_port.notifyOnOutputEmpty(true);
-
-				   break;
-				}
-    	    }
-    	}
-    	catch (PortInUseException e) 
-    	{
-    	      throw new SerialException("Serial port " + m_comPort + " already in use. Check no other program is using it.");
-    	} 
-    	catch (Exception e) 
-    	{
-    		m_port = null;
-    		m_inputStream = null;
-    		m_outputStream = null;
-    		
-    		throw new SerialException("Error opening serial port "+ m_comPort + ".");
-    	}
-
+		if (m_comPort == null || m_comPort.isEmpty())
+			return;
+		
+		if (m_port == null)
+			m_port = new SerialPort(m_comPort); 
+		
+		try 
+		{
+            m_port.openPort();//Open port
+            m_port.setParams(m_baudRate, m_dataBits, m_stopBits, m_parity);//Set params
+            m_port.addEventListener(this);//Add SerialPortEventListener
+        }
+        catch (SerialPortException ex) 
+		{
+    		throw new Exception("Error opening serial port "+ m_comPort + ".");
+		}
+		
 	    if (m_port == null) 
-	    	throw new SerialException("Serial port '" + m_comPort + "' not found.");
+	    	throw new Exception("Serial port '" + m_comPort + "' not found.");
     	
     	m_initialized = false;
         
@@ -167,32 +161,23 @@ public class Serial extends SerialBase implements SerialPortEventListener
     void disconnect()
     {
         // close the serial port
-		
-    	try 
-    	{
-	      // do io streams need to be closed first?
-	      if (m_inputStream != null) 
-	    	  m_inputStream.close();
-
-		  if (m_outputStream != null) 
-	    	  m_outputStream.close();
-	    } 
-    	catch (Exception e) 
-    	{
-	    }
-	    
         m_active = false;
         
 	    try 
 	    {
-	    	if (m_port != null) 
-	    		m_port.close();  // close the port
+			if (m_port != null)
+			{
+				m_port.removeEventListener();
+				
+				//m_port.addEventListener( null );
+                
+				m_port.closePort();
+				//m_port = null;
+			}
 	    } 
 	    catch (Exception e) 
 	    {
 	    }
-
-	    m_port = null;
     }
 
 	@Override
@@ -200,9 +185,18 @@ public class Serial extends SerialBase implements SerialPortEventListener
 	{
 		try 
 		{
-			m_outputStream.write(data, 0, length);
+			if (data.length == length)
+				m_port.writeBytes(data);
+			else
+			{
+				byte[] subdata = new byte[length];
+				
+				System.arraycopy(data, 0, subdata, 0, length);
+
+				m_port.writeBytes(subdata);
+			}
 		} 
-		catch (IOException e) 
+		catch (SerialPortException e) 
 		{
 		}
 	}
@@ -212,33 +206,33 @@ public class Serial extends SerialBase implements SerialPortEventListener
 	{
 		switch(event.getEventType()) 
 		{
-        	case SerialPortEvent.BI:
-        	case SerialPortEvent.OE:
-        	case SerialPortEvent.FE:
-        	case SerialPortEvent.PE:
-        	case SerialPortEvent.CD:
+        	case SerialPortEvent.BREAK:
         	case SerialPortEvent.CTS:
         	case SerialPortEvent.DSR:
-        	case SerialPortEvent.RI:
-        	case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-        		break;
-        	case SerialPortEvent.DATA_AVAILABLE:
+        	case SerialPortEvent.RING:
+        	case SerialPortEvent.RLSD:
+        	case SerialPortEvent.TXEMPTY:
+				break;
+			case SerialPortEvent.ERR:
+				break;
+        	case SerialPortEvent.RXCHAR:
+        	case SerialPortEvent.RXFLAG:
         		try 
         		{
-        			int dataLength = m_inputStream.available();
+					int dataLength = m_port.getInputBufferBytesCount();
 
         	        while (dataLength > 0)
         	        {
-        	        	byte[] data = new byte[dataLength];
-
-        	        	m_inputStream.read(data);
+        	        	byte[] data;
+						
+						data = m_port.readBytes(dataLength);
 						
 						serialReceived(data, dataLength);
 						
-                        dataLength = m_inputStream.available();
+						dataLength = m_port.getInputBufferBytesCount();
         	        }
         		} 
-        		catch (IOException e) {}
+        		catch (SerialPortException e) {}
         		
         		break;
         }

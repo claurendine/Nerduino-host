@@ -6,6 +6,6 @@
   <state type="joined"  />
   <bounds x="0" y="0" width="0" height="0" />
   <frame state="0"/>
-    <active-tc  id="ScriptingTestTopComponent" />
+    <active-tc  id="StartUpBrowserTopComponent"  prev-id="MultiView-arduino#007C_38" />
     <empty-behavior permanent="true"/>
 </mode>

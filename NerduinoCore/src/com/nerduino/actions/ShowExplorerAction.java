@@ -21,7 +21,6 @@
 package com.nerduino.actions;
 
 import com.nerduino.core.ExplorerTopComponent;
-import com.nerduino.processing.app.BuilderTopComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;

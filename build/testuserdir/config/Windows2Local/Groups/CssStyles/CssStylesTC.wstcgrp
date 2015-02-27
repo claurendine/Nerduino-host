@@ -3,5 +3,5 @@
 <tc-group version="2.0">
  <module name="org.netbeans.modules.css.visual" spec="2.0" />
  <tc-id id="CssStylesTC"/>
- <open-close-behavior open="true" close="true" was-opened="true"/>
+ <open-close-behavior open="true" close="true" was-opened="false"/>
 </tc-group>

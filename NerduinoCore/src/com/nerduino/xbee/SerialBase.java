@@ -623,6 +623,9 @@ public class SerialBase
 				byte message = m_buffer[offset++];
 				byte length = m_buffer[offset++];
 				
+				if (length > 64)
+					return;
+				
 				if (m_bufferLength < length + 4) // length + header 
 				    return; // incomplete frame, so kick out and wait till the buffer is full
 				
@@ -709,7 +712,7 @@ public class SerialBase
                 checksum -= frameData[i];
             }
 
-            byte readChecksum = (byte)m_buffer[length + 3];
+            byte readChecksum = m_buffer[length + 3];
 
             // if the checksum does not match then skip the frame
 
@@ -723,11 +726,15 @@ public class SerialBase
 
             if (m_bufferLength > start)
             {
+				System.arraycopy(m_buffer, start, m_buffer, 0, m_bufferLength - start);
+				
+				/*
                 for (int i = start; i < m_bufferLength; i++)
                 {
                     m_buffer[i - start] = m_buffer[i];
                 }
-
+				*/
+				
                 m_bufferLength -= start;
             }
             else
@@ -993,6 +1000,9 @@ public class SerialBase
 	{
 		if (dataLength > 0)
 		{
+			if (m_bufferLength + dataLength >= 4096)
+				m_bufferLength = 0;
+			
 			// append data to the receive buffer
 			for (int i = 0; i < dataLength; i++)
 			{
@@ -1006,6 +1016,9 @@ public class SerialBase
 					break;
 				case 1: // nerduino
 					parseNerduinoResponse();
+					break;
+				case 2: // pass through
+					onDataReceived(data);
 					break;
 			}
 		}

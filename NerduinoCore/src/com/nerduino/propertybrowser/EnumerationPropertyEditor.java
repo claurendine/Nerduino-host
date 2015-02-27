@@ -29,6 +29,7 @@ import org.openide.explorer.propertysheet.ExPropertyEditor;
 import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class EnumerationPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory, ListSelectionListener
 {	
 	JList list;

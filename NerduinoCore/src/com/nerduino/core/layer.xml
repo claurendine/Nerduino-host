@@ -301,23 +301,44 @@
 					
 					<file name="com-nerduino-actions-CreateNerduinoUSBAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoUSBAction.instance"/>
-						<attr name="menuText" stringvalue="Nerduino"/>
+						<attr name="menuText" stringvalue="Nerduino USB"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="100"/>
+					</file>
+					
+					<file name="com-nerduino-actions-CreateNerduinoBTAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoBTAction.instance"/>
+						<attr name="menuText" stringvalue="Nerduino BT"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="105"/>
+					</file>
+					
+					<file name="com-nerduino-actions-CreateNerduinoXBeeAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoXBeeAction.instance"/>
+						<attr name="menuText" stringvalue="Nerduino XBee"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="110"/>
+					</file>
+					
+					<file name="com-nerduino-actions-CreateNerduinoTCPAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoTCPAction.instance"/>
+						<attr name="menuText" stringvalue="Nerduino TCP"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="115"/>
 					</file>
 					
 					<file name="com-nerduino-actions-CreateSketchAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateSketchAction.instance"/>
 						<attr name="menuText" stringvalue="Sketch"/>
 						<attr name="priority" stringvalue="medium"/>
-						<attr name="position" intvalue="110"/>
+						<attr name="position" intvalue="120"/>
 					</file>
 					
 					<file name="com-nerduino-actions-CreateSkitAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateSkitAction.instance"/>
 						<attr name="menuText" stringvalue="Skit"/>
 						<attr name="priority" stringvalue="medium"/>
-						<attr name="position" intvalue="120"/>
+						<attr name="position" intvalue="125"/>
 					</file>
 					
 					<file name="com-nerduino-actions-CreatePointAction.shadow">
@@ -356,29 +377,42 @@
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="110"/>
 					</file>
-					<file name="com-nerduino-actions-ShowOutputAction.shadow">
-						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowOutputAction.instance"/>
-						<attr name="menuText" stringvalue="Output"/>
-						<attr name="priority" stringvalue="medium"/>
-						<attr name="position" intvalue="120"/>
-					</file>
 					<file name="com-nerduino-actions-ShowPaletteAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowPaletteAction.instance"/>
 						<attr name="menuText" stringvalue="Palette"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="130"/>
 					</file>
-					<file name="com-nerduino-actions-ShowBuilderAction.shadow">
-						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowBuilderAction.instance"/>
-						<attr name="menuText" stringvalue="Builder"/>
-						<attr name="priority" stringvalue="medium"/>
-						<attr name="position" intvalue="140"/>
-					</file>
 					<file name="com-nerduino-actions-TestAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-TestAction.instance"/>
 						<attr name="menuText" stringvalue="Test"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="150"/>
+					</file>
+				</folder>
+
+				<folder name="Nerduino">
+					<attr name="position" intvalue="300"/>
+
+					<file name="com-nerduino-actions-CompileAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CompileAction.instance"/>
+						<attr name="menuText" stringvalue="Compile"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="100"/>
+					</file>
+					
+					<file name="com-nerduino-actions-UploadAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-UploadAction.instance"/>
+						<attr name="menuText" stringvalue="Upload"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="110"/>
+					</file>
+
+					<file name="com-nerduino-actions-EngageAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-EngageAction.instance"/>
+						<attr name="menuText" stringvalue="Engage"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="130"/>
 					</file>
 				</folder>
 			</folder>
@@ -412,8 +446,10 @@
 				</folder>
 			</folder>
 		</folder>
+		
 		<folder name="HelpButton">
-			<file name="org-netbeans-core-actions-AboutAction.instance">
+			<file name="com-nerduino-actions-AboutAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-AboutAction.instance"/>
 				<attr name="iconBase" stringvalue="com/nerduino/resources/help.png"/>
 			</file>
 		</folder>
@@ -433,8 +469,8 @@
     </folder>
 
 	<folder name="sketchmultiviews">
-        <file name="com-nerduino-processing-app-ArduinoMultiviewDescription">
-            <attr name="multiview" newvalue="com.nerduino.processing.app.ArduinoMultiviewDescription"/>
+        <file name="processing-app-ArduinoMultiviewDescription">
+            <attr name="multiview" newvalue="processing.app.ArduinoMultiviewDescription"/>
             <attr name="position" intvalue="100"/>
         </file>
     </folder>
@@ -463,14 +499,14 @@
         </file>
     </folder>
 	<folder name="sourcefilemultiviews">
-        <file name="com-nerduino-processing-app-SourceFileMultiviewDescription">
-            <attr name="multiview" newvalue="com.nerduino.processing.app.SourceFileMultiviewDescription"/>
+        <file name="processing-app-SourceFileMultiviewDescription">
+            <attr name="multiview" newvalue="processing.app.SourceFileMultiviewDescription"/>
             <attr name="position" intvalue="100"/>
         </file>
     </folder>
 	<folder name="sourcemultiviews">
-        <file name="com-nerduino-processing-app-ArduinoMultiviewDescription">
-            <attr name="multiview" newvalue="com.nerduino.processing.app.ArduinoMultiviewDescription"/>
+        <file name="processing-app-ArduinoMultiviewDescription">
+            <attr name="multiview" newvalue="processing.app.ArduinoMultiviewDescription"/>
             <attr name="position" intvalue="100"/>
         </file>
     </folder>

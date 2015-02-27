@@ -86,6 +86,7 @@ public class NerduinoService extends TreeNode
 
 	
 	@Override
+	@SuppressWarnings({"unchecked"})
 	public TopComponent getTopComponent()
 	{
 		//Loading the multiview windows:

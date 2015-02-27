@@ -20,8 +20,8 @@
 
 package com.nerduino.actions;
 
-import com.nerduino.processing.app.Sketch;
-import com.nerduino.processing.app.SketchManager;
+import processing.app.Sketch;
+import processing.app.SketchManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;

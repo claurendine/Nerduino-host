@@ -95,8 +95,6 @@ public class BitConverter
     
     public static short GetShort(byte[] bytes)
     {
-		//return (short) ((int)bytes[0] * 0x100 + bytes[1]);
-
         ByteBuffer bb = ByteBuffer.wrap(bytes);
         bb.order(ByteOrder.LITTLE_ENDIAN);
 		
@@ -105,15 +103,13 @@ public class BitConverter
     
     public static int GetInt(byte[] bytes)
     {
-		return (int)bytes[0] * 0x1000000 + (int)bytes[1] * 0x10000 + (int)bytes[2] * 0x100 + (int)bytes[3];
+		//return (int)bytes[0] * 0x1000000 + (int)bytes[1] * 0x10000 + (int)bytes[2] * 0x100 + (int)bytes[3];
 		
-		/*
-        ByteBuffer bb = ByteBuffer.wrap(bytes);
+		ByteBuffer bb = ByteBuffer.wrap(bytes);
         bb.order(ByteOrder.LITTLE_ENDIAN);
-		//bb.order(ByteOrder.BIG_ENDIAN);
-
+		
         return bb.getInt();
-		*/
+
     }
     
     public static long GetLong(byte[] bytes)
@@ -126,7 +122,6 @@ public class BitConverter
 
     public static short GetShort(byte[] bytes, int offset)
     {
-		//return (short) ((int)bytes[offset] * 0x100 + bytes[offset+1]);
         ByteBuffer bb = ByteBuffer.wrap(bytes, offset, 2);
         bb.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -143,16 +138,15 @@ public class BitConverter
     
     public static float GetFloat(byte[] bytes, int offset)
     {
-		/*
-		// invert byte order
-		byte[] data = new byte[4];
-		
-		for(int i = 3; i >= 0; i--)
-			data[i] = bytes[offset++];
-		
-        ByteBuffer bb = ByteBuffer.wrap(data);
-		*/
         ByteBuffer bb = ByteBuffer.wrap(bytes, offset, 4);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+
+        return bb.getFloat();
+    }
+    
+    public static float GetFloat(byte[] bytes)
+    {
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 
         return bb.getFloat();

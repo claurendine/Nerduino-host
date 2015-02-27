@@ -29,6 +29,5 @@ public class NerduinoWebSocketHandler extends WebSocketHandler
 	public void configure(WebSocketServletFactory wssf)
 	{
 		wssf.register(DataLinkWebSocket.class);
-		wssf.register(NerduinoSocket.class);
 	}
 }

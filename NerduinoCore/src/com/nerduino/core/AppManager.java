@@ -22,7 +22,7 @@ package com.nerduino.core;
 
 import com.nerduino.actions.FixedAction;
 import com.nerduino.library.*;
-import com.nerduino.processing.app.ArduinoManager;
+import processing.app.ArduinoManager;
 import com.nerduino.scrolls.ScrollManager;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.skits.SkitManager;
@@ -59,11 +59,11 @@ public final class AppManager
 	NerduinoManager m_nerduinoManager;
 	ScrollManager m_scrollManager;
 	SkitManager m_skitManager;
-	ServiceManager m_scriptManager;
 	PointManager m_pointManager;
 	ArduinoManager m_arduinoManager;
 	String configFilename = "NerduinoHost.xml";
 	JRibbon m_ribbon;
+	ServiceManager m_scriptManager;
 	
 	static ArrayList<String> s_logArray = new ArrayList<String>();
 	public static boolean loading = false;
@@ -86,7 +86,7 @@ public final class AppManager
 		m_pointManager = new PointManager();
 		m_arduinoManager = new ArduinoManager();
 
-		ArduinoManager.Current.setArduinoPath("/Users/chaselaurendine/Documents/Arduino");
+		ArduinoManager.Current.setArduinoPath("/Users/chaselaurendine/Documents/Nerduino");
 
 		Runtime runtime = Runtime.getRuntime();
 
@@ -391,7 +391,7 @@ public final class AppManager
 		{
 			try
 			{
-				if (XBeeManager.Current.getEnabled())
+				if (FamilyXBee.Current.getEnabled())
 				{
 					putValue(SMALL_ICON, m_enabledIcon);
 					putValue(NAME, "Disable");
@@ -415,13 +415,13 @@ public final class AppManager
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if (XBeeManager.Current.getEnabled())
+			if (FamilyXBee.Current.getEnabled())
 			{
-				XBeeManager.Current.setEnabled(false);
+				FamilyXBee.Current.setEnabled(false);
 			}
 			else
 			{
-				XBeeManager.Current.setEnabled(true);
+				FamilyXBee.Current.setEnabled(true);
 			}
 
 			update();

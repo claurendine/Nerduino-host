@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="javax.servlet">
-    <module_version install_time="1356733920644" last="true" origin="installer" specification_version="1.0">
-        <file crc="2111794332" name="config/Modules/javax-servlet.xml"/>
-        <file crc="1817368513" name="modules/ext/servlet-2-3.jar"/>
-        <file crc="4148102624" name="modules/javax-servlet.jar"/>
-    </module_version>
-</module>

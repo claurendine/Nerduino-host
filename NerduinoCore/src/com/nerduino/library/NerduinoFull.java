@@ -20,14 +20,7 @@
 
 package com.nerduino.library;
 
-import com.nerduino.processing.app.IBuildTask;
 import com.nerduino.xbee.BitConverter;
-import com.nerduino.xbee.FrameReceivedListener;
-import com.nerduino.xbee.SerialBase;
-import com.nerduino.xbee.TransmitRequestFrame;
-import com.nerduino.xbee.ZigbeeFrame;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
@@ -35,16 +28,12 @@ import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
+public class NerduinoFull extends NerduinoBase //implements FrameReceivedListener
 {
-	SerialBase m_serialBase;
-	
-	boolean m_active = false;
 	long m_lastBroadcast = 0;
 	boolean m_sending = false;
 	long m_broadcastThrottle = 50;
 	Address m_incomingAddress = new Address();
-	RemoteDataPoint m_pointResponse = null;
 
 	
 	public NerduinoFull(String name, String icon)
@@ -52,25 +41,13 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		super(name, icon);
 	}
 	
-	public boolean getActive()
-	{
-		return m_serialBase.getEnabled();
-	}
-
-	public void setActive(Boolean value)
-	{
-		m_serialBase.setEnabled(value);
-	}	
-
-	
 	@Override
 	public void readXML(Element node)
 	{
 		m_name = node.getAttribute("Name");
 		m_sketch = node.getAttribute("Sketch");
 		m_boardType = node.getAttribute("Board");
-
-		m_interactive = Boolean.valueOf(node.getAttribute("Interactive"));
+		m_active = Boolean.valueOf(node.getAttribute("Active"));		
 
 		setStatus(NerduinoStatusEnum.Offline);
 	}
@@ -81,7 +58,8 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		element.setAttribute("Name", m_name);
 		element.setAttribute("Sketch", m_sketch);
 		element.setAttribute("Board", m_boardType);
-		element.setAttribute("Interactive", Boolean.toString(m_interactive));
+		element.setAttribute("Active", Boolean.toString(m_active));
+		
 	}
 
 	@Override
@@ -94,7 +72,7 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		addProperty(nerduinoSheet, short.class, null, "PointCount", "The number of points reported by the nerduino.");
 		addProperty(nerduinoSheet, DeviceTypeEnum.class, null, "DeviceType", "The device type reported by the nerduino.");
 		addProperty(nerduinoSheet, NerduinoStatusEnum.class, null, "Status", "The status reported by the nerduino.");
-		
+
 		if (getPointCount() > 0)
 		{
 			pointsSheet.setDisplayName("Nerduino Points");
@@ -107,35 +85,53 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 					try
 					{
-						PropertySupport.Reflection prop = null;
-
 						if (point.DataType != null)
 						{
 							switch(point.DataType)
 							{
 								case DT_Boolean:
-									prop = new PropertySupport.Reflection(point, boolean.class, "Boolean");
+								{
+									PropertySupport.Reflection<Boolean> prop = new PropertySupport.Reflection<Boolean>(point, boolean.class, "Boolean");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 								case DT_Byte:
-									prop = new PropertySupport.Reflection(point, byte.class, "Byte");
+								{
+									PropertySupport.Reflection<Byte> prop = new PropertySupport.Reflection<Byte>(point, byte.class, "Byte");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 								case DT_Short:
-									prop = new PropertySupport.Reflection(point, short.class, "Short");
+								{
+									PropertySupport.Reflection<Short> prop = new PropertySupport.Reflection<Short>(point, short.class, "Short");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 								case DT_Integer:
-									prop = new PropertySupport.Reflection(point, int.class, "Int");
+								{
+									PropertySupport.Reflection<Integer> prop = new PropertySupport.Reflection<Integer>(point, int.class, "Int");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 								case DT_Float:
-									prop = new PropertySupport.Reflection(point, float.class, "Float");
+								{
+									PropertySupport.Reflection<Float> prop = new PropertySupport.Reflection<Float>(point, float.class, "Float");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 								case DT_String:
-									prop = new PropertySupport.Reflection(point, String.class, "String");
+								{
+									PropertySupport.Reflection<String> prop = new PropertySupport.Reflection<String>(point, String.class, "String");
+									prop.setName(point.getName());
+									pointsSheet.put(prop);
+								}
 									break;
 							}
-
-							prop.setName(point.getName());
-
-							pointsSheet.put(prop);
 						}
 					}
 					catch(NoSuchMethodException ex)
@@ -156,15 +152,13 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 			};
 	}
 
-	
+	/*
     @Override
     public PointBase getPoint(String name)
     {
         byte length = (byte) name.length();
         
-    	sendGetPoint(this, (short) 0, (byte) 0, (byte) length, name.getBytes()); 
-        
-        m_pointResponse = null;
+    	sendGetPoint(null, (short) 0, (byte) 0, length, name.getBytes()); 
         
         for(int i = 0; i < 3000; i++)
         {
@@ -182,190 +176,149 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
                 Logger.getLogger(NerduinoXBee.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
- 
+		
         return null;
     }
+	*/
 	
 	@Override
-    public void setConfigurationToken(byte configurationToken)
-    {
-    	if (m_configurationToken != configurationToken)
-    	{
-    		m_configurationToken = configurationToken;
-    		
-            getMetaData();
-            
-    		// get an updated property list
-    		getPoints();
-    		
-    		// TODO notify callback that the configuration has changed
-    	}
-    }
-    
-	
-	@Override
-	public void sendPing(NerduinoBase requestedBy, short responseToken)
+	public void sendCheckin(NerduinoBase requestedBy)
 	{
-		//System.out.println("SendPing!");
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "Checkin", CommandMessageTypeEnum.OutgoingCommand);
+		
+		m_checkedIn = false;
+		
+		byte[] data = new byte[3];
+		
+		short fromindex = 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
+		data[2] = MessageEnum.MSG_Checkin.Value();
+		
+		sendMessage(data);
+	}
+
+	
+	@Override
+	public boolean sendPing(NerduinoBase requestedBy, short responseToken)
+	{
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "Ping", CommandMessageTypeEnum.OutgoingCommand);
 		
 		m_pinged = false;
 		
-		TransmitRequestFrame frame = new TransmitRequestFrame();
+		byte[] data = new byte[5];
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
+		data[2] = MessageEnum.MSG_Ping.Value();
+		data[3] = (byte) (responseToken / 0x100);
+		data[4] = (byte) (responseToken & 0xff);
+		
+		sendMessage(data);
+		
+		// wait for ping response
+		float wait = 0.0f;
 
+		while (!m_pinged && wait < 2.0f)
+		{
+			try
+			{
+				Thread.sleep(5);
+				wait += 0.005f;
+			}
+			catch(InterruptedException ex)
+			{
+				Exceptions.printStackTrace(ex);
+			}
+		}
+
+		return m_pinged;
+	}
+	
+	public void sendMessage(byte[] data)
+	{
+		// this method should be overriden to provide the communication code to the device
+		/*
+		// zigbee implementation 
+		TransmitRequestFrame frame = new TransmitRequestFrame();
+		
 		frame.DestinationAddress = m_address.SerialNumber;
 		frame.DestinationNetworkAddress = m_address.NetworkAddress;
 		frame.Broadcast = false;
 		frame.DisableACK = true;
-
-		byte[] data = new byte[5];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_Ping.Value();
-		data[3] = (byte) (responseToken / 0x100);
-		data[4] = (byte) (responseToken & 0xff);
-
+		
 		frame.Data = data;
-
+		
 		sendFrame(frame);
+		*/
 	}
 	
 	@Override
 	public void sendPingResponse(short responseToken, byte status, byte configurationToken)
 	{
-		//System.out.println("SendPingResponse!");
+		if (m_verbose)
+			fireCommandUpdate(null, "PingResponse", CommandMessageTypeEnum.OutgoingCommand);
 		
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
 		byte[] data = new byte[7];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_PingResponse.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
 		data[5] = status;
 		data[6] = configurationToken;
-
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-	
-	@Override
-	public void sendGetMetaData(NerduinoBase requestedBy, short responseToken)
-	{
-		//System.out.println("SendGetMetaData!");
-
-		m_receivedMetaData = false;
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] data = new byte[5];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_GetMetaData.Value();
-		data[3] = (byte) (responseToken / 0x100);
-		data[4] = (byte) (responseToken & 0xff);
-
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-	
-
-	@Override
-	public void sendSetName()
-	{
-		//System.out.println("SendSetMetaData!");
 		
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		String name = getName();
-		int slen = name.length();
-
-		byte[] data = new byte[5 + slen];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_SetName.Value();
-		data[3] = 1; // name only		
-		data[4] = (byte) slen;
-
-		for (int i = 0; i < slen; i++)
-		{
-			data[5 + i] = (byte) name.charAt(i);
-		}
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		sendMessage(data);
 	}
-
+	
 	@Override
 	public void sendGetPoints(NerduinoBase requestedBy, short responseToken)
 	{
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "GetPoints", CommandMessageTypeEnum.OutgoingCommand);
+		
 		// mark points as invalid
 		for (RemoteDataPoint point : m_points)
 		{
 			point.Validated = false;
 		}
-
+		
 		m_receivedGetPoints = false;
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
+		
 		byte[] data = new byte[7];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPoint.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
 		data[5] = PointIdentifierTypeEnum.PIT_All.Value();
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		
+		sendMessage(data);
 	}
 
 	@Override
 	public void sendGetPoint(NerduinoBase requestedBy, short responseToken, byte idtype, byte idlength, byte[] id)
 	{
-		//System.out.println("SendGetPoint!");
-		
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-		
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "GetPoint", CommandMessageTypeEnum.OutgoingCommand);
 		
 		byte[] data = new byte[idlength + 7];
 		
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPoint.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
@@ -374,29 +327,24 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		
 		System.arraycopy(id, 0, data, 7, idlength);
 		
-		frame.Data = data;
-		
-		sendFrame(frame);
+		sendMessage(data);
 	}
 	
 	@Override
 	public void sendGetPoint(NerduinoBase requestedBy, short responseToken, String name)
 	{
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "GetPoint  " + name, CommandMessageTypeEnum.OutgoingCommand);
+		
 		m_receivedGetPoint = false;
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte nlength = (byte) name.length();
-
+		
+		byte nlength = (byte) name.length();		
 		byte[] data = new byte[7 + nlength];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPoint.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
@@ -407,53 +355,48 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		
 		System.arraycopy(b, 0, data, 7, nlength);
 		
-		frame.Data = data;
-
-		sendFrame(frame);
+		sendMessage(data);
 	}
 
 	@Override
 	public void sendGetPointValue(NerduinoBase requestedBy, short responseToken, short id)
 	{
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
+		if (m_verbose)
+		{
+			Short sid = id;
+			
+			fireCommandUpdate(requestedBy, "GetPointValue  " + sid.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		}
+				
 		byte[] data = new byte[8];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPointValue.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
 		data[5] = (byte) 1; // identifier type 1 - by index
 		data[6] = (byte) (id / 0x100);
 		data[7] = (byte) (id & 0xff);
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		
+		sendMessage(data);
 	}
 	
 	@Override
 	public void sendGetPointValue(NerduinoBase requestedBy, short responseToken, String name)
 	{
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "GetPointValue  " + name, CommandMessageTypeEnum.OutgoingCommand);
+		
 		byte length = (byte) name.length();
-
 		byte[] data = new byte[7 + length];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPointValue.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
@@ -463,31 +406,24 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		byte[] bytes = name.getBytes();
 		
 		System.arraycopy(bytes, 0, data, 7, length);
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		
+		sendMessage(data);
 	}
 	
 	@Override
-	public void sendGetPointValueResponse(short responseToken, short id, byte status, DataTypeEnum dataType, byte dataLength, byte[] value)
+	public void sendGetPointValueResponse(short responseToken, short id, byte status, DataTypeEnum dataType, byte[] value)
 	{
-		//System.out.println("SendGetPointValueResponse!");
-
-		long address = 0;
-		short networkAddress = 0;
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = address;
-		frame.DestinationNetworkAddress = networkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] data = new byte[10 + dataLength];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		if (m_verbose)
+			fireCommandUpdate(null, "GetPointValueResponse", CommandMessageTypeEnum.OutgoingCommand);
+		
+		int dataLength = dataType.getLength();
+		
+		byte[] data = new byte[9 + dataLength];
+		
+		short fromindex = 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetPointValueResponse.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
@@ -495,153 +431,122 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		data[6] = (byte) (id & 0xff);
 		data[7] = status;
 		data[8] = dataType.Value();
-		data[9] = dataLength;
 		
-		System.arraycopy(value, 0, data, 10, dataLength);
+		System.arraycopy(value, 0, data, 9, dataLength);
 
-		frame.Data = data;
-
-		sendFrame(frame);
+		sendMessage(data);
 	}
 
 	@Override
-	public void sendSetPointValue(short index, DataTypeEnum dataType, byte dataLength, Object value)
+	public void sendSetPointValue(NerduinoBase requestedBy, short index, DataTypeEnum dataType, Object value)
 	{
-		//System.out.println("SendSetPointValue!");
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
+		if (m_verbose)
+		{
+			Short sid = index;
+			
+			fireCommandUpdate(requestedBy, "SetPointValue  " + sid.toString() + " = " + value.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		}
+		
+		byte dataLength = dataType.getLength();		
 		byte[] data = new byte[8 + dataLength];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_SetPointValue.Value();
-
+		
 		data[3] = (byte) 1; // identifier type
 		data[4] = (byte) (index / 0x100);
 		data[5] = (byte) (index & 0xff);
 		data[6] = dataType.Value();
 		data[7] = dataLength;
 		
-		byte[] vdata = NerduinoHost.toBytes(value);
+		System.arraycopy(NerduinoHost.toBytes(value), 0, data, 8, dataLength);
 		
-		System.arraycopy(vdata, 0, data, 8, dataLength);
-		
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-
-	@Override
-	public void sendRegisterPointCallback(NerduinoBase requestedBy, short responseToken, short index, byte filterType, byte filterLength, byte[] filterValue)
-	{
-		//System.out.println("SendRegisterPointCallback!");
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] data = new byte[10 + filterLength];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_RegisterPointCallback.Value();
-		data[3] = (byte) (responseToken / 0x100);
-		data[4] = (byte) (responseToken & 0xff);
-
-		data[5] = (byte) 1;
-		data[6] = (byte) (index / 0x100);
-		data[7] = (byte) (index & 0xff);
-		data[8] = filterType;
-		data[9] = filterLength;
-
-		if (filterLength > 0)
-			System.arraycopy(filterValue, 0, data, 10, filterLength);
-
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-
-	void sendGetMetaDataResponse(long address, short networkAddress, short responseToken, NerduinoBase nerduino)
-	{
-		//System.out.println("SendGetMetaDataResponse!");
-		
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = address;
-		frame.DestinationNetworkAddress = networkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] name = nerduino.getName().getBytes();
-
-		byte nlength = (byte) name.length;
-
-		byte[] data = new byte[11 + nlength];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_GetMetaDataResponse.Value();
-		data[3] = (byte) (responseToken / 0x100);
-		data[4] = (byte) (responseToken & 0xff);
-
-		int offset = 5;
-		data[offset++] = nlength;
-
-		System.arraycopy(name, 0, data, offset, nlength);
-		offset += nlength;
-		
-		data[offset++] = nerduino.m_status.Value();
-		data[offset++] = nerduino.m_configurationToken;
-
-		short count = nerduino.m_pointCount;
-
-		data[offset++] = (byte) (count / 0x100);
-		data[offset++] = (byte) (count & 0xff);
-
-		if (nerduino.m_deviceType == null)
-			nerduino.m_deviceType = DeviceTypeEnum.DT_USB;
-
-		data[offset++] = nerduino.m_deviceType.Value();
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		sendMessage(data);
 	}
 	
 	@Override
+	public void sendSetPointValue(NerduinoBase requestedBy, String pointName, DataTypeEnum dataType, Object value)
+	{
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "SetPointValue  " + pointName + " = " + value.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		
+		byte dataLength = dataType.getLength();
+		byte nameLength = (byte) pointName.length();		
+		byte[] data = new byte[7 + dataLength + nameLength];
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
+		data[2] = MessageEnum.MSG_SetPointValue.Value();
+		
+		data[3] = (byte) 0; // identifier type
+		data[4] = nameLength;
+		
+		int offset = 5 + nameLength;
+		
+		System.arraycopy(pointName.getBytes(), 0, data, 5, dataLength);
+		
+		data[offset++] = dataType.Value();
+		data[offset++] = dataLength;
+		
+		System.arraycopy(NerduinoHost.toBytes(value), 0, data, offset, dataLength);
+		
+		sendMessage(data);
+	}
+
+	
+	@Override
+	public void sendRegisterPointCallback(NerduinoBase requestedBy, byte addRemove, short responseToken, short index, byte filterType, byte filterLength, byte[] filterValue)
+	{
+		if (m_verbose)
+		{
+			Short sid = index;
+			
+			fireCommandUpdate(requestedBy, "RegisterPointCallback  " + sid.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		}
+		
+		byte[] data = new byte[11 + filterLength];
+		
+		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
+		data[2] = MessageEnum.MSG_RegisterPointCallback.Value();
+		data[3] = (byte) (responseToken / 0x100);
+		data[4] = (byte) (responseToken & 0xff);
+		data[5] = (byte) addRemove;
+		data[6] = (byte) 1;
+		data[7] = (byte) (index / 0x100);
+		data[8] = (byte) (index & 0xff);
+		data[9] = filterType;
+		data[10] = filterLength;
+		
+		if (filterLength > 0)
+			System.arraycopy(filterValue, 0, data, 11, filterLength);
+		
+		sendMessage(data);
+	}
+
+	@Override
 	public void sendGetPointResponse(short responseToken, LocalDataPoint point)
 	{
-		//System.out.println("SendGetPointResponse!");
-
-		long address = 0;
-		short networkAddress = 0;
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = address;
-		frame.DestinationNetworkAddress = networkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
+		if (m_verbose)
+			fireCommandUpdate(null, "GetPointResponse", CommandMessageTypeEnum.OutgoingCommand);
 
 		byte[] data;
+		short fromindex = 0;
 
 		if (point == null)
 		{
 			data = new byte[7];
 			short id = -1;
-
-			data[0] = (byte) (m_address.RoutingIndex / 0x100);
-			data[1] = (byte) (m_address.RoutingIndex & 0xff);
+			
+			data[0] = (byte) (fromindex / 0x100);
+			data[1] = (byte) (fromindex & 0xff);
 			data[2] = MessageEnum.MSG_GetPointResponse.Value();
 			data[3] = (byte) (responseToken / 0x100);
 			data[4] = (byte) (responseToken & 0xff);
@@ -655,8 +560,8 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 			data = new byte[12 + nlength + point.DataLength];
 
-			data[0] = (byte) (m_address.RoutingIndex / 0x100);
-			data[1] = (byte) (m_address.RoutingIndex & 0xff);
+			data[0] = (byte) (fromindex / 0x100);
+			data[1] = (byte) (fromindex & 0xff);
 			data[2] = MessageEnum.MSG_GetPointResponse.Value();
 			data[3] = (byte) (responseToken / 0x100);
 			data[4] = (byte) (responseToken & 0xff);
@@ -687,13 +592,9 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 					Boolean v = (Boolean) point.m_value;
 
 					if (v)
-					{
 						data[offset++] = 1;
-					}
 					else
-					{
 						data[offset++] = 0;
-					}
 
 					break;
 				}
@@ -722,10 +623,7 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 					byte[] b = BitConverter.GetBytes(v);
 
-					data[offset++] = b[0];
-					data[offset++] = b[1];
-					data[offset++] = b[2];
-					data[offset++] = b[3];
+					System.arraycopy(b, 0, data, offset, 4);
 
 					break;
 				}
@@ -735,11 +633,8 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 					byte[] b = BitConverter.GetBytes(v);
 
-					data[offset++] = b[0];
-					data[offset++] = b[1];
-					data[offset++] = b[2];
-					data[offset++] = b[3];
-
+					System.arraycopy(b, 0, data, offset, 4);
+					
 					break;
 				}
 				case DT_String:
@@ -747,71 +642,36 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 					String v = (String) point.m_value;
 
 					byte[] b = v.getBytes();
-
-					for (int i = 0; i < point.DataLength; i++)
-					{
-						data[offset++] = (byte) b[i];
-					}
-
+					
+					System.arraycopy(b, 0, data, offset, point.DataLength);
+					
 					break;
 				}
 			}
 		}
 
-		frame.Data = data;
-
-		sendFrame(frame);
+		sendMessage(data);
 	}
 
-	@Override
-	public void sendUnregisterPointCallback(NerduinoBase requestedBy, short index)
-	{
-		//System.out.println("SendUnregisterPointCallback!");
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] data = new byte[6];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_UnregisterPointCallback.Value();
-		data[3] = (byte) 1; // identifier type
-		data[4] = (byte) (index / 0x100);
-		data[5] = (byte) (index & 0xff);
-
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-	
 	@Override
 	public void sendGetAddressResponse(short responseToken, AddressStatusEnum status, Address address, short pointIndex)
 	{
-		System.out.println("SendUnregisterPointCallback!");
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
+		if (m_verbose)
+			fireCommandUpdate(null, "GetAddressResponse", CommandMessageTypeEnum.OutgoingCommand);
+		
 		byte[] data = new byte[20];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		
+		short fromindex = 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_GetAddressResponse.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
 		data[5] = status.Value();
-
+		
 		byte[] sn = BitConverter.GetBytes(address.SerialNumber);
-
+		
 		data[6] = sn[0];
 		data[7] = sn[1];
 		data[8] = sn[2];
@@ -820,76 +680,51 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		data[11] = sn[5];
 		data[12] = sn[6];
 		data[13] = sn[7];
-
+		
 		data[14] = (byte) (address.NetworkAddress / 0x100);
 		data[15] = (byte) (address.NetworkAddress & 0xff);
-
+		
 		data[16] = (byte) (address.RoutingIndex / 0x100);
 		data[17] = (byte) (address.RoutingIndex & 0xff);
-
+		
 		data[18] = (byte) (pointIndex / 0x100);
 		data[19] = (byte) (pointIndex & 0xff);
-
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		
+		sendMessage(data);
 	}
 
-	@Override
-	public void sendGetDeviceStatusResponse(long serialNumber, short networkAddress, short responseToken)
-	{
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-		
-		frame.DestinationAddress = serialNumber;
-		frame.DestinationNetworkAddress = networkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-		
-		byte[] data = new byte[9];
-		
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
-		data[2] = MessageEnum.MSG_GetDeviceStatusResponse.Value();
-		data[3] = (byte) (responseToken / 0x100);
-		data[4] = (byte) (responseToken & 0xff);
-		data[5] = m_status.Value();
-		data[6] = m_configurationToken;
-		
-		short seconds = (short) getTimeSinceLastResponse();
-		
-		data[7] = (byte) (seconds / 0x100);
-		data[8] = (byte) (seconds & 0xff);
-
-		frame.Data = data;
-
-		sendFrame(frame);
-	}
-	
 	@Override
 	public CommandResponse sendExecuteCommand(NerduinoBase requestedBy, short responseToken, byte responseDataType, byte length, byte[] command)
 	{
-		TransmitRequestFrame frame = new TransmitRequestFrame();
+		StringBuilder sb = new StringBuilder();
 
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
+		for (int i = 0; i < length; i++)
+		{
+			sb.append((char) command[i]);
+		}
+		
+		if (m_verbose)
+			fireCommandUpdate(requestedBy, "Execute  " + sb.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		else
+			fireCommandUpdate(sb.toString(), CommandMessageTypeEnum.OutgoingCommand);
+		
+		byte[] data = new byte[7 + length];
 
-		byte[] data = new byte[6 + length];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+//		short fromindex = (requestedBy != null) ? requestedBy.m_address.RoutingIndex : 0;
+		
+		short fromindex = m_address.RoutingIndex;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_ExecuteCommand.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
-		data[5] = length;
+		data[5] = responseDataType;
+		data[6] = length;
 
-		System.arraycopy(command, 0, data, 6, length);
-
-		frame.Data = data;
-
-		m_serialBase.sendFrame(frame);
+		System.arraycopy(command, 0, data, 7, length);
+		
+		sendMessage(data);
 
 		m_commandResponse.Status = ResponseStatusEnum.RS_PartialResult;
 		m_commandResponse.Data.clear();
@@ -897,7 +732,7 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		float wait = 0.0f;
 
 		while (m_commandResponse.Status == ResponseStatusEnum.RS_PartialResult
-				&& wait < 5.0f)
+				&& wait < 2.0f)
 		{
 			try
 			{
@@ -911,9 +746,7 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 		}
 
 		if (m_commandResponse.Status == ResponseStatusEnum.RS_PartialResult)
-		{
 			m_commandResponse.Status = ResponseStatusEnum.RS_Timeout;
-		}
 		
 		return m_commandResponse;	
 	}
@@ -921,34 +754,30 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 	@Override
 	public void sendExecuteCommandResponse(short responseToken, byte status, byte dataType, byte length, byte[] response)
 	{
-		//System.out.println("SendExecuteCommandResponse!");
-
-		TransmitRequestFrame frame = new TransmitRequestFrame();
-
-		frame.DestinationAddress = m_address.SerialNumber;
-		frame.DestinationNetworkAddress = m_address.NetworkAddress;
-		frame.Broadcast = false;
-		frame.DisableACK = true;
-
-		byte[] data = new byte[8 + length];
-
-		data[0] = (byte) (m_address.RoutingIndex / 0x100);
-		data[1] = (byte) (m_address.RoutingIndex & 0xff);
+		if (m_verbose)
+			fireCommandUpdate(null, "ExecuteCommandResponse", CommandMessageTypeEnum.OutgoingCommand);
+		//else
+		//	fireCommandUpdate("ExecuteCommandResponse", CommandMessageTypeEnum.OutgoingCommand);
+		
+		byte[] data = new byte[7 + length];
+		
+		short fromindex = 0;
+		
+		data[0] = (byte) (fromindex / 0x100);
+		data[1] = (byte) (fromindex & 0xff);
 		data[2] = MessageEnum.MSG_ExecuteCommandResponse.Value();
 		data[3] = (byte) (responseToken / 0x100);
 		data[4] = (byte) (responseToken & 0xff);
 		data[5] = status;
 		data[6] = dataType;
-		data[7] = length;
 		
-		System.arraycopy(response, 0, data, 8, length);
-
-		frame.Data = data;
-
-		sendFrame(frame);
+		if (response != null)
+			System.arraycopy(response, 0, data, 7, length);
+		
+		sendMessage(data);
 	}
-
-
+	
+	/*
 	@Override
 	public void frameReceived(ZigbeeFrame f)
 	{
@@ -1005,70 +834,34 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 				break;
 		}
 	}
+	*/
 	
-	void forwardMessage(byte[] data)
-	{
-		// lookup the proxy target..
-		int index = m_incomingAddress.RoutingIndex - 1;
-		
-		if (index >= 0 && index < s_nerduinos.size())
-		{
-			NerduinoBase nerduino = (NerduinoBase) s_nerduinos.get(index);
-			
-			// replace the routingIndex of this packet with this nerduino's index
-			data[0] = (byte) (m_address.RoutingIndex / 0x100);
-			data[1] = (byte) (m_address.RoutingIndex & 0xff);
-			
-			// repackage the message data
-			TransmitRequestFrame frame = new TransmitRequestFrame();
-			
-			frame.DestinationAddress = nerduino.m_address.SerialNumber;
-			frame.DestinationNetworkAddress = nerduino.m_address.NetworkAddress;
-			frame.Broadcast = false;
-			frame.DisableACK = true;
-			
-			frame.Data = data;
-			
-			// send the message			
-			nerduino.sendFrame(frame);			
-		}
-	}
-
 	@Override
-	public void sendFrame(ZigbeeFrame frame)
-	{
-		m_sending = true;
-		
-		// throttle broadcasts to prevent overloading the nerduino
-		while(System.currentTimeMillis() - m_lastBroadcast < m_broadcastThrottle)
-		{
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch(Exception e)
-			{
-			}
-		}
-		
-		m_lastBroadcast = System.currentTimeMillis();
-		
-		m_serialBase.sendFrame(frame);
-		
-		m_sending = false;
-	}
-	
-	void processMessage(byte[] data)
+	public void processMessage(NerduinoBase originator, byte[] data)
 	{
 		if (data.length > 0)
 		{
-			m_incomingAddress.RoutingIndex = BitConverter.GetShort(data, 0);
+			short routingindex = (short) (data[0] * 0x100 + data[1]);
+
+			//m_incomingAddress.RoutingIndex = (short) (data[0] * 0x100 + data[1]);
 			byte messageType = data[2];
 			byte offset = 3;
 			
-			if (m_incomingAddress.RoutingIndex != 0 && m_incomingAddress.RoutingIndex != m_address.RoutingIndex)
+			if (routingindex != 0 && routingindex != m_address.RoutingIndex)
 			{
-				forwardMessage(data);
+				// lookup the nerduino from the routing index
+				int index = routingindex - 1;
+				
+				if (index >= 0 && index < s_nerduinos.size())
+				{
+					NerduinoBase nerduino = s_nerduinos.get(index);
+					
+					// replace the routingIndex before forwarding
+					//data[0] = (byte) 0;
+					//data[1] = (byte) 0;
+
+					nerduino.forwardMessage(this, data);
+				}
 			}
 			else
 			{
@@ -1076,13 +869,13 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 				switch(messageType)
 				{
-					case 0x03: //MSG_GetMetaDataResponse(0x03),
-						onGetMetaDataResponse(data, 3);
-						
-						break;
 					case 0x05: // MSG_ResetRequest(0x05)
 						onResetRequest();
 
+						break;
+					case 0x06: //MSG_Ping(0x06),
+						onPing(originator, data, 3);
+						
 						break;
 					case 0x07: //MSG_PingResponse(0x07),
 						onPingResponse(data, 3);
@@ -1093,7 +886,10 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 						
 						break;
 					case 0x10: //MSG_ExecuteCommand(0x10),
-						onExecuteCommand(data, 3);
+						if (routingindex == m_address.RoutingIndex)
+							onExecuteCommand(originator, data, 3);
+						else
+							onHostExecuteCommand(data, 3);
 
 						break;
 					case 0x11: //MSG_ExecuteCommandResponse(0x11),
@@ -1101,47 +897,52 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 						
 						break;
 					case 0x20: //MSG_GetPoint(0x20), n/a
-						onGetPoint(data, 3);
-						
+						if (routingindex == m_address.RoutingIndex)
+							onGetPoint(originator, data, 3);
+						else
+							onHostGetPoint(originator, data, 3);
+							
+							
 						break;
 					case 0x21: //MSG_GetPointResponse(0x21),
 						onGetPointResponse(data, 3);
 						
 						break;
 					case 0x22: //MSG_GetPointValue(0x22)
-						onGetPointValue(data, 3);
-						
+						if (routingindex == m_address.RoutingIndex)
+							onGetPointValue(originator, data, 3);
+						else
+							onHostGetPointValue(originator, data, 3);
+							
 						break;
 					case 0x23: //MSG_GetPointValueResponse(0x23),
 						onGetPointValueResponse(data, 3);
 						
 						break;
 					case 0x24: //MSG_RegisterPointCallback(0x24), n/a
-						onRegisterPointCallback(data, 3);
-						
-						break;
-					case 0x25: //MSG_UnregisterPointCallback(0x25), n/a
-						onUnregisterPointCallback(data, 3);
+						if (routingindex == m_address.RoutingIndex)
+							onRegisterPointCallback(originator, data, 3);
+						else
+							onHostRegisterPointCallback(data, 3);
 						
 						break;
 					case 0x26: //MSG_SetPointValue(0x26), n/a
-						onSetPointValue(data, 3);
+						if (routingindex == m_address.RoutingIndex)
+							onSetPointValue(data, 3);
+						else
+							onHostSetPointValue(data, 3);
 						
 						break;
 					case 0x30: //MSG_GetAddress(0x30),
 						onGetAddress(data, 3);
 
 						break;
-					case 0x40: //MSG_GetDeviceStatus(0x40), n/a
-						onGetDeviceStatus(data, 3);
-						
-						break;
 					case 0x51: // LightMessage_DeclarePoint 0x51
 						onLightDeclarePoint(data, 3);
 						
 						break;
 					case 0x52: // LightMessage_RegisterPoint 0x52
-						onLightDeclarePoint(data, 3);
+						onLightRegisterPoint(data, 3);
 						
 						break;
 					case 0x53: // LightMessage_SetProxyData 0x53
@@ -1164,16 +965,162 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 			}
 		}
 	}
+	
+	@Override
+	public void onGetPointValue(NerduinoBase originator, byte[] data, int offset)
+	{
+		short responseToken = (short) (data[offset++] * 0x100 + data[offset++]);
+		byte identifierType = data[offset++];
+		
+		RemoteDataPoint point;
+		String pid = "";
+		
+		if (identifierType == 0) // search by name
+		{
+			byte slength = data[offset++];
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for (int j = 0; j < slength; j++)
+			{
+				sb.append((char) data[offset++]);
+			}
+			
+			String pname = sb.toString();
+			
+			int pos = pname.indexOf(".");
+			
+			if (pos >= 0)
+				pname = pname.substring(pos + 1);
+			
+			pid = pname;
+
+			point = (RemoteDataPoint) getPoint(pname);
+		}
+		else // search by index
+		{
+			Short index = (short) (data[offset++] * 0x100 + data[offset++]);
+			pid = index.toString();
+			
+			point = (RemoteDataPoint) getPoint(index);
+		}
+		
+		if (point != null)
+		{
+			point.sendGetPointValueResponse(originator, responseToken);
+			
+			if (m_verbose)
+				fireCommandUpdate("N: GetPointValue  " + pid, CommandMessageTypeEnum.IncomingCommand);
+		}
+		else
+		{
+			// notify that the point was not found
+			originator.sendGetPointValueResponse(responseToken, (short) -1, (byte) 2, DataTypeEnum.DT_Byte, data);
+			
+			if (m_verbose)
+				fireCommandUpdate("N: GetPointValue  " + pid, CommandMessageTypeEnum.Error);
+		}
+	}
+	
+	@Override
+	public void onSetPointValue(byte[] data, int offset)
+	{
+		byte identifierType = data[offset++];
+		
+		RemoteDataPoint point;
+		String pid = "";
+		
+		if (identifierType == 0) // search by name
+		{
+			byte slength = data[offset++];
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for (int j = 0; j < slength; j++)
+			{
+				sb.append((char) data[offset++]);
+			}
+			
+			String pname = sb.toString();
+			
+			int pos = pname.indexOf(".");
+			
+			if (pos >= 0)
+				pname = pname.substring(pos + 1);
+			
+			pid = pname;
+
+			point = (RemoteDataPoint) getPoint(pname);
+		}
+		else // search by index
+		{
+			Short index = (short) (data[offset++] * 0x100 + data[offset++]);
+			pid = index.toString();
+			
+			point = (RemoteDataPoint) getPoint(index);
+		}
+		
+		if (point != null)
+		{
+			DataTypeEnum dataType = DataTypeEnum.valueOf(data[offset++]);
+			byte datalength = dataType.getLength();
+
+			byte[] bytes = new byte[datalength];
+
+			System.arraycopy(data, offset, bytes, 0, datalength);
+			
+			Object value = null;
+			
+			switch(dataType)
+			{
+				case DT_Boolean:
+					if (bytes[0] == 0)
+						value = false;
+					else
+						value = true;
+
+					break;
+				case DT_Byte:
+					value = bytes[0];
+					break;
+				case DT_Short:
+					value = BitConverter.GetShort(bytes);
+					break;
+				case DT_Integer:
+					value = BitConverter.GetInt(bytes);
+					break;
+				case DT_Float:
+					value = BitConverter.GetFloat(bytes, 0);
+					break;
+			}
+			
+			point.setValue(value);
+			
+			if (m_verbose)
+				fireCommandUpdate("N: SetPointValue  " + pid + " = " + value.toString(), CommandMessageTypeEnum.IncomingCommand);
+		}
+		else
+		{
+			if (m_verbose)
+				fireCommandUpdate("N: SetPointValue  " + pid + "   Point not found!", CommandMessageTypeEnum.Error);
+		}
+	}
 
 	@Override
 	public void onResetRequest()
 	{
-		setActive(false);
-		setActive(true);
+		if (m_verbose)
+			fireCommandUpdate("N: ResetRequest", CommandMessageTypeEnum.IncomingCommand);
+		
+		reset();
 	}
-
+	
 	public void onDeclarePoint(byte datatype, byte readonly, byte publish, String pointname)
 	{
+		if (m_verbose)
+			fireCommandUpdate("N: DeclarePoint", CommandMessageTypeEnum.IncomingCommand);
+		
+		
 		// TODO create a new point and add to the light client local data 
 		// point collection
 		
@@ -1183,28 +1130,21 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 	public void onRegisterPoint(byte datatype, String pointpath)
 	{
+		if (m_verbose)
+			fireCommandUpdate("N: RegisterPoint", CommandMessageTypeEnum.IncomingCommand);
+		
+		
 		// TODO create a new remote point and add to the light client remote data 
 		// point collection		
 	}
 
 	
-	
-	public void onSetPointValue(byte[] data)
-	{
-		short pointindex = (short) ((int) data[0] * 0x100 + (int) data[1]);
-		byte datalength = data[2];
-		
-		// TODO validate the index
-		// make sure that the point is not a remote data point marked as readonly
-		// get the datatype / length
-		// parse the data value
-		// set the point's current value
-		// make sure that local points trigger callbacks
-		// make sure that remote points push the updated value (if it has changed)
-	}
-	
 	public void onRegisterAddress(byte index, String nerduinoname)
 	{
+		if (m_verbose)
+			fireCommandUpdate("N: RegisterAddress", CommandMessageTypeEnum.IncomingCommand);
+		
+		
 		// TODO make sure that this address is not already registered and known
 		
 		// create an uninitialize address object and place it in the 
@@ -1215,40 +1155,32 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 	}
 	
 	@Override
-	public String engage(IBuildTask task)
+	public String engage()
 	{
-		m_engaged = false;
+		setStatus(NerduinoStatusEnum.Uninitialized);
 		
-		if (task != null)
-		{
-			task.setProgress(0);
-		}
-
-		setActive(false);
-		setActive(true);
-
+		m_engaged = false;
+		m_engaging = true;
+			
+		fireEngageStatusUpdate(true, false, 0, "");
+		
+		resetBoard();
+		
 		// assert that the serial port was opened
-		if (!getActive())
-		{
-			if (task != null)
-			{
-				task.setSuccess(false);
-			}
-
-			if (compileButton != null)
-			{
-				compileButton.setEngaged(false);
-			}
-
-			return "Error encountered while opening the serial port!";
-		}
-
+//		if (!getActive())
+//		{
+//			String err = "Error encountered while opening the serial port!";
+//			
+//			fireEngageStatusUpdate(false, false, 0, err);
+//			
+//			m_engaging = false;
+//			
+//			return err;
+//		}
+		
 		// Wait for check in
-		if (task != null)
-		{
-			task.setProgress(20);
-		}
-
+		fireEngageStatusUpdate(true, false, 20, "");
+		
 		// resetting the serial port should trigger a reset in the arduino.
 		// the setup routine should initiate a checkin message.
 		// wait up to 5 seconds for the checkin to occure, if checkin doesn't 
@@ -1273,33 +1205,26 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 		if (!m_checkedIn)
 		{
-			if (task != null)
-			{
-				task.setSuccess(false);
-			}
-
-			if (compileButton != null)
-			{
-				compileButton.setEngaged(false);
-			}
-
-			return "This sketch failed to check in on start up, verify that nerduino.begin() was called in the sketch's setup() routine and that it was properly configured!";
+			String err = "This sketch failed to check in on start up, verify that nerduino.begin() was called in the sketch's setup() routine and that it was properly configured!";
+			
+			fireEngageStatusUpdate(false, false, 0, err);
+			
+			m_engaging = false;
+			
+			return err;
 		}
-
+		
 		// wait for a ping response
-		if (task != null)
-		{
-			task.setProgress(40);
-		}
-
+		fireEngageStatusUpdate(true, false, 40, "");
+		
 		// wait up to 5 seconds for a ping response.  if none is received then 
 		// the loop routine is not processing messages.  It may not be calling 
 		// process or processIncoming or it may be in a blocking state.
-
+		
 		sendPing(null, (short) 0);
-
+		
 		wait = 0.0f;
-
+		
 		while (!m_pinged && wait < 5.0f)
 		{
 			try
@@ -1315,30 +1240,26 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 
 		if (!m_pinged)
 		{
-			if (task != null)
-			{
-				task.setSuccess(false);
-			}
-
-			if (compileButton != null)
-			{
-				compileButton.setEngaged(false);
-			}
-
-			return "This sketch failed to respond to a ping message, verify that nerduino.process() or nerduino.processIncoming() was called in the sketch's loop() routine and that this routine is not in a blocked state!";
+			String err = "This sketch failed to respond to a ping message, verify that nerduino.process() or nerduino.processIncoming() was called in the sketch's loop() routine and that this routine is not in a blocked state!";
+			
+			fireEngageStatusUpdate(false, false, 0, err);
+			
+			m_engaging = false;
+			
+			return err;
 		}
-
+		
 		// request metadata
-		if (task != null)
-		{
-			task.setProgress(60);
-		}
-
-		sendGetMetaData(null, (short) 0);
+		fireEngageStatusUpdate(true, false, 60, "");
+		
+		// gather point metadata
+		fireEngageStatusUpdate(true, false, 80, "");
+		
+		sendGetPoints(null, (short) 0);
 
 		wait = 0.0f;
 
-		while (!m_receivedMetaData && wait < 5.0f)
+		while (!m_receivedGetPoints && wait < 5.0f)
 		{
 			try
 			{
@@ -1351,81 +1272,22 @@ public class NerduinoFull extends NerduinoBase implements FrameReceivedListener
 			}
 		}
 
-		if (!m_receivedMetaData)
+		if (!m_receivedGetPoints)
 		{
-			if (task != null)
-			{
-				task.setSuccess(false);
-			}
+			String err = "This sketch failed to provide point metadata, verify that nerduino.process() or nerduino.processIncoming() was called in the sketch's loop() routine and that this routine is not in a blocked state!";
+
+			fireEngageStatusUpdate(false, false, 0, err);
+
+			m_engaging = false;
 			
-			if (compileButton != null)
-			{
-				compileButton.setEngaged(false);
-			}
-
-			return "This sketch failed to provide metadata, verify that nerduino.process() or nerduino.processIncoming() was called in the sketch's loop() routine and that this routine is not in a blocked state!";
+			return err;
 		}
 
-		// gather point metadata
-		if (task != null)
-		{
-			task.setProgress(80);
-		}
-
-		if (getPointCount() > 0)
-		{
-			sendGetPoints(null, (short) 0);
-
-			wait = 0.0f;
-
-			while (!m_receivedGetPoints && wait < 5.0f)
-			{
-				try
-				{
-					Thread.sleep(100);
-					wait += 0.1f;
-				}
-				catch(InterruptedException ex)
-				{
-					Exceptions.printStackTrace(ex);
-				}
-			}
-
-			if (!m_receivedGetPoints)
-			{
-				if (task != null)
-				{
-					task.setSuccess(false);
-				}
-
-				if (compileButton != null)
-				{
-					compileButton.setEngaged(false);
-				}
-
-				
-				return "This sketch failed to provide point metadata, verify that nerduino.process() or nerduino.processIncoming() was called in the sketch's loop() routine and that this routine is not in a blocked state!";
-			}
-		}
-
-
-		if (task != null)
-		{
-			task.setProgress(100);
-		}
-
-		if (task != null)
-		{
-			task.setSuccess(true);
-		}
-
-		if (compileButton != null)
-		{
-			compileButton.setEngaged(true);
-		}
+		fireEngageStatusUpdate(false, true, 100, "");
 		
 		m_engaged = true;
-		
+		m_engaging = false;
+			
 		return null;
 	}
 }

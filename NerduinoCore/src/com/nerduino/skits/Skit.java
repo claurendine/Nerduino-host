@@ -24,7 +24,7 @@ import com.nerduino.actions.StandardAction;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.nodes.TreeNode;
-import com.nerduino.processing.app.ArduinoSourceEditor;
+import processing.app.ArduinoSourceEditor;
 import com.nerduino.webhost.WebHost;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
@@ -124,6 +124,7 @@ public class Skit extends TreeNode
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public TopComponent getTopComponent()
 	{
 		//Loading the multiview windows:

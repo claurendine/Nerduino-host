@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN"
+                            "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="org-jfx-browser-BrowserTopComponent.shadow">
+                <!--org.jfx.browser.BrowserTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/org-jfx-browser-BrowserTopComponent.instance"/>
+            </file>
+            <file name="org-jfx-browser-StartUpBrowserTopComponent.shadow">
+                <!--org.jfx.browser.StartUpBrowserTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/org-jfx-browser-StartUpBrowserTopComponent.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="BrowserTopComponent.settings">
+                <!--org.jfx.browser.BrowserTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="org.jfx.browser.BrowserTopComponent"/>
+</settings>
+]]></file>
+            <file name="StartUpBrowserTopComponent.settings">
+                <!--org.jfx.browser.StartUpBrowserTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="org.jfx.browser.StartUpBrowserTopComponent"/>
+</settings>
+]]></file>
+        </folder>
+        <folder name="Modes">
+            <folder name="editor">
+                <file name="BrowserTopComponent.wstcref">
+                    <!--org.jfx.browser.BrowserTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="BrowserTopComponent"/>
+  <state opened="false"/>
+</tc-ref>
+]]></file>
+                <file name="StartUpBrowserTopComponent.wstcref">
+                    <!--org.jfx.browser.StartUpBrowserTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="StartUpBrowserTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-jfx-browser-BrowserTopComponent.instance">
+                <!--org.jfx.browser.BrowserTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="org.jfx.browser.BrowserTopComponent"/>
+                <attr name="preferredID" stringvalue="BrowserTopComponent"/>
+                <attr name="displayName" stringvalue="Browser"/>
+            </file>
+            <file name="org-jfx-browser-StartUpBrowserTopComponent.instance">
+                <!--org.jfx.browser.StartUpBrowserTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="org.jfx.browser.StartUpBrowserTopComponent"/>
+                <attr name="preferredID" stringvalue="StartUpBrowserTopComponent"/>
+                <attr
+                    bundlevalue="org.jfx.browser.Bundle#CTL_StartUpBrowserAction" name="displayName"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="xml">
+        <folder name="entities">
+            <folder name="org_jfx_browser">
+                <file name="Browser" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--org.jfx.browser.BrowserTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//org.jfx.browser//Browser//EN"/>
+                </file>
+                <file name="StartUpBrowser" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--org.jfx.browser.StartUpBrowserTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//org.jfx.browser//StartUpBrowser//EN"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="memory">
+            <folder name="org">
+                <folder name="jfx">
+                    <folder name="browser">
+                        <file name="BrowserTopComponent">
+                            <!--org.jfx.browser.BrowserTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//org_jfx_browser/Browser.instance"/>
+                        </file>
+                        <file name="StartUpBrowserTopComponent">
+                            <!--org.jfx.browser.StartUpBrowserTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//org_jfx_browser/StartUpBrowser.instance"/>
+                        </file>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="lookups">
+            <folder name="org_jfx_browser">
+                <file name="Browser.instance">
+                    <!--org.jfx.browser.BrowserTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="org.jfx.browser.BrowserTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="org.jfx.browser.BrowserTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+                <file name="StartUpBrowser.instance">
+                    <!--org.jfx.browser.StartUpBrowserTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="org.jfx.browser.StartUpBrowserTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="org.jfx.browser.StartUpBrowserTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

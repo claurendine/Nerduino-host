@@ -22,7 +22,7 @@ package com.nerduino.actions;
 
 
 import com.nerduino.library.NerduinoHost;
-import com.nerduino.library.XBeeManager;
+import com.nerduino.library.FamilyXBee;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -43,6 +43,6 @@ public final class ZigbeeEnabledAction implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		XBeeManager.Current.setEnabled(!XBeeManager.Current.getEnabled());
+		FamilyXBee.Current.setEnabled(!FamilyXBee.Current.getEnabled());
 	}
 }

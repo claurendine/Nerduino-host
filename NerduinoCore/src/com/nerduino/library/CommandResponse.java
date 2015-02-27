@@ -57,9 +57,7 @@ public class CommandResponse
 		Object value = null;
 
 		if (DataLength == 0)
-		{
 			return null;
-		}
 		
 		switch(DataType)
 		{
@@ -82,7 +80,7 @@ public class CommandResponse
 				break;
 			case DT_Short:
 			{
-				byte[] data = new byte[4];
+				byte[] data = new byte[2];
 				data[0] = Data.get(0);
 				data[1] = Data.get(1);
 				

@@ -77,6 +77,7 @@
                     <file name="org-netbeans-modules-csl-editor-fold-GsfFoldManagerFactory.instance">
                         <!--com.arduinofile.PDELanguage-->
                         <attr name="instanceClass" stringvalue="org.netbeans.modules.csl.editor.fold.GsfFoldManagerFactory"/>
+                        <attr intvalue="900" name="position"/>
                     </file>
                 </folder>
                 <folder name="CodeTemplateProcessorFactories">
@@ -111,13 +112,13 @@
                 <folder name="Popup">
                     <folder name="goto">
                         <!--com.arduinofile.PDELanguage-->
-                        <attr intvalue="500" name="position"/>
-                        <attr
-                            bundlevalue="org.netbeans.modules.csl.core.Bundle#generate-goto-popup" name="displayName"/>
                         <file name="goto">
                             <!--com.arduinofile.PDELanguage-->
                             <attr intvalue="600" name="position"/>
                         </file>
+                        <attr intvalue="500" name="position"/>
+                        <attr
+                            bundlevalue="org.netbeans.modules.csl.core.Bundle#generate-goto-popup" name="displayName"/>
                     </folder>
                     <file name="SeparatorBeforeCut.instance">
                         <!--com.arduinofile.PDELanguage-->
@@ -277,12 +278,12 @@
         <folder name="text">
             <folder name="x-arduino">
                 <!--com.arduinofile.PDELanguage-->
-                <attr intvalue="2" name="genver"/>
-                <attr boolvalue="false" name="useMultiview"/>
                 <file name="language.instance">
                     <!--com.arduinofile.PDELanguage-->
                     <attr name="instanceClass" stringvalue="com.arduinofile.PDELanguage"/>
                 </file>
+                <attr intvalue="2" name="genver"/>
+                <attr boolvalue="false" name="useMultiview"/>
             </folder>
         </folder>
     </folder>

@@ -114,9 +114,9 @@ public class LocalDataPoint extends PointBase
 	{
 		byte offset = 3;
 		
-		short responseToken = BitConverter.GetShort(data, offset);
-		offset += 2;
+		short responseToken = (short) (data[offset++]*0x100 + data[offset++]);
 
+		byte addremove = data[offset++];
 		byte idtype = data[offset++];
 						
 		switch(idtype)
@@ -146,42 +146,44 @@ public class LocalDataPoint extends PointBase
 			}
 		}
 		
-		
-    	ValueCallback callback = new ValueCallback();
-    	
-    	callback.ResponseToken = responseToken;
-		
-    	callback.FilterType = FilterTypeEnum.valueOf(data[offset++]);
-    	callback.Nerduino = nerduino;
-    	callback.DataPoint = this;
-        
-    	// make sure that the data types match
-    	switch (callback.FilterType)
-    	{
-            case FT_NoFilter:
-                break;
-    		case FT_PercentChange:
-    			if (callback.FilterDataType != DataTypeEnum.DT_Float)
-    				return; // not a valid data type
-                
-               	callback.FilterLength = data[offset++];
-            	callback.FilterValue = NerduinoHost.parseValue(data, offset, callback.FilterDataType, callback.FilterLength);
-                
-    			break;
-    		case FT_ValueChange:
-    			if (callback.FilterDataType != DataType)
-    				return; // not a valid data type
-                
-            	callback.FilterLength = data[offset++];
-                callback.FilterValue = NerduinoHost.parseValue(data, offset, callback.FilterDataType, callback.FilterLength);
-                
-                break;
-    	}
-    	
-    	m_callbacks.add(callback);
-    	
-    	// immediately send updated value
-    	callback.sendUpdate(m_value);
+		if (addremove == 0)
+		{
+			ValueCallback callback = new ValueCallback();
+
+			callback.ResponseToken = responseToken;
+
+			callback.FilterType = FilterTypeEnum.valueOf(data[offset++]);
+			callback.Nerduino = nerduino;
+			callback.DataPoint = this;
+
+			// make sure that the data types match
+			switch (callback.FilterType)
+			{
+				case FT_NoFilter:
+					break;
+				case FT_PercentChange:
+					if (callback.FilterDataType != DataTypeEnum.DT_Float)
+						return; // not a valid data type
+
+					callback.FilterLength = data[offset++];
+					callback.FilterValue = NerduinoHost.parseValue(data, offset, callback.FilterDataType, callback.FilterLength);
+
+					break;
+				case FT_ValueChange:
+					if (callback.FilterDataType != DataType)
+						return; // not a valid data type
+
+					callback.FilterLength = data[offset++];
+					callback.FilterValue = NerduinoHost.parseValue(data, offset, callback.FilterDataType, callback.FilterLength);
+
+					break;
+			}
+
+			m_callbacks.add(callback);
+
+			// immediately send updated value
+			callback.sendUpdate(m_value);
+		}
 	}
 	
 	void onUnregisterPointCallback(NerduinoBase nerduino)
@@ -255,7 +257,7 @@ public class LocalDataPoint extends PointBase
 	public void sendGetPointValueResponse(NerduinoBase nerduino, short responseToken)
 	{
 		nerduino.sendGetPointValueResponse(responseToken, Id, Status, 
-				DataType, DataLength, NerduinoHost.toBytes(m_value));
+				DataType, NerduinoHost.toBytes(m_value));
 	}
     
     public void scanCallbacks()
@@ -289,34 +291,52 @@ public class LocalDataPoint extends PointBase
 			
 			pointsSheet.setDisplayName("Point");
 			
-			PropertySupport.Reflection prop = null;
-			
 			switch(DataType)
 			{
 				case DT_Boolean:
-					prop = new PropertySupport.Reflection(this, boolean.class, "Boolean");
+				{
+					PropertySupport.Reflection<Boolean> prop = new PropertySupport.Reflection<Boolean>(this, boolean.class, "Boolean");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 				case DT_Byte:
-					prop = new PropertySupport.Reflection(this, byte.class, "Byte");
+				{
+					PropertySupport.Reflection<Byte> prop = new PropertySupport.Reflection<Byte>(this, byte.class, "Byte");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 				case DT_Short:
-					prop = new PropertySupport.Reflection(this, short.class, "Short");
+				{
+					PropertySupport.Reflection<Short> prop = new PropertySupport.Reflection<Short>(this, short.class, "Short");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 				case DT_Integer:
-					prop = new PropertySupport.Reflection(this, int.class, "Int");
+				{
+					PropertySupport.Reflection<Integer> prop = new PropertySupport.Reflection<Integer>(this, int.class, "Int");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 				case DT_Float:
-					prop = new PropertySupport.Reflection(this, float.class, "Float");
+				{
+					PropertySupport.Reflection<Float> prop = new PropertySupport.Reflection<Float>(this, float.class, "Float");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 				case DT_String:
-					prop = new PropertySupport.Reflection(this, String.class, "String");
+				{
+					PropertySupport.Reflection<String> prop = new PropertySupport.Reflection<String>(this, String.class, "String");
+					prop.setName(getName());
+					pointsSheet.put(prop);
+				}
 					break;
 			}
-
-			prop.setName(getName());
-
-			pointsSheet.put(prop);
-
+			
 			return new PropertySet[] { pointsSheet };
 		}
 		catch(NoSuchMethodException ex)
@@ -326,18 +346,41 @@ public class LocalDataPoint extends PointBase
 		}
 	}
 	
+	@Override
 	public void setValue(Object value)
     {
+		if (m_setting)
+			return;
+		
+		m_setting = true;
+		
         if (m_value != value)
         {
 			if (Proxy != null)
 				Proxy.setValue(value);
 
-			super.setValue(value);
+			try
+			{
+				initializeValue(value);
+				
+				if (m_nerduino != null)
+					m_nerduino.sendSetPointValue(null, Id, DataType, value);
+				
+				// notify all callbacks of the new value
+				for(ValueCallback callback : m_callbacks)
+				{
+					callback.valueUpdated();
+				}
+			}
+			catch(Exception e)
+			{
+			}
         }
+		
+		m_setting = false;
     }
 	
-		@Override
+	@Override
 	public Action[] getActions(boolean context)
 	{
 		return new Action[]

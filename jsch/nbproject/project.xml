@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>com.jcraft.jsch</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>com.jcraft.jsch</package>
+                <package>com.jcraft.jsch.jce</package>
+                <package>com.jcraft.jsch.jcraft</package>
+                <package>com.jcraft.jsch.jgss</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/jsch-0.1.50.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jsch-0.1.50.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

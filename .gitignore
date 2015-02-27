@@ -2,3 +2,13 @@
 /jackson-json-library/build/
 /Rhino/build/
 /servlet/nbproject/private/
+/dist/
+/NerduinoSite/nbproject/private/
+/jssc/build/
+/jsch/build/
+/jmdns/build/
+/javax.bluetooth/build/
+/bluecove-gpl/build/
+/bluecove-gpl/nbproject/private/
+/javax.bluetooth/nbproject/private/
+/bluecove/build/

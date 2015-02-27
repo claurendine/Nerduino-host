@@ -6,11 +6,11 @@
   <kind type="view" />
   <state type="joined"  />
   <constraints>
-    <path orientation="horizontal" number="20" weight="0.1667913238593867"/>
+    <path orientation="horizontal" number="20" weight="0.28377230246389124"/>
     <path orientation="vertical" number="20" weight="0.5"/>
   </constraints>
   <bounds x="192" y="270" width="441" height="416" />
   <frame state="0"/>
-    <active-tc  id="ExplorerTopComponent" />
+    <active-tc  id="ExplorerTopComponent_1"  prev-id="ExplorerTopComponent" />
     <empty-behavior permanent="true"/>
 </mode>

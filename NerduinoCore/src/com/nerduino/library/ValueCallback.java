@@ -20,7 +20,6 @@
 
 package com.nerduino.library;
 
-
 public class ValueCallback 
 {
 	public NerduinoBase Nerduino;

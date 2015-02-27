@@ -20,7 +20,7 @@
 
 package com.nerduino.propertybrowser;
 
-import com.nerduino.processing.app.BoardManager;
+import processing.app.BoardManager;
 
 public class DeviceTypePropertyEditor extends EnumerationPropertyEditor
 {

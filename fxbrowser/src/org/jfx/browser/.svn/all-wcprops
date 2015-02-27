@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/javafxbrowser~jfxbrowser/!svn/ver/6/src/org/jfx/browser
+END
+Bundle.properties
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/javafxbrowser~jfxbrowser/!svn/ver/3/src/org/jfx/browser/Bundle.properties
+END
+BrowserTopComponent.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/javafxbrowser~jfxbrowser/!svn/ver/6/src/org/jfx/browser/BrowserTopComponent.java
+END
+BrowserTopComponent.form
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/javafxbrowser~jfxbrowser/!svn/ver/1/src/org/jfx/browser/BrowserTopComponent.form
+END

@@ -20,18 +20,13 @@
 
 package com.nerduino.core;
 
-import com.nerduino.nodes.EmptyCommand;
 import com.nerduino.nodes.RootNode;
 import com.nerduino.nodes.TreeNode;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JScrollBar;
-import javax.swing.table.TableModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.swing.outline.Outline;
 import org.openide.actions.CopyAction;
@@ -42,7 +37,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
-import org.openide.explorer.view.Visualizer;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -137,7 +131,8 @@ public final class ExplorerTopComponent extends TopComponent
         jScrollPane2 = new javax.swing.JScrollPane();
 		jPanel = new javax.swing.JPanel();
 
-		outline1 = new org.openide.explorer.view.OutlineView()
+		outline1 = new org.openide.explorer.view.OutlineView();
+		/*
 		{
 			@Override
 			public void paint(Graphics g)
@@ -157,16 +152,28 @@ public final class ExplorerTopComponent extends TopComponent
 				i = i;
 			}
 		};
-
+		*/
 		
         outline1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         
-        jScrollPane1.setViewportView(jPanel);
+ //       jScrollPane1.setViewportView(jPanel);
         jScrollPane2.setViewportView(outline1);
         
-		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
-		jPanel.setPreferredSize(new Dimension(4,4));
+//		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+//		jPanel.setPreferredSize(new Dimension(4,4));
 		
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        
+		layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+		/*
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -181,8 +188,10 @@ public final class ExplorerTopComponent extends TopComponent
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
+		*/
 	}
 	
+	/*
 	EmptyCommand commandHeader = new EmptyCommand();
 	
 	void updateCommands(int offset)
@@ -221,6 +230,7 @@ public final class ExplorerTopComponent extends TopComponent
 		jPanel.validate();
 		jPanel.repaint();
 	}
+	*/
 	
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -361,10 +371,11 @@ public final class ExplorerTopComponent extends TopComponent
 
 
 	@Override
-	public void resultChanged(LookupEvent lookupEvent)
+	@SuppressWarnings({"unchecked", "rawtypes"})
+    public void resultChanged(LookupEvent lookupEvent)
 	{
 		Lookup.Result r = (Lookup.Result) lookupEvent.getSource();
-
+		
 		Collection c = r.allInstances();
 		TreeNode node = null;
 

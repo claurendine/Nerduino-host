@@ -21,10 +21,8 @@
 package com.nerduino.library;
 
 
-public enum MessageEnum {
-    MSG_GetMetaData(0x01),
-    MSG_GetMetaDataResponse(0x03),
-    MSG_SetName(0x04),
+public enum MessageEnum 
+{
     MSG_ResetRequest(0x05),
     
     MSG_Ping(0x06),
@@ -39,15 +37,11 @@ public enum MessageEnum {
     MSG_GetPointValue(0x22),
     MSG_GetPointValueResponse(0x23),
     MSG_RegisterPointCallback(0x24),
-    MSG_UnregisterPointCallback(0x25),
     MSG_SetPointValue(0x26),
 
 	MSG_GetAddress(0x30),
 	MSG_GetAddressResponse(0x31),
 	
-    MSG_GetDeviceStatus(0x40),
-    MSG_GetDeviceStatusResponse(0x41),
-    
 	LMSG_DeclarePoint(0x51),
 	LMSG_RegisterPoint(0x52),
 	LMSG_SetTransceiverData(0x53),
@@ -71,12 +65,6 @@ public enum MessageEnum {
 	{
 		switch(b)
 		{
-            case 0x01:
-                return MSG_GetMetaData;
-            case 0x03:
-                return MSG_GetMetaDataResponse;
-            case 0x04:
-                return MSG_SetName;
             case 0x05:
                 return MSG_ResetRequest;
             case 0x06:
@@ -101,8 +89,6 @@ public enum MessageEnum {
                 return MSG_GetPointValueResponse;
             case 0x24:
                 return MSG_RegisterPointCallback;
-            case 0x25:
-                return MSG_UnregisterPointCallback;
             case 0x26:
                 return MSG_SetPointValue;
 			
@@ -110,11 +96,6 @@ public enum MessageEnum {
 				return MSG_GetAddress;
 			case 0x31:
 				return MSG_GetAddressResponse;
-
-            case 0x40:
-                return MSG_GetDeviceStatus;
-            case 0x41:
-            	return MSG_GetDeviceStatusResponse;
 				
 			case 0x51:
             	return LMSG_DeclarePoint;

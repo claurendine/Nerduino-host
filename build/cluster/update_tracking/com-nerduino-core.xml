@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="com.nerduino.core">
-    <module_version install_time="1360672397072" last="true" origin="installer" specification_version="1.0">
+    <module_version install_time="1424836883550" last="true" origin="installer" specification_version="1.0">
         <file crc="3739932745" name="config/Modules/com-nerduino-core.xml"/>
-        <file crc="1640130567" name="modules/com-nerduino-core.jar"/>
+        <file crc="691025409" name="modules/com-nerduino-core.jar"/>
         <file crc="1599375659" name="modules/ext/flamingo.jar"/>
         <file crc="4259053810" name="modules/ext/javax.websocket-api-0.0.006.draft.jar"/>
         <file crc="3198681824" name="modules/ext/jetty-all-8.1.8.v20121106.jar"/>
@@ -26,6 +26,7 @@
         <file crc="2543716519" name="modules/ext/jetty-websocket-7.4.4.v20110707.jar"/>
         <file crc="3124201117" name="modules/ext/jna.jar"/>
         <file crc="778425460" name="modules/ext/org-netbeans-modules-cnd.jar"/>
+        <file crc="489215709" name="modules/ext/serializer.jar"/>
         <file crc="1385982833" name="modules/ext/servlet-api-2.5.jar"/>
         <file crc="1371539559" name="modules/ext/servlet-api-3.0.jar"/>
         <file crc="2809333939" name="modules/ext/websocket-api-9.0.0.M3.jar"/>
@@ -37,5 +38,6 @@
         <file crc="841805205" name="modules/ext/websocket-server-9.0.0.RC0.jar"/>
         <file crc="2791579191" name="modules/ext/websocket-servlet-9.0.0.M3.jar"/>
         <file crc="979284229" name="modules/ext/websocket-servlet-9.0.0.RC0.jar"/>
+        <file crc="3886415275" name="modules/ext/xercesImpl.jar"/>
     </module_version>
 </module>

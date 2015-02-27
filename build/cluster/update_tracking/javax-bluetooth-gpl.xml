@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="javax.bluetooth.gpl">
+    <module_version install_time="1388293982848" last="true" origin="installer" specification_version="1.0">
+        <file crc="1968016829" name="config/Modules/javax-bluetooth-gpl.xml"/>
+        <file crc="2064623859" name="modules/ext/bluecove-gpl-2.1.0.jar"/>
+        <file crc="4227607343" name="modules/javax-bluetooth-gpl.jar"/>
+    </module_version>
+</module>

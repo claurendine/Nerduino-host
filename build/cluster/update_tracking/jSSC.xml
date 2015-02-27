@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="jSSC">
+    <module_version install_time="1424781568339" last="true" origin="installer" specification_version="1.0">
+        <file crc="1250463908" name="config/Modules/jSSC.xml"/>
+        <file crc="416743312" name="modules/ext/jssc.jar"/>
+        <file crc="3017839912" name="modules/jSSC.jar"/>
+    </module_version>
+</module>

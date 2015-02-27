@@ -62,11 +62,10 @@ public class RemoteDataPoint extends PointBase
     	return m_registered; 
     }
     
-	/*
-    public Object getPointValue()
+    public Object getRemoteValue()
     {
         // send value update to the remote nerduino
-        Parent.sendGetPointValue(Id);
+        Parent.sendGetPointValue(null, (short) 0, Id);
 		
         m_valueResponse = null;
         
@@ -81,13 +80,12 @@ public class RemoteDataPoint extends PointBase
             } 
             catch (InterruptedException ex) 
             {
-                Logger.getLogger(Nerduino.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(Nerduino.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
  
         return null;
     }
-	*/
     
 	@Override
     public void setValue(Object value)
@@ -126,12 +124,9 @@ public class RemoteDataPoint extends PointBase
         {
 			super.setValue(val);
 			
-            if (DataType == DataTypeEnum.DT_String)
-                DataLength = (byte) ((String) value).length();
-            
             // send value update to the remote nerduino
-            Parent.sendSetPointValue(Id, DataType, DataLength, val);
-
+            Parent.sendSetPointValue(null, Id, DataType, val);
+			
 			if (Proxy != null)
 				Proxy.setValue(val);
 		}
@@ -144,33 +139,13 @@ public class RemoteDataPoint extends PointBase
 		
 		if (DataType != null)
 		{
-			switch(DataType)
-			{
-				case DT_Boolean:
-					DataLength = 1;
-					break;
-				case DT_Byte:
-					DataLength = 1;
-					break;
-				case DT_Short:
-					DataLength = 2;
-					break;
-				case DT_Integer:
-					DataLength = 4;
-					break;
-				case DT_Float:
-					DataLength = 4;
-					break;
-				case DT_String:
-					DataLength = data[9];
-					break;
-			}
-
-			m_value = NerduinoHost.parseValue(data, 10, DataType, DataLength);
-
+			DataLength = DataType.getLength();
+			
+			m_value = NerduinoHost.parseValue(data, 9, DataType, DataLength);
+			
 			//if (m_value != m_valueResponse)
 				m_valueResponse = m_value;
-
+			
 //			InputOutput io = IOProvider.getDefault().getIO("Build", false);
 //			io.getOut().println("Update " + m_value.toString());
 			
@@ -254,14 +229,15 @@ public class RemoteDataPoint extends PointBase
     
     public void register(short responseToken, byte filterType, byte filterLength, byte[] filterValue)
     {
-		Parent.sendRegisterPointCallback(Parent, responseToken, Id, filterType, filterLength, filterValue);
+		Parent.sendRegisterPointCallback(null, (byte) 0, responseToken, Id, filterType, filterLength, filterValue);
 		
 		m_registered = true;
     }
 
     public void unregister()
     {
-    	Parent.sendUnregisterPointCallback(Parent, Id);
+    	//Parent.sendUnregisterPointCallback(Parent, Id);
+		Parent.sendRegisterPointCallback(null, (byte) 1, (short) 0, Id, (byte) 0, (byte) 0, null);
 		
 		m_registered = false;
     }
@@ -395,6 +371,7 @@ public class RemoteDataPoint extends PointBase
 			Proxy.DataLength = DataLength;
 			Proxy.DataType = DataType;
 			Proxy.Id = Id;
+			Proxy.m_nerduino = m_nerduino;
 			Proxy.setValue(m_value);
 			
 			if (newpoint != null)
@@ -444,6 +421,13 @@ public class RemoteDataPoint extends PointBase
 			}
 		}
 	}
+	
+	public void sendGetPointValueResponse(NerduinoBase nerduino, short responseToken)
+	{
+		nerduino.sendGetPointValueResponse(responseToken, Id, Status, 
+				DataType, NerduinoHost.toBytes(m_value));
+	}
+
 	
 	public void delete()
 	{

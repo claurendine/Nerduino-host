@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
 <attributes version="1.0">
-    <fileobject name="anonymousMode_1">
-        <attr name="WinSys-TCRef-Order" stringvalue="BuilderTopComponent_1"/>
-    </fileobject>
     <fileobject name="commonpalette">
         <attr name="WinSys-TCRef-Order" stringvalue="CommonPalette"/>
-        <attr name="_palette_visible_HTMLPalette" boolvalue="true"/>
-        <attr name="_palette_visible__empty_" boolvalue="true"/>
     </fileobject>
     <fileobject name="editor">
-        <attr name="WinSys-TCRef-Order" stringvalue="ServiceEditorTopComponent/ScriptingTestTopComponent"/>
+        <attr name="WinSys-TCRef-Order" stringvalue="StartUpBrowserTopComponent/BrowserTopComponent/ServiceEditorTopComponent/NerduinoDashboardTopComponent"/>
     </fileobject>
     <fileobject name="explorer">
-        <attr name="WinSys-TCRef-Order" stringvalue="projectTabLogical_tc/projectTab_tc/favorites/services/ExplorerTopComponent"/>
+        <attr name="WinSys-TCRef-Order" stringvalue="ExplorerTopComponent/ExplorerTopComponent_1/projectTabLogical_tc/projectTab_tc/favorites/services"/>
     </fileobject>
     <fileobject name="navigator">
-        <attr name="WinSys-TCRef-Order" stringvalue="navigatorTC/BuilderTopComponent/PropertiesTopComponent"/>
+        <attr name="WinSys-TCRef-Order" stringvalue="PropertiesTopComponent/navigatorTC/BuilderTopComponent"/>
     </fileobject>
     <fileobject name="output">
-        <attr name="WinSys-TCRef-Order" stringvalue="watchesView/localsView/resultsView/callstackView/breakpointsView/sources/sessionsView/threadsView/bookmarks/versioning_output/search-results/gsf-testrunner-results/refactoring-preview/find-usages/CallHierarchyTopComponent/AnalyzerTopComponent/JavadocTopComponent/TerminalContainerTopComponent/output/TaskListTopComponent/AnalysisResultTopComponent"/>
+        <attr name="WinSys-TCRef-Order" stringvalue="output/watchesView/localsView/resultsView/callstackView/breakpointsView/sources/sessionsView/threadsView/bookmarks/versioning_output/search-results/refactoring-preview/find-usages/JavadocTopComponent/TerminalContainerTopComponent/TaskListTopComponent/AnalysisResultTopComponent/NotificationCenterTopComponent"/>
     </fileobject>
     <fileobject name="properties">
-        <attr name="WinSys-TCRef-Order" stringvalue="JavaHierarchyTopComponent/CssStylesTC/AnalyzeStackTopComponent/properties"/>
+        <attr name="WinSys-TCRef-Order" stringvalue="JavaHierarchyTopComponent/AnalyzeStackTopComponent/properties"/>
+    </fileobject>
+    <fileobject name="rightSlidingSide">
+        <attr name="WinSys-TCRef-Order" stringvalue="CssStylesTC"/>
     </fileobject>
 </attributes>

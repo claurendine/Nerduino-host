@@ -5,11 +5,11 @@
   <kind type="view" />
   <state type="joined"  />
   <constraints>
-    <path orientation="horizontal" number="20" weight="0.1667913238593867"/>
+    <path orientation="horizontal" number="20" weight="0.28377230246389124"/>
     <path orientation="vertical" number="60" weight="0.5"/>
   </constraints>
   <bounds x="192" y="484" width="672" height="506" />
   <frame state="0"/>
-    <active-tc  id="PropertiesTopComponent" />
+    <active-tc  id="PropertiesTopComponent"  prev-id="PropertiesTopComponent" />
     <empty-behavior permanent="true"/>
 </mode>

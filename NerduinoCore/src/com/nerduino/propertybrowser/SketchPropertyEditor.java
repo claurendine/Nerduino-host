@@ -20,7 +20,7 @@
 
 package com.nerduino.propertybrowser;
 
-import com.nerduino.processing.app.SketchManager;
+import processing.app.SketchManager;
 
 public class SketchPropertyEditor extends EnumerationPropertyEditor
 {

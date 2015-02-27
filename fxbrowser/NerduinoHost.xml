@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <root>
     <WebHost Port="4444" Webroot="/Users/chaselaurendine/Documents/SvnProjects/WebServer"/>
-    <NerduinoHost BaudRate="9600" CommPort=""/>
+    <NerduinoHost BaudRate="9600" CommPort="" Port="17401"/>
     <Scrolls/>
     <Skits/>
 </root>

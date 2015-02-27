@@ -44,7 +44,7 @@ autostore = false)
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true)
 @ActionID(category = "Window", id = "org.jfx.browser.StartUpBrowserTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" )
 @TopComponent.OpenActionRegistration(
     displayName = "#CTL_StartUpBrowserAction",
 preferredID = "StartUpBrowserTopComponent")
@@ -76,7 +76,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
 			@Override
 			public void run()
 			{
-				initAndShowGUI("http://www.nerduino.com");
+				//initAndShowGUI("http://www.nerduino.com");
 			}
 		});
 		

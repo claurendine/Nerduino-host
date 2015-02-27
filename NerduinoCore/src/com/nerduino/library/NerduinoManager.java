@@ -22,16 +22,19 @@ package com.nerduino.library;
 
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
+import processing.app.Sketch;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,17 +48,6 @@ public class NerduinoManager extends BaseManager
 	
 	File m_file;
 	
-	public Boolean getEnabled()
-	{
-		return false;
-	}
-	
-	public void setEnabled(Boolean val)
-	{
-		
-	}
-	
-	
 	// Constructors
 	public NerduinoManager() 
 	{
@@ -67,6 +59,52 @@ public class NerduinoManager extends BaseManager
 		m_hasEditor = false;
 		
 		loadChildren();
+		
+		// create a thread to process nerduino states
+		Thread processThread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				for (;;) 
+				{
+					try
+					{
+						for(Node node : getNodes())
+						{
+							NerduinoBase nerd = (NerduinoBase) node;
+							
+							if (nerd.m_active)
+							{
+								nerd.process();
+								
+								if (!nerd.getEngaging())
+								{
+									double dt = nerd.getTimeSinceLastResponse();
+
+									if (dt > 5.0)
+									{
+										if (!nerd.ping())
+										{
+											nerd.setStatus(NerduinoStatusEnum.Offline);
+										}
+									}
+								}
+							}
+						}
+
+						
+						Thread.sleep(1);
+					}
+					catch(InterruptedException ex)
+					{
+						Exceptions.printStackTrace(ex);
+					}
+				}
+			}
+		});
+		
+		processThread.start();
 	}
 	
 	void loadChildren()
@@ -84,8 +122,7 @@ public class NerduinoManager extends BaseManager
 					
 					builder = builderFactory.newDocumentBuilder();
 				
-					FileInputStream fis;
-						fis = new FileInputStream(file);
+					FileInputStream fis = new FileInputStream(file);
 					
 					Document document = builder.parse(fis);
 					
@@ -101,9 +138,13 @@ public class NerduinoManager extends BaseManager
 
 							if (type.matches("USB"))
 								nerduino = new NerduinoUSB();
-							else if (type.matches("Zigbee"))
+							else if (type.matches("XBee"))
 								nerduino = new NerduinoXBee();
-
+							else if (type.matches("TCP"))
+								nerduino = new NerduinoTcp();
+							else if (type.matches("BT"))
+								nerduino = new NerduinoBT();
+							
 							nerduino.readXML(rootElement);
 
 							addChild(nerduino);
@@ -125,7 +166,16 @@ public class NerduinoManager extends BaseManager
 			}
 		}
 	}
-
+		
+	public Boolean getEnabled()
+	{
+		return false;
+	}
+	
+	public void setEnabled(Boolean val)
+	{	
+	}
+	
 	@Override
 	public String getFilePath()
 	{
@@ -151,7 +201,7 @@ public class NerduinoManager extends BaseManager
 		// Loop through each nerduino to check status.  Used to track if nerduinos have 
 		// dropped offline or are non-responsive
 
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			NerduinoBase nerd = (NerduinoBase) node;
 			
@@ -177,10 +227,15 @@ public class NerduinoManager extends BaseManager
 		return nerd;
 	}
 
+	public Node[] getNodes()
+	{
+		return m_children.getNodes();
+	}
+	
 	public NerduinoXBee getNerduino(long serialNumber) 
 	{
 		// TODO consider using a hash table for quick lookup
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			if (node instanceof NerduinoXBee)
 			{
@@ -197,7 +252,7 @@ public class NerduinoManager extends BaseManager
 	public NerduinoXBee getNerduino(short networkAddress) 
 	{
 		// TODO consider using a hash table for quick lookup
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			if (node instanceof NerduinoXBee)
 			{
@@ -214,7 +269,7 @@ public class NerduinoManager extends BaseManager
 	public NerduinoBase getNerduino(String name) 
 	{
 		// TODO consider using a hash table for quick lookup
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			NerduinoBase nerd = (NerduinoBase) node;
 			
@@ -268,7 +323,7 @@ public class NerduinoManager extends BaseManager
 			String name = path.substring(0, p);
 			String pointName = path.substring(p + 1);
 
-			NerduinoBase nerduino = NerduinoManager.Current.getNerduino(name);
+			NerduinoBase nerduino = getNerduino(name);
 
 			if (nerduino != null)
 			{
@@ -291,7 +346,7 @@ public class NerduinoManager extends BaseManager
 	
 	public boolean contains(NerduinoBase nerd)
 	{
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			if (nerd == node)
 				return true;
@@ -316,28 +371,75 @@ public class NerduinoManager extends BaseManager
 		return new NerduinoUSB();
 	}
 	
+	public TreeNode createNewXBeeNerduino()
+	{
+		TreeNode newnode =  new NerduinoXBee();
+		
+		if (newnode != null)
+		{
+			if (configureChild(newnode))
+			{
+				addChild(newnode);
+				
+				newnode.select();
+				
+				return newnode;
+			}
+		}
+		
+		return null;
+	}
+	
+	public TreeNode createNewTCPNerduino()
+	{
+		TreeNode newnode =  new NerduinoTcp();
+		
+		if (newnode != null)
+		{
+			if (configureChild(newnode))
+			{
+				addChild(newnode);
+				
+				newnode.select();
+				
+				return newnode;
+			}
+		}
+		
+		return null;
+	}
+	
+	public TreeNode createNewBTNerduino()
+	{
+		TreeNode newnode =  new NerduinoBT();
+		
+		if (newnode != null)
+		{
+			if (configureChild(newnode))
+			{
+				addChild(newnode);
+				
+				newnode.select();
+				
+				return newnode;
+			}
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public boolean configureChild(TreeNode node)
 	{
-		NerduinoUSB nu = (NerduinoUSB) node;
+		NerduinoBase nb = (NerduinoBase) node;
 		
-		nu.setName(getUniqueName(nu.getName()));
-		
-		// show the configure dialog
-		NerduinoUSBConfigDialog dialog = new NerduinoUSBConfigDialog(new javax.swing.JFrame(), true);
-		
-		dialog.setNerduinoUSB(nu);
-		dialog.setVisible(true);
-		
-		nu = dialog.m_nerduino;
-
-		if (nu != null)
+		if (nb.configureNewNerduino())
 		{
-			nu.setName(getUniqueName(nu.getName()));
+			nb.setName(getUniqueName(nb.getName()));
 			
-			nu.save();
+			nb.save();
 			
-			addChild(nu);
+			addChild(nb);
 			
 			return true;
 		}
@@ -347,11 +449,11 @@ public class NerduinoManager extends BaseManager
 
 	public void engage()
 	{
-		for(Node node : m_children.getNodes())
+		for(Node node : getNodes())
 		{
 			NerduinoBase nerd = (NerduinoBase) node;
-
-			nerd.engage(null);
+			
+			nerd.engage();
 		}
 	}
 	
@@ -363,6 +465,23 @@ public class NerduinoManager extends BaseManager
 			{
 				new NerduinoManager.CreateNerduinoAction(getLookup())
 			};
+	}
+
+	public Object[] getNerduinos(Sketch sketch)
+	{
+		String sname = sketch.getName();
+		
+		ArrayList<NerduinoBase> nerds = new ArrayList<NerduinoBase>();
+		
+		for(Node node : getNodes() )
+		{
+			NerduinoBase nerd = (NerduinoBase) node;
+			
+			if (nerd.getSketch().equals(sname))
+				nerds.add(nerd);
+		}
+		
+		return nerds.toArray();
 	}
 
 	public final class CreateNerduinoAction extends AbstractAction

@@ -33,7 +33,8 @@ public class PointBase extends TreeNode
     public byte DataLength = 1;
     public byte Attributes = 0;
     protected Object m_value = (byte) 0;
-	NerduinoLight m_nerduino = null;
+	NerduinoBase m_nerduino = null;
+	boolean m_setting = false;
 	
     public byte Status = 0;
     protected List<ValueCallback> m_callbacks = new ArrayList<ValueCallback>();
@@ -46,7 +47,7 @@ public class PointBase extends TreeNode
     }
 	
     // Properties
-		public boolean getBoolean()
+	public boolean getBoolean()
 	{
 		if (DataType == DataTypeEnum.DT_Boolean)
 			return (Boolean) m_value;
@@ -141,22 +142,6 @@ public class PointBase extends TreeNode
 		if (DataType == DataTypeEnum.DT_Float)
 			setValue(value);
 	}
-
-/*	
-	public String getString()
-	{
-		if (DataType == DataTypeEnum.DT_String)
-			return (String) m_value;
-		
-		return "";
-	}
-	
-	public void setString(String value)
-	{
-		if (DataType == DataTypeEnum.DT_String)
-			setValue(value);
-	}
-*/
 	
 	public byte[] getBytes()
 	{
@@ -184,21 +169,6 @@ public class PointBase extends TreeNode
 				data = BitConverter.GetBytes((Float) m_value);
 				
 				break;
-			/*
-			case DT_String:
-				m_value = value.toString();
-
-				DataLength = (byte) ((String) m_value).length();
-
-				break;
-			case DT_Array:
-				m_value = value;
-
-				if (value instanceof Byte[])
-					DataLength = (byte) ((Byte[]) value).length;
-
-				break;
-			*/
 		}
 		
 		return data;
@@ -211,68 +181,19 @@ public class PointBase extends TreeNode
     
     public void setValue(Object value)
     {
+		if (m_setting)
+			return;
+		
+		m_setting = true;
+		
         if (m_value != value)
         {
 			try
 			{
-				switch(DataType)
-				{
-					case DT_Boolean:
-						if (value instanceof Boolean)
-							m_value = value;
-						else if (value instanceof String)
-							m_value = Boolean.parseBoolean((String)value);
-
-						break;
-					case DT_Byte:
-						if (value instanceof Byte)
-							m_value = value;
-						else if (value instanceof String)
-							m_value = Byte.parseByte((String)value);
-
-						break;
-					case DT_Short:
-						if (value instanceof Short)
-							m_value = value;
-						else if (value instanceof String)
-							m_value = Short.parseShort((String)value);
-
-						break;
-					case DT_Integer:
-						if (value instanceof Integer)
-							m_value = value;
-						else if (value instanceof String)
-							m_value = Integer.parseInt((String)value);
-
-						break;
-					case DT_Float:
-						if (value instanceof Float)
-							m_value = value;
-						else if (value instanceof String)
-							m_value = Float.parseFloat((String)value);
-
-						break;
-					/*
-					case DT_String:
-						m_value = value.toString();
-
-						DataLength = (byte) ((String) m_value).length();
-
-						break;
-					case DT_Array:
-						m_value = value;
-
-						if (value instanceof Byte[])
-							DataLength = (byte) ((Byte[]) value).length;
-
-						break;
-					*/
-				}
+				initializeValue(value);
 				
 				if (m_nerduino != null)
-				{
-					m_nerduino.sendSetPointValue(Id, DataType, DataLength, value);
-				}
+					m_nerduino.sendSetPointValue(null, Id, DataType, value);
 				
 				// notify all callbacks of the new value
 				for(ValueCallback callback : m_callbacks)
@@ -282,10 +203,54 @@ public class PointBase extends TreeNode
 			}
 			catch(Exception e)
 			{
-
 			}
         }
+		
+		m_setting = false;
     }
+	
+	public void initializeValue(Object value)
+	{
+		switch(DataType)
+		{
+			case DT_Boolean:
+				if (value instanceof Boolean)
+					m_value = value;
+				else if (value instanceof String)
+					m_value = Boolean.parseBoolean((String)value);
+
+				break;
+			case DT_Byte:
+				if (value instanceof Byte)
+					m_value = value;
+				else if (value instanceof String)
+					m_value = Byte.parseByte((String)value);
+
+				break;
+			case DT_Short:
+				if (value instanceof Short)
+					m_value = value;
+				else if (value instanceof String)
+					m_value = Short.parseShort((String)value);
+
+				break;
+			case DT_Integer:
+				if (value instanceof Integer)
+					m_value = value;
+				else if (value instanceof String)
+					m_value = Integer.parseInt((String)value);
+
+				break;
+			case DT_Float:
+				if (value instanceof Float)
+					m_value = value;
+				else if (value instanceof String)
+					m_value = Float.parseFloat((String)value);
+
+				break;
+		}
+	}
+	
 
 	public void setDataType(DataTypeEnum dataType)
 	{
@@ -300,6 +265,4 @@ public class PointBase extends TreeNode
 		
 		return false;
 	}
-	
-    // Methods
 }

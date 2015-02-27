@@ -43,6 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 //public class TreeNode extends DefaultMutableTreeNode
+@SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
 public class TreeNode extends AbstractNode
 {
 	// Declarations
@@ -83,10 +84,8 @@ public class TreeNode extends AbstractNode
 		String oldName = m_name;
 
 		if (m_name.equals(name))
-		{
 			return;
-		}
-
+		
 		m_name = getUniqueName(name);
 
 		super.setName(m_name);
@@ -95,13 +94,9 @@ public class TreeNode extends AbstractNode
 
 		// TODO mark the tab text
 		if (m_topComponent != null)
-		{
 			m_topComponent.setDisplayName(m_name);
-		}
-
-//		NerduinoTreeView.Current.modelUpdated(this);
 	}
-
+	
 	Component action1;
 	
 	public Component getAction1()
@@ -125,17 +120,13 @@ public class TreeNode extends AbstractNode
 		return getUniqueName(getChildren().snapshot(), name);
 	}
 
-	public String getUniqueName(List list, String name)
+	public String getUniqueName(List<Node> list, String name)
 	{
 		if (name == null || name.length() == 0)
-		{
 			name = "Name";
-		}
 
 		if (list == null || list.isEmpty())
-		{
 			return name;
-		}
 
 		String newname = name;
 		Integer index = 1;
@@ -290,10 +281,8 @@ public class TreeNode extends AbstractNode
 	public Action getPreferredAction()
 	{
 		if (m_hasEditor)
-		{
 			return new TreeNodeAction(getLookup());
-		}
-
+		
 		return null;
 	}
 
@@ -302,13 +291,11 @@ public class TreeNode extends AbstractNode
 	{
 		// A list of actions for this node
 		if (m_hasEditor)
-		{
 			return new Action[]
 					{
 						new TreeNodeAction(getLookup())
 					};
-		}
-
+		
 		return new Action[]
 				{
 				};
@@ -354,14 +341,9 @@ public class TreeNode extends AbstractNode
 		java.net.URL imgURL = getClass().getResource(m_iconPath);
 
 		if (imgURL != null)
-		{
 			return new ImageIcon(imgURL).getImage();
-		}
 		else
-		{
-//            System.err.println("Couldn't find file: " + imgURL.toString());
 			return null;
-		}
 	}
 
 	@Override

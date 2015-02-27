@@ -22,7 +22,6 @@ package com.nerduino.scrolls;
 
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
-import com.nerduino.services.ServiceManager;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;

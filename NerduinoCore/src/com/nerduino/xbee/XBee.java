@@ -20,8 +20,7 @@
 
 package com.nerduino.xbee;
 
-import java.io.IOException;
-import javax.sql.rowset.serial.SerialException;
+import jssc.SerialPortException;
 
 
 public class XBee extends Serial
@@ -50,7 +49,7 @@ public class XBee extends Serial
 			long il = (long) sendCommandInt("DL");
 			long ih = (long) sendCommandInt("DH");
 			
-			address = (long) (ih * 0x100000000L + il);
+			address = ih * 0x100000000L + il;
 		} 
 		catch (Exception e) 
 		{
@@ -112,7 +111,7 @@ public class XBee extends Serial
 			long il = (long) low;
 			long ih = (long) high;
 			
-			address = (long) (ih * 0x100000000L + il);
+			address = ih * 0x100000000L + il;
         }
 		catch (Exception e) 
 		{
@@ -343,7 +342,7 @@ public class XBee extends Serial
 		{
 		}
 		
-		return (int)(ret * 100);
+		return (ret * 100);
     }
 
 	public void setNodeDiscoveryTimeout(int value)
@@ -1535,7 +1534,7 @@ public class XBee extends Serial
 	
 	// Methods
     @Override
-	void connect() throws SerialException
+	void connect() throws Exception
     {
 		super.connect();
 		
@@ -1555,22 +1554,24 @@ public class XBee extends Serial
 	            m_bufferLength = 0;
 	            //m_buffer = "";
 	            
-	            byte[] plus = new byte[1];
-	            plus[0] = '+'; 
+	            byte plus = '+'; 
 	
 	            try 
 	            {
-	    			m_outputStream.write(plus);
+					m_port.writeByte(plus);
+	    			//m_outputStream.write(plus);
 	    			
 	                Thread.sleep(50);
 	            	
-	                m_outputStream.write(plus);
+					m_port.writeByte(plus);
+	                //m_outputStream.write(plus);
 	    			
 		            Thread.sleep(50);
 		            
-		            m_outputStream.write(plus);
+					m_port.writeByte(plus);
+		            //m_outputStream.write(plus);
 	    		} 
-	            catch (IOException e) 
+	            catch (SerialPortException e) 
 	            {
 	    		}
 
@@ -1875,7 +1876,8 @@ public class XBee extends Serial
 		
 		            String s = "AT" + command + "\r";
 		            
-		            m_outputStream.write(s.getBytes());
+					m_port.writeBytes(s.getBytes());
+		            //m_outputStream.write(s.getBytes());
 	    			
 		            // wait for a response
 		            Thread.sleep(100);
@@ -1890,7 +1892,8 @@ public class XBee extends Serial
 		                m_bufferLength = 0;
 		                //m_buffer = "";
 		
-		                m_outputStream.write(s.getBytes());
+						m_port.writeBytes(s.getBytes());
+		                //m_outputStream.write(s.getBytes());
 		    			
 		                // wait for a response
 		                Thread.sleep(100);
@@ -1912,7 +1915,7 @@ public class XBee extends Serial
     	catch (InterruptedException e) 
     	{
 		} 
-    	catch (IOException e) 
+    	catch (SerialPortException e) 
     	{
 		}
     	

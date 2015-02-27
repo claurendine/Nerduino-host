@@ -35,6 +35,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import processing.app.ArduinoManager;
 
 
 public class SkitManager extends BaseManager
@@ -179,7 +180,7 @@ public class SkitManager extends BaseManager
 	@Override
 	public String getFilePath()
 	{
-		return "/Users/chaselaurendine/Documents/Nerduino/Services";
+		return ArduinoManager.Current.getArduinoPath() + "/Services";
 	}
 
 	@Override

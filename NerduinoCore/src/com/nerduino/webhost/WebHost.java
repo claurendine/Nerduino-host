@@ -36,7 +36,7 @@ public class WebHost
 {
 //	final MyServ srv;;
  	String m_webroot = "/Users/chaselaurendine/Documents/SvnProjects/WebServer";
-	int m_port = 4444;
+	int m_port = 8081;
 	Boolean m_enabled = true;
 	
 	public static WebHost Current;
@@ -47,7 +47,7 @@ public class WebHost
 		// Overriding method for public access
 		@Override
 		public void setMappingTable(PathTreeDictionary mappingtable) 
-		{ 
+		{
 			super.setMappingTable(mappingtable);
 		}
 
@@ -66,7 +66,7 @@ public class WebHost
 		{
 			Current = this;
 		
-            Server server = new Server(8081);
+			Server server = new Server(8081);
 	        
 			// Create the servlet handler and define the Chat servlet
 			
@@ -228,7 +228,7 @@ public class WebHost
 				}
 				catch(Exception e)
 				{
-					m_port = 4444;
+					m_port = 8081;
 				}
 				
 				if (m_webroot == null || m_webroot.length() == 0)

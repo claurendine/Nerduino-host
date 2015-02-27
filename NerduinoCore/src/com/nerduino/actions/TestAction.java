@@ -20,25 +20,22 @@
 
 package com.nerduino.actions;
 
-import com.nerduino.core.ExplorerTopComponent;
 import com.nerduino.library.CommandResponse;
 import com.nerduino.library.NerduinoBase;
-import com.nerduino.library.NerduinoManager;
 import com.nerduino.library.PointBase;
-import com.nerduino.library.RemoteDataPoint;
 import com.nerduino.library.ResponseStatusEnum;
-import com.nerduino.nodes.TreeNode;
-import com.nerduino.xbee.CommandStatusEnum;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.IOProvider;
-import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 @ActionID(
@@ -57,6 +54,49 @@ public final class TestAction implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+		try
+		{
+			DatagramSocket socket = new DatagramSocket();
+			
+			byte[] buf = new byte[16];
+			
+			buf[0] = 'h';
+			buf[1] = 'e';
+			buf[2] = 'l';
+			buf[3] = 'l';
+			buf[4] = 'o';
+			buf[5] = 0;
+			
+			InetAddress address = InetAddress.getByName("255.255.255.255");
+			
+			DatagramPacket packet = new DatagramPacket(buf, buf.length, 
+								address, 17451);
+
+			socket.send(packet);
+			socket.receive(packet);
+			
+			InetAddress serverAddress = packet.getAddress();
+			
+			String saddress = serverAddress.getHostAddress();
+			String received = new String(packet.getData(), 0, packet.getLength());	
+			
+			
+			Socket tcp = new Socket(saddress, 17401);
+			
+			if (tcp.isConnected())
+			{
+				tcp.close();
+			}
+		}
+		catch(IOException ex)
+		{
+			Exceptions.printStackTrace(ex);
+		}
+		
+		
+		
+		return;
+/*		
 		InputOutput io = IOProvider.getDefault().getIO("Test", false);
 		io.select();
 		output = io.getOut();
@@ -97,6 +137,9 @@ public final class TestAction implements ActionListener
 		{
 			output.println("Please select the Nerduino to Test");
 		}
+		*/
+		
+		
 		
 		/*
 		io.getOut().println("Send Hello!");
@@ -133,16 +176,14 @@ public final class TestAction implements ActionListener
 */
 	}
 	
-	int testCount = 6;
-
+	int testCount = 14;
+	
 	boolean test(int index)
 	{
 		switch(index)
 		{
 			case 0:
 				return validateNerduino();
-			case 1:
-				return testGetMetaData();
 			case 2:
 				return testPing();
 			case 3:
@@ -150,7 +191,24 @@ public final class TestAction implements ActionListener
 			case 4:
 				return testExecute();
 			case 5:
-				return testHostExecute();
+				return testMethod("TestHostExecute", "Execute commands on Host");
+			case 6:
+				return testMethod("TestPing", "Nerduino to Nerduino Ping");
+			case 7:
+				return testMethod("TestRemoteGetValue", "Nerduino to Nerduino Get Value");
+			case 8:
+				return testMethod("TestRemoteSetValue", "Nerduino to Nerduino Set Value");
+			case 9:
+				return testMethod("TestHostGetValue", "Nerduino To Host Get Value");
+			case 10:
+				return testMethod("TestHostSetValue", "Nerduino To Host Set Value");
+			case 11:
+				return testMethod("TestGetStatus", "Nerduino Get Status Value");
+			case 12:
+				return testMethod("TestRemoteExecute", "Nerduino to Nerduino Execute");
+			//case 13:
+			case 1:
+				return testMethod("TestProxyGetSet", "Nerduino Proxy Data IO");
 		}
 		
 		return false;
@@ -165,20 +223,6 @@ public final class TestAction implements ActionListener
 		}
 		
 		return false;
-	}
-	
-	boolean testGetMetaData()
-	{
-		if (nerduino.getMetaData())
-		{
-			output.println("GetMetaData message OK!");
-			return true;
-		}
-		else
-		{
-			output.println("Did not receive a response to the GetMetaData message!");
-			return false;
-		}
 	}
 	
 	boolean testPing()
@@ -217,8 +261,8 @@ public final class TestAction implements ActionListener
 			return false;
 		}
 		
-		setPoint("TestInt", (int) 0);
-		if (!setPoint("TestInt", (int) 444))
+		setPoint("TestInt", 0);
+		if (!setPoint("TestInt", 444))
 		{
 			output.println("SetValue failed to set TestInt point. Verify that this point is exposed in the sketch!");
 			return false;
@@ -316,7 +360,7 @@ public final class TestAction implements ActionListener
 		// verify the response to the test
 		value = response.getResponseValue();
 		
-		if ((Integer) value != (int) 333)
+		if ((Integer) value != 333)
 		{
 			output.println("ExecuteCommand failed to execute method 'Test3'. The command failed to provide a proper response!");
 			return false;			
@@ -410,51 +454,10 @@ public final class TestAction implements ActionListener
 		output.println("ExecuteCommand message OK!");		
 		return true;
 	}
-
-	boolean testHostExecute()
-	{
-		CommandResponse response;
-		Object value;
-		
-		/////////////////////////////////////////////////////////////////
-		// Test boolean response
-		
-		response = sendCommand("TestHostExecute", (byte) 0);
-		
-		if (response.Status != ResponseStatusEnum.RS_Complete)
-		{
-			output.println("ExecuteCommand failed to execute method 'TestHostExecute'. Verify that this command is handled in the sketch!");
-			return false;
-		}
-		
-		// verify the response to the test
-		value = response.getResponseValue();
-		
-		if (!((String) value).equals("OK"))
-		{
-			output.println("ExecuteCommand failed to execute method 'TestHostExecute'!");
-			output.println((String) value);
-			
-			return false;
-		}
-
-		output.println("Execute commands on Host OK!");
-		return true;
-	}
-	
 	
 	CommandResponse sendCommand(String command, byte datatype)
 	{
 		return nerduino.sendExecuteCommand(null, (short) 1, datatype, (byte) command.length(), command.getBytes());
-	}
-	
-	boolean testExecuteByNerduino()
-	{
-		// trigger an execute command by the nerduino
-		// verify the execute response
-		
-		
-		return false;
 	}
 	
 	boolean setPoint(String point, Object value)
@@ -480,4 +483,39 @@ public final class TestAction implements ActionListener
 		
 		return rdp.getValue();
 	}
+		
+	boolean testMethod(String method, String description)
+	{
+		CommandResponse response;
+		Object value;
+		
+		/////////////////////////////////////////////////////////////////
+		// Test boolean response
+		
+		response = sendCommand(method, (byte) 0);
+		
+		if (response.Status != ResponseStatusEnum.RS_Complete)
+		{
+			output.println("Failed to execute method '" + method + "'. Verify that this command is handled in the sketch!");
+			return false;
+		}
+		
+		// verify the response to the test
+		value = response.getResponseValue();
+		
+		if (!((String) value).equals("OK"))
+		{
+			output.println("Failed to execute method '" + method + "'!");
+			output.println((String) value);
+			
+			return false;
+		}
+
+		output.println(description + " OK!");
+		return true;
+	}
 }
+
+
+		
+		

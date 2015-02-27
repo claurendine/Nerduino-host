@@ -22,8 +22,7 @@ package com.nerduino.core;
 
 import org.openide.util.Lookup;
 
-public interface ContextAwareInstance<T> {
-
+public interface ContextAwareInstance<T> 
+{
     T createContextAwareInstance(Lookup context);
-    
 }

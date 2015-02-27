@@ -20,9 +20,6 @@
 
 package com.nerduino.library;
 
-
-
-
 public enum NerduinoStatusEnum 
 {
     Uninitialized(16),

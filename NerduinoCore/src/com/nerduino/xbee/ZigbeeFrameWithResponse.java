@@ -20,7 +20,7 @@
 
 package com.nerduino.xbee;
 
-import com.nerduino.library.XBeeManager;
+//import com.nerduino.library.XBeeManager;
 
 public class ZigbeeFrameWithResponse extends ZigbeeFrame
 {
@@ -38,10 +38,10 @@ public class ZigbeeFrameWithResponse extends ZigbeeFrame
     // Methods
     public int Send()
     {
-        if (AutoGenerateFrameID)
-            FrameID = XBeeManager.getNextFrameID();
+//        if (AutoGenerateFrameID)
+//            FrameID = XBeeManager.getNextFrameID();
 
-        XBeeManager.reserveFrameID(this, FrameID);
+//        XBeeManager.reserveFrameID(this, FrameID);
 
         return super.Send();
     }
@@ -55,7 +55,7 @@ public class ZigbeeFrameWithResponse extends ZigbeeFrame
 
     public void Release()
     {
-        XBeeManager.releaseFrameID(FrameID);
+//        XBeeManager.releaseFrameID(FrameID);
     }
 
     public void OnResponse(byte[] data)

@@ -24,9 +24,10 @@ package com.nerduino.library;
 public enum DeviceTypeEnum 
 {
 	DT_Host(0),
-	DT_Router(1),
-	DT_EndPoint(2),
-	DT_USB(3);
+	DT_ZigbeeRouter(1),
+	DT_ZigbeeEndPoint(2),
+	DT_USB(3),
+	DT_TCP(4);
 	
     
     private final byte value;
@@ -48,14 +49,15 @@ public enum DeviceTypeEnum
 			case 0:
 				return DT_Host;
 			case 1:
-				return DT_Router;
+				return DT_ZigbeeRouter;
 			case 2:
-				return DT_EndPoint;
+				return DT_ZigbeeEndPoint;
 			case 3:
 				return DT_USB;
-		}	
+			case 4:
+				return DT_TCP;
+		}
 		
 		return null;
 	}
-
 }

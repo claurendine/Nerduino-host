@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: javax.bluetooth.gpl
+OpenIDE-Module-Localizing-Bundle: javax/bluetooth/gpl/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
