@@ -45,9 +45,9 @@
     <maximized-mode editor="editor"/>
     <toolbar configuration="Standard" preferred-icon-size="24"/>
     <tc-list>
-  <tc-id id="StartUpBrowserTopComponent"/>
   <tc-id id="ExplorerTopComponent_1"/>
   <tc-id id="PropertiesTopComponent"/>
+  <tc-id id="StartUpBrowserTopComponent"/>
   <tc-id id="output"/>
     </tc-list>
 </windowmanager>

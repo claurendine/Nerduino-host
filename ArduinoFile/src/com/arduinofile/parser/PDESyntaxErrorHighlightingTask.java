@@ -37,15 +37,19 @@ public class PDESyntaxErrorHighlightingTask extends ParserResultTask
 			for (ParseException syntaxError : syntaxErrors)
 			{
 				Token token = syntaxError.currentToken;
-				int start = NbDocument.findLineOffset((StyledDocument) document, token.beginLine - 1) + token.beginColumn - 1;
-				int end = NbDocument.findLineOffset((StyledDocument) document, token.endLine - 1) + token.endColumn;
-				ErrorDescription errorDescription = ErrorDescriptionFactory.createErrorDescription(
-						Severity.ERROR,
-						syntaxError.getMessage(),
-						document,
-						document.createPosition(start),
-						document.createPosition(end));
-				errors.add(errorDescription);
+				
+				if (token.beginLine > 0 && token.endLine > 0)
+				{
+					int start = NbDocument.findLineOffset((StyledDocument) document, token.beginLine - 1) + token.beginColumn - 1;
+					int end = NbDocument.findLineOffset((StyledDocument) document, token.endLine - 1) + token.endColumn;
+					ErrorDescription errorDescription = ErrorDescriptionFactory.createErrorDescription(
+							Severity.ERROR,
+							syntaxError.getMessage(),
+							document,
+							document.createPosition(start),
+							document.createPosition(end));
+					errors.add(errorDescription);
+				}
 			}
 			HintsController.setErrors(document, "simple-java", errors);
 		}

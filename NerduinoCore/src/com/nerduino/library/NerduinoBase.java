@@ -67,6 +67,7 @@ public class NerduinoBase extends TreeNode
     static ArrayList<NerduinoBase> s_nerduinos = new ArrayList<NerduinoBase>();
     static short s_nextRoutingIndex = 1;
 	
+	Scriptable m_nerduinoScope;
 	boolean m_receivedGetPoint = false;
 	boolean m_receivedGetPoints = false;
 	boolean m_pinged = false;
@@ -83,9 +84,9 @@ public class NerduinoBase extends TreeNode
 	Address m_address;
 	
 	CompileCommand m_compileButton;	
-	private List<StatusUpdateEventListener> m_statusUpdateListeners = new ArrayList<StatusUpdateEventListener>();
-	private List<CommandEventListener> m_commandListeners = new ArrayList<CommandEventListener>();
-	private List<UpdateEventListener> m_updateListeners = new ArrayList<UpdateEventListener>();
+	private final List<StatusUpdateEventListener> m_statusUpdateListeners = new ArrayList<StatusUpdateEventListener>();
+	private final List<CommandEventListener> m_commandListeners = new ArrayList<CommandEventListener>();
+	private final List<UpdateEventListener> m_updateListeners = new ArrayList<UpdateEventListener>();
 	
 	DeviceTypeEnum m_deviceType;
 	short m_pointCount = 0;
@@ -186,7 +187,7 @@ public class NerduinoBase extends TreeNode
 			
 			// load up all services
 			if (ServiceManager.Current != null)
-				ServiceManager.Current.applyServices(this);
+				ServiceManager.Current.applyServices(m_context);
 		}
 		
 		return m_context.evaluateString(m_scope, script, "Script", 1, null );
@@ -471,7 +472,16 @@ public class NerduinoBase extends TreeNode
 		save();
 	}
 
-    
+    public Scriptable getScope()
+	{
+		if (m_nerduinoScope == null)
+		{
+			m_nerduinoScope = m_context.initStandardObjects(new NerduinoScope(this));
+		}
+		
+		return m_nerduinoScope;
+	}
+	
 	public PointBase getPoint(short index)
     {
 		for(RemoteDataPoint point : m_points)
@@ -677,7 +687,7 @@ public class NerduinoBase extends TreeNode
 
 				// load up all services
 				if (ServiceManager.Current != null)
-					ServiceManager.Current.applyServices(this);
+					ServiceManager.Current.applyServices(m_context);
 			}
 			
 			

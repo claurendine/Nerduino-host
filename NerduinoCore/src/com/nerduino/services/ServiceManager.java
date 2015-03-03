@@ -53,7 +53,7 @@ public class ServiceManager extends BaseManager
 	Context m_context;
 	Scriptable m_scope;
 	private Children m_nodes;
-	
+	ServiceManagerScope m_managerScope;
 	
 	public ServiceManager()
 	{
@@ -64,7 +64,9 @@ public class ServiceManager extends BaseManager
 		m_nodes = this.getChildren();
 
 		m_context = Context.enter();
-		m_scope = m_context.initStandardObjects();
+		
+		m_managerScope = new ServiceManagerScope();
+		m_scope = m_context.initStandardObjects(m_managerScope);
 		
 		m_file = new File(getFilePath());
 		
@@ -153,7 +155,7 @@ public class ServiceManager extends BaseManager
 		return NerduinoHost.Current.getDataPath() + "/Services";
 	}
 
-	public void applyServices(NerduinoBase nerduino)
+	public void applyServices(Context context)
 	{
 		Node[]  nodes = m_nodes.getNodes();
 		
@@ -165,14 +167,25 @@ public class ServiceManager extends BaseManager
 				{
 					NerduinoService service = (NerduinoService) n;
 
-					nerduino.executeScript(service.getSource());
+					String script = service.getSource();
+					
+					context.evaluateString(m_scope, script, "Script", 1, null );
+					
+					//nerduino.executeScript(service.getSource());
 				}
 				catch(Exception e)
 				{
+					String err = e.getMessage();
 				}
 			}
 		}
 	}
+	
+	public Scriptable getScope()
+	{
+		return m_scope;
+	}
+	
 	
 	boolean applySource(String source)
 	{

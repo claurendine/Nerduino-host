@@ -264,7 +264,10 @@ public final class ExplorerTopComponent extends TopComponent
 		
 		JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
 		
-		AppManager.Current.setRibbon((JRibbon) frame.getRootPane().getLayeredPane().getComponent(0));
+		if (frame.getRootPane().getLayeredPane().getComponent(0) instanceof JRibbon)
+		{
+			AppManager.Current.setRibbon((JRibbon) frame.getRootPane().getLayeredPane().getComponent(0));
+		}
  	}
 
 	@Override

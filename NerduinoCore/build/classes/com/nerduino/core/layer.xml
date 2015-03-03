@@ -271,6 +271,7 @@
 		<folder name="TaskPanes">
 			<folder name="Home">
 				<attr name="position" intvalue="100"/>
+<!--
 				<folder name="Host Settings">
 					<attr name="position" intvalue="100"/>
 
@@ -295,7 +296,7 @@
 						<attr name="position" intvalue="130"/>
 					</file>
 				</folder>
-
+-->
 				<folder name="Create New">
 					<attr name="position" intvalue="110"/>
 					
@@ -313,12 +314,14 @@
 						<attr name="position" intvalue="105"/>
 					</file>
 					
+					<!--
 					<file name="com-nerduino-actions-CreateNerduinoXBeeAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoXBeeAction.instance"/>
 						<attr name="menuText" stringvalue="Nerduino XBee"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="110"/>
 					</file>
+					-->
 					
 					<file name="com-nerduino-actions-CreateNerduinoTCPAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoTCPAction.instance"/>
@@ -361,6 +364,14 @@
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="150"/>
 					</file>
+					
+					<file name="com-nerduino-actions-CreateConversationAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateConversationAction.instance"/>
+						<attr name="menuText" stringvalue="Conversation"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="160"/>
+					</file>
+
 				</folder>
 				<folder name="View">
 					<attr name="position" intvalue="200"/>

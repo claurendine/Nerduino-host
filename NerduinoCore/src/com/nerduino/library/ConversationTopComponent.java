@@ -1,0 +1,404 @@
+/*
+ Part of the Nerduino IOT project - http://nerduino.com
+
+ Copyright (c) 2013 Chase Laurendine
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package com.nerduino.library;
+
+import com.nerduino.services.ServiceManager;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.util.Vector;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.Scriptable;
+
+import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.util.Exceptions;
+import org.openide.windows.TopComponent;
+import org.openide.util.NbBundle.Messages;
+
+@ConvertAsProperties(
+    dtd = "-//com.nerduino.library//Conversation//EN",
+autostore = false)
+@TopComponent.Description(
+    preferredID = "ConversationTopComponent",
+//iconBase="SET/PATH/TO/ICON/HERE", 
+persistenceType = TopComponent.PERSISTENCE_NEVER)
+@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@ActionID(category = "Window", id = "com.nerduino.library.ConversationTopComponent")
+@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@TopComponent.OpenActionRegistration(
+    displayName = "#CTL_ConversationAction",
+preferredID = "ConversationTopComponent")
+@Messages(
+{
+	"CTL_ConversationAction=Conversation",
+	"CTL_ConversationTopComponent=Conversation",
+	"HINT_ConversationTopComponent=This is a Conversation window"
+})
+@SuppressWarnings({"unchecked", "rawtypes"})
+public final class ConversationTopComponent extends TopComponent
+{
+	Context m_context;
+	//Scriptable m_scope;
+	
+	Vector<String> m_commandHistory;
+	int m_commandIndex;
+
+	final DefaultStyledDocument commanddoc;
+	final Style responseStyle;
+	final Style errorStyle;
+	final Style commandStyle;
+	final Style inCommandStyle;
+	final Style warningStyle;
+	
+	@SuppressWarnings({"LeakingThisInConstructor", "BooleanConstructorCall"})
+	public ConversationTopComponent()
+	{
+		initComponents();
+		setName(Bundle.CTL_ConversationTopComponent());
+		setToolTipText(Bundle.HINT_ConversationTopComponent());
+		m_commandHistory = new Vector<String>();
+        
+		StyleContext sc = new StyleContext();
+	    commanddoc = new DefaultStyledDocument(sc);
+		
+		responseStyle = sc.addStyle("Response", null);
+		responseStyle.addAttribute(StyleConstants.Foreground, Color.black);
+		responseStyle.addAttribute(StyleConstants.FontSize, 16);
+		responseStyle.addAttribute(StyleConstants.FontFamily, "serif");
+		responseStyle.addAttribute(StyleConstants.Bold, false);
+		
+		errorStyle = sc.addStyle("Error", null);
+		errorStyle.addAttribute(StyleConstants.Foreground, Color.red);
+		errorStyle.addAttribute(StyleConstants.FontSize, 16);
+		errorStyle.addAttribute(StyleConstants.FontFamily, "serif");
+		errorStyle.addAttribute(StyleConstants.Bold, true);
+		
+		commandStyle = sc.addStyle("Command", null);
+		commandStyle.addAttribute(StyleConstants.Foreground, Color.blue);
+		commandStyle.addAttribute(StyleConstants.FontSize, 16);
+		commandStyle.addAttribute(StyleConstants.FontFamily, "serif");
+		commandStyle.addAttribute(StyleConstants.Bold, false);
+		
+		inCommandStyle = sc.addStyle("InCommand", null);
+		inCommandStyle.addAttribute(StyleConstants.Foreground, Color.green);
+		inCommandStyle.addAttribute(StyleConstants.FontSize, 16);
+		inCommandStyle.addAttribute(StyleConstants.FontFamily, "serif");
+		inCommandStyle.addAttribute(StyleConstants.Bold, false);
+		
+		warningStyle = sc.addStyle("Warning", null);
+		warningStyle.addAttribute(StyleConstants.Foreground, Color.yellow);
+		warningStyle.addAttribute(StyleConstants.FontSize, 16);
+		warningStyle.addAttribute(StyleConstants.FontFamily, "serif");
+		warningStyle.addAttribute(StyleConstants.Bold, true);
+		
+		
+		textCommand.setDocument(commanddoc);
+		
+		try
+		{
+			commanddoc.insertString(0, "Pronto!\n\n", responseStyle);
+		}
+		catch(BadLocationException ex)
+		{
+			Exceptions.printStackTrace(ex);
+		}
+		
+	}
+
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the Form Editor.
+	 */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents()
+    {
+
+        jScrollPane3 = new javax.swing.JScrollPane();
+        textCommand = new javax.swing.JTextPane();
+        jLabel1 = new javax.swing.JLabel();
+        editCommand = new javax.swing.JTextField();
+        btnClear = new javax.swing.JButton();
+
+        textCommand.setEditable(false);
+        jScrollPane3.setViewportView(textCommand);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ConversationTopComponent.class, "ConversationTopComponent.jLabel1.text")); // NOI18N
+
+        editCommand.setText(org.openide.util.NbBundle.getMessage(ConversationTopComponent.class, "ConversationTopComponent.editCommand.text")); // NOI18N
+        editCommand.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyPressed(java.awt.event.KeyEvent evt)
+            {
+                OnKeyPressed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnClear, org.openide.util.NbBundle.getMessage(ConversationTopComponent.class, "ConversationTopComponent.btnClear.text")); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(editCommand, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClear)
+                        .addGap(14, 14, 14))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(editCommand, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClear))
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void OnKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_OnKeyPressed
+    {//GEN-HEADEREND:event_OnKeyPressed
+
+		int key = evt.getKeyCode();
+		
+		switch(key)
+		{
+			case 10:
+				// on carriage return.. commit the command
+				sendCommand();
+				break;
+			case 38: // up arrow
+				if (m_commandIndex > -1)
+					m_commandIndex --;
+				
+				if (m_commandIndex >= 0 && m_commandIndex < m_commandHistory.size())
+				{
+					editCommand.setText(m_commandHistory.get(m_commandIndex).toString());
+				}
+				break;
+			case 40: // down arrow
+				if (m_commandIndex < m_commandHistory.size())
+				{
+					m_commandIndex ++;
+
+					if (m_commandIndex >= 0 && m_commandIndex < m_commandHistory.size())
+					{
+						editCommand.setText(m_commandHistory.get(m_commandIndex).toString());
+					}
+				}
+
+				break;
+		}
+		
+		
+    }//GEN-LAST:event_OnKeyPressed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
+    private javax.swing.JTextField editCommand;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextPane textCommand;
+    // End of variables declaration//GEN-END:variables
+	@Override
+	public void componentOpened()
+	{
+	}
+	
+	@Override
+	public void componentClosed()
+	{
+	}
+	
+	
+	void writeProperties(java.util.Properties p)
+	{
+		// better to version settings since initial version as advocated at
+		// http://wiki.apidesign.org/wiki/PropertyFiles
+		p.setProperty("version", "1.0");
+		// TODO store your settings
+	}
+
+	void readProperties(java.util.Properties p)
+	{
+		String version = p.getProperty("version");
+		// TODO read your settings according to their version
+	}
+
+	void listCommands()
+	{
+		if (ServiceManager.Current != null)
+		{
+			Scriptable scope = ServiceManager.Current.getScope();
+		
+			Object[] objs = scope.getIds();
+			
+			
+			for(int i =0 ; i < objs.length; i++)
+			{
+				Object obj = objs[i];
+									
+				try
+				{
+					int pos = commanddoc.getLength();
+
+					commanddoc.insertString(pos, obj.toString() + "\n", responseStyle);
+				}
+				catch(BadLocationException ex)
+				{
+					Exceptions.printStackTrace(ex);
+				}
+
+			}
+		}
+
+	}
+	
+	void sendCommand()
+	{
+		{
+			String command = editCommand.getText();
+			
+			if (command != null && !command.isEmpty())
+			{
+				// attempt to execute the command
+				if (m_context == null)
+				{
+					m_context = Context.enter();
+					//m_scope = m_context.initStandardObjects();
+
+					// load up all services
+					if (ServiceManager.Current != null)
+						ServiceManager.Current.applyServices(m_context);
+				}
+
+				if (command.equals("?"))
+				{
+					listCommands();
+					editCommand.setText("");
+					return;
+				}
+				
+				try
+				{
+					int pos = commanddoc.getLength();
+
+					commanddoc.insertString(pos, command + "\n", commandStyle);
+
+					Object ret = m_context.evaluateString(ServiceManager.Current.getScope(), command, "Script", 1, null );
+
+					// commands that succeed will be placed in the command list
+					m_commandHistory.add(command);
+					m_commandIndex = m_commandHistory.size();
+
+					
+					if (ret != null)
+					{
+						pos = commanddoc.getLength();
+						
+						commanddoc.insertString(pos, ret.toString() + "\n", responseStyle);
+					}
+				}
+				catch(EcmaError ee)
+				{
+					try
+					{
+						int pos = commanddoc.getLength();
+						
+						commanddoc.insertString(pos, ee.details() + "\n", errorStyle);
+					}
+					catch(BadLocationException ex)
+					{
+						Exceptions.printStackTrace(ex);
+					}
+
+					ee.details();
+				}
+				catch(Exception ex)
+				{
+					int pos = commanddoc.getLength();
+						
+					try
+					{
+						commanddoc.insertString(pos, ex.getMessage() + "\n", errorStyle);
+					}
+					catch(BadLocationException ex1)
+					{
+						Exceptions.printStackTrace(ex1);
+					}
+				}	
+				
+				editCommand.setText("");
+			}
+		}
+	}
+	
+	void appendCommand(String command, CommandMessageTypeEnum type)
+	{
+		try
+		{
+			int pos = commanddoc.getLength();
+			
+			switch (type)
+			{
+				case OutgoingCommand:
+					commanddoc.insertString(pos, command + "\n", commandStyle);
+					break;
+				case Response:
+					commanddoc.insertString(pos, command + "\n", responseStyle);
+					break;
+				case IncomingCommand:
+					commanddoc.insertString(pos, command + "\n", inCommandStyle);
+					break;
+				default:
+					commanddoc.insertString(pos, command + "\n", errorStyle);
+					break;
+			}
+			
+			textCommand.scrollRectToVisible(new Rectangle(0,textCommand.getBounds(null).height,1,1));
+		}
+		catch(BadLocationException ex)
+		{
+		}
+	}
+
+}

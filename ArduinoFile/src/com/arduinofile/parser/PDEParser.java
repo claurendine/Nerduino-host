@@ -7,9 +7,13 @@ package com.arduinofile.parser;
 import com.arduinofile.jccparser.JavaParser;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
+import org.netbeans.modules.csl.api.Error;
+import org.netbeans.modules.csl.spi.ParserResult;
 import org.netbeans.modules.parsing.api.Snapshot;
 import org.netbeans.modules.parsing.api.Task;
 import org.netbeans.modules.parsing.spi.Parser;
@@ -58,7 +62,7 @@ public class PDEParser extends Parser
 	{
 	}
 
-	public static class PDEParserResult extends Result
+	public static class PDEParserResult extends ParserResult
 	{
 		private JavaParser javaParser;
 		private boolean valid = true;
@@ -82,6 +86,12 @@ public class PDEParser extends Parser
 		protected void invalidate()
 		{
 			valid = false;
+		}
+		
+		@Override
+		public List<? extends Error> getDiagnostics()
+		{	
+			return Collections.EMPTY_LIST;
 		}
 	}
 }

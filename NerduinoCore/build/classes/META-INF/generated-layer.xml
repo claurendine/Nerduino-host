@@ -57,6 +57,16 @@
                 <attr boolvalue="false" name="noIconInMenu"/>
                 <attr boolvalue="true" name="surviveFocusChange"/>
             </file>
+            <file name="com-nerduino-actions-CreateConversationAction.instance">
+                <!--com.nerduino.actions.CreateConversationAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateConversationAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.CreateConversationAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/NewConversation.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
             <file name="com-nerduino-actions-CreateNerduinoBTAction.instance">
                 <!--com.nerduino.actions.CreateNerduinoBTAction-->
                 <attr
@@ -229,6 +239,15 @@
                 <attr
                     bundlevalue="com.nerduino.core.Bundle#CTL_PropertiesAction" name="displayName"/>
             </file>
+            <file name="com-nerduino-library-ConversationTopComponent.instance">
+                <!--com.nerduino.library.ConversationTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="com.nerduino.library.ConversationTopComponent"/>
+                <attr name="preferredID" stringvalue="ConversationTopComponent"/>
+                <attr
+                    bundlevalue="com.nerduino.library.Bundle#CTL_ConversationAction" name="displayName"/>
+            </file>
             <file name="com-nerduino-library-NerduinoDashboardTopComponent.instance">
                 <!--com.nerduino.library.NerduinoDashboardTopComponent-->
                 <attr
@@ -259,6 +278,10 @@
                 <!--com.nerduino.core.PropertiesTopComponent-->
                 <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-core-PropertiesTopComponent.instance"/>
             </file>
+            <file name="com-nerduino-library-ConversationTopComponent.shadow">
+                <!--com.nerduino.library.ConversationTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-library-ConversationTopComponent.instance"/>
+            </file>
             <file name="com-nerduino-library-NerduinoDashboardTopComponent.shadow">
                 <!--com.nerduino.library.NerduinoDashboardTopComponent-->
                 <attr name="originalFile" stringvalue="Actions/Window/com-nerduino-library-NerduinoDashboardTopComponent.instance"/>
@@ -283,6 +306,13 @@
 <!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
 <settings version="1.0">
   <instance class="com.nerduino.core.PropertiesTopComponent"/>
+</settings>
+]]></file>
+            <file name="ConversationTopComponent.settings">
+                <!--com.nerduino.library.ConversationTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="com.nerduino.library.ConversationTopComponent"/>
 </settings>
 ]]></file>
             <file name="NerduinoDashboardTopComponent.settings">
@@ -322,6 +352,14 @@
 ]]></file>
             </folder>
             <folder name="editor">
+                <file name="ConversationTopComponent.wstcref">
+                    <!--com.nerduino.library.ConversationTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="ConversationTopComponent"/>
+  <state opened="false"/>
+</tc-ref>
+]]></file>
                 <file name="NerduinoDashboardTopComponent.wstcref">
                     <!--com.nerduino.library.NerduinoDashboardTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
@@ -358,6 +396,10 @@
                 </file>
             </folder>
             <folder name="com_nerduino_library">
+                <file name="Conversation" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--com.nerduino.library.ConversationTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.library//Conversation//EN"/>
+                </file>
                 <file name="NerduinoDashboard" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
                     <!--com.nerduino.library.NerduinoDashboardTopComponent-->
                     <attr name="hint.originalPublicID" stringvalue="-//com.nerduino.library//NerduinoDashboard//EN"/>
@@ -378,6 +420,10 @@
                         </file>
                     </folder>
                     <folder name="library">
+                        <file name="ConversationTopComponent">
+                            <!--com.nerduino.library.ConversationTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_library/Conversation.instance"/>
+                        </file>
                         <file name="NerduinoDashboardTopComponent">
                             <!--com.nerduino.library.NerduinoDashboardTopComponent-->
                             <attr name="settings.providerPath" stringvalue="xml/lookups//com_nerduino_library/NerduinoDashboard.instance"/>
@@ -426,6 +472,16 @@
                 </file>
             </folder>
             <folder name="com_nerduino_library">
+                <file name="Conversation.instance">
+                    <!--com.nerduino.library.ConversationTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="com.nerduino.library.ConversationTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="com.nerduino.library.ConversationTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
                 <file name="NerduinoDashboard.instance">
                     <!--com.nerduino.library.NerduinoDashboardTopComponent-->
                     <attr

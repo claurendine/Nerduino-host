@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="com.nerduino.core">
-    <module_version install_time="1424836883550" last="true" origin="installer" specification_version="1.0">
+    <module_version install_time="1425358818706" last="true" origin="installer" specification_version="1.0">
         <file crc="3739932745" name="config/Modules/com-nerduino-core.xml"/>
-        <file crc="691025409" name="modules/com-nerduino-core.jar"/>
+        <file crc="2095730364" name="modules/com-nerduino-core.jar"/>
         <file crc="1599375659" name="modules/ext/flamingo.jar"/>
         <file crc="4259053810" name="modules/ext/javax.websocket-api-0.0.006.draft.jar"/>
         <file crc="3198681824" name="modules/ext/jetty-all-8.1.8.v20121106.jar"/>

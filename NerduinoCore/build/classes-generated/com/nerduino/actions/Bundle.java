@@ -18,6 +18,13 @@ class Bundle {
     }
     /**
      * @return <i>Nerduino</i>
+     * @see CreateConversationAction
+     */
+    static String CTL_CreateConversationAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_CreateConversationAction");
+    }
+    /**
+     * @return <i>Nerduino</i>
      * @see CreateNerduinoBTAction
      */
     static String CTL_CreateNerduinoBTAction() {

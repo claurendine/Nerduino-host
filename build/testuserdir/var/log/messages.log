@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
->Log Session: Thursday, February 26, 2015 7:07:03 AM CST
+>Log Session: Monday, March 2, 2015 11:00:24 PM CST
 >System Info: 
   Product Version         = Nerduino IOT
   Operating System        = Mac OS X version 10.7.5 running on x86_64
@@ -8,7 +8,7 @@
   Java Home               = /Library/Java/JavaVirtualMachines/jdk1.7.0_10.jdk/Contents/Home/jre
   System Locale; Encoding = en_US (nerduinoiot); UTF-8
   Home Directory          = /Users/chaselaurendine
-  Current Directory       = /Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/fxbrowser
+  Current Directory       = /Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/NerduinoCore
   User Directory          = /Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/build/testuserdir
   Cache Directory         = /Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/build/testuserdir/var/cache
   Installation            = /Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/build/cluster
@@ -271,27 +271,32 @@ INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
 	javax.bluetooth [1.0 140102]
 	jSSC [1.0 130625]
 	com.pinkmatter.modules.flamingo [0.1 120909]
-	com.arduinofile [1.0 150224]
-	com.nerduino.core [1.0 150225]
+	com.arduinofile [1.0 150228]
+	com.nerduino.core [1.0 150303]
 INFO [org.netbeans.core.netigso.Netigso]: bundle com.jcraft.jzlib@1.0.7 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.common@3.6.0.v20110523 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle javaewah.dummy@0.7.9 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.jobs@3.5.101.v20120113-1953 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.registry@3.5.200.v20120522-1841 resolved
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.preferences@3.4.2.v20120111-2020 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.app@1.3.100.v20110321 resolved
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 resolved
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.preferences@3.4.2.v20120111-2020 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.contenttype@3.4.100.v20110423-0524 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.runtime@3.7.0.v20110110 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.core@1.9.0.20131007-2055 resolved
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.textile.core@1.9.0.20131007-2055 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.confluence.core@1.9.0.20131007-2055 resolved
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.textile.core@1.9.0.20131007-2055 resolved
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.net@1.2.100.I20110511-0800 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.commons.core@3.10.0.20130926-1710 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.commons.repositories.core@1.2.0.20130704-2116 resolved
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.osgi@3.9.1.v20140110-1610 started
-WARNING [org.openide.filesystems.Ordering]: Found same position 200 for both Ribbon/AppMenu/Print and Ribbon/AppMenu/org-netbeans-modules-options-OptionsWindowAction.shadow
 INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy resolver: Mac
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading failed! Trying fallback resolver.
+INFO [org.netbeans.core.network.proxy.fallback.FallbackNetworkProxy]: Fallback system proxy resolver: no http_proxy variable found
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading succeeded. Fallback provider was successful.
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy - mode: direct
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy: fell to default (correct if direct mode went before)
+WARNING [org.openide.filesystems.Ordering]: Found same position 200 for both Ribbon/AppMenu/Print and Ribbon/AppMenu/org-netbeans-modules-options-OptionsWindowAction.shadow
 INFO [org.netbeans.core.startup.layers.BinaryFS]: value = com.pinkmatter.test.flamingo.actions.Bundle#HINT_PageSetupAction from Ribbon/AppMenu/Print/Print Actions/org-netbeans-modules-print-action-PageSetupAction.shadow
 Offending classloader: SystemClassLoader[236 modules]
 Offending classloader: SystemClassLoader[236 modules]
@@ -329,11 +334,6 @@ Caused: java.util.MissingResourceException: No such bundle com.pinkmatter.test.f
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:91)
 ALL [null]: Offending classloader: SystemClassLoader[236 modules]
 CONFIG [null]: Missing resource from class: com.pinkmatter.test.flamingo.actions.Bundle
-INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading failed! Trying fallback resolver.
-INFO [org.netbeans.core.network.proxy.fallback.FallbackNetworkProxy]: Fallback system proxy resolver: no http_proxy variable found
-INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading succeeded. Fallback provider was successful.
-INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy - mode: direct
-INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy: fell to default (correct if direct mode went before)
 INFO [org.netbeans.core.startup.layers.BinaryFS]: value = com.pinkmatter.test.flamingo.actions.Bundle#HINT_PrintAction from Ribbon/AppMenu/Print/Print Actions/org-netbeans-modules-print-action-PrintAction.shadow
 Offending classloader: SystemClassLoader[236 modules]
 Offending classloader: SystemClassLoader[236 modules]
@@ -642,8 +642,8 @@ ALL [null]: Offending classloader: SystemClassLoader[236 modules]
 CONFIG [null]: Missing resource from class: com.pinkmatter.test.flamingo.actions.Bundle
 INFO [org.netbeans.ui.metrics.laf]: USG_LOOK_AND_FEEL
 WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.eclipse.jetty.util.log.Log$1.run(Log.java:120)
-2015-02-26 07:07:11.100:INFO:oejs.Server:Thread-27: jetty-9.0.z-SNAPSHOT
-2015-02-26 07:07:11.158:INFO:oejs.ServerConnector:Thread-27: Started ServerConnector@29b9dd9e{HTTP/1.1}{0.0.0.0:8081}
+2015-03-02 23:00:39.225:INFO:oejs.Server:Thread-21: jetty-9.0.z-SNAPSHOT
+2015-03-02 23:00:39.259:INFO:oejs.ServerConnector:Thread-21: Started ServerConnector@4ea173bc{HTTP/1.1}{0.0.0.0:8081}
 Diagnostic information
 Input arguments:
 	-Djdk.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_10.jdk/Contents/Home
@@ -651,37 +651,106 @@ Input arguments:
 	-Dnetbeans.home=/Applications/NetBeans/NetBeans 8.0.2.app/Contents/Resources/NetBeans/platform
 	-Dnetbeans.logger.console=true
 	-ea
+	-Xdebug
+	-Xrunjdwp:transport=dt_socket,suspend=y,server=n,address=localhost:51025
 	-Dsun.awt.disableMixing=true
 	-XX:+HeapDumpOnOutOfMemoryError
-	-XX:HeapDumpPath=/Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/fxbrowser/../build/testuserdir/var/log/heapdump.hprof
+	-XX:HeapDumpPath=/Users/chaselaurendine/Documents/SvnProjects/NerduinoIDE/Nerduino-host/NerduinoCore/../build/testuserdir/var/log/heapdump.hprof
 Compiler: HotSpot 64-Bit Tiered Compilers
-Heap memory usage: initial 81.7MB maximum 1162.7MB
+Heap memory usage: initial 79.8MB maximum 1136.0MB
 Non heap memory usage: initial 23.2MB maximum 130.0MB
-Garbage collector: PS Scavenge (Collections=8 Total time spent=0s)
+Garbage collector: PS Scavenge (Collections=12 Total time spent=0s)
 Garbage collector: PS MarkSweep (Collections=0 Total time spent=0s)
-Classes: loaded=8463 total loaded=8463 unloaded 0
+Classes: loaded=8488 total loaded=8488 unloaded 0
 INFO [org.netbeans.core.ui.warmup.DiagnosticTask]: Total memory 6,442,450,944
 INFO [null]: Total physical memory 6,442,450,944
-WARNING [org.openide.filesystems.Ordering]: Not all children in Menu/Window/ marked with the position attribute: [Debug, com-nerduino-core-ExplorerTopComponent.shadow, com-nerduino-core-PropertiesTopComponent.shadow, com-nerduino-core-ServiceEditorTopComponent.shadow, com-nerduino-library-NerduinoDashboardTopComponent.shadow, org-jfx-browser-BrowserTopComponent.shadow, org-jfx-browser-StartUpBrowserTopComponent.shadow], but some are: [org-netbeans-modules-project-ui-logical-tab-action.shadow, org-netbeans-modules-project-ui-physical-tab-action.shadow, org-netbeans-modules-favorites-View.shadow, org-netbeans-core-ide-ServicesTabAction.shadow, org-netbeans-modules-navigator-ShowNavigatorAction.shadow, org-netbeans-modules-tasklist-ui-TaskListAction.shadow, org-netbeans-core-io-ui-IOWindowAction.shadow, SwitchToRecentDocumentAction.shadow, Web, Tools, Separator3.instance, ConfigureWindow, org-netbeans-core-windows-actions-ResetWindowsAction.shadow, Separator4.instance, CloseWindowAction.shadow, CloseAllDocumentsAction.shadow, CloseAllButThisAction.shadow, GroupsMenuAction.shadow, DocumentsAction.shadow]
+WARNING [org.openide.filesystems.Ordering]: Not all children in Menu/Window/ marked with the position attribute: [Debug, com-nerduino-core-ExplorerTopComponent.shadow, com-nerduino-core-PropertiesTopComponent.shadow, com-nerduino-core-ServiceEditorTopComponent.shadow, com-nerduino-library-ConversationTopComponent.shadow, com-nerduino-library-NerduinoDashboardTopComponent.shadow, org-jfx-browser-BrowserTopComponent.shadow, org-jfx-browser-StartUpBrowserTopComponent.shadow], but some are: [org-netbeans-modules-project-ui-logical-tab-action.shadow, org-netbeans-modules-project-ui-physical-tab-action.shadow, org-netbeans-modules-favorites-View.shadow, org-netbeans-core-ide-ServicesTabAction.shadow, org-netbeans-modules-navigator-ShowNavigatorAction.shadow, org-netbeans-modules-tasklist-ui-TaskListAction.shadow, org-netbeans-core-io-ui-IOWindowAction.shadow, SwitchToRecentDocumentAction.shadow, Web, Tools, Separator3.instance, ConfigureWindow, org-netbeans-core-windows-actions-ResetWindowsAction.shadow, Separator4.instance, CloseWindowAction.shadow, CloseAllDocumentsAction.shadow, CloseAllButThisAction.shadow, GroupsMenuAction.shadow, DocumentsAction.shadow]
+INFO [org.netbeans.modules.sampler.InternalSampler]: Slowness detector disabled - running in debug mode
+WARNING [org.netbeans.core.TimableEventQueue]: too much time in AWT thread null
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: C1CE2BBFCC929849
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: C1CE2BBFCC929849
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
+WARNING [javax.jmdns.impl.DNSIncoming]: There was an OPT answer. Not currently handled. Option code: 65002 data: B6720AC938D47B91
 INFO [org.netbeans.ui.indexing]: Indexing started, time from last indexing 0 ms.
-INFO [org.netbeans.ui.indexing]: Indexing finished, indexing took 2 ms.
+INFO [org.netbeans.ui.indexing]: Indexing finished, indexing took 1 ms.
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.osgi@3.9.1.v20140110-1610 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.commons.core@3.10.0.20130926-1710 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.commons.core@3.10.0.20130926-1710 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.net@1.2.100.I20110511-0800 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.net@1.2.100.I20110511-0800 stopped
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 256
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.core@1.9.0.20131007-2055 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.mylyn.wikitext.core@1.9.0.20131007-2055 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.runtime@3.7.0.v20110110 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.runtime@3.7.0.v20110110 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.contenttype@3.4.100.v20110423-0524 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.contenttype@3.4.100.v20110423-0524 stopped
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 256
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.security@1.1.1.R37x_v20110822-1018 stopped
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.app@1.3.100.v20110321 256
-INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.app@1.3.100.v20110321 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.preferences@3.4.2.v20120111-2020 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.preferences@3.4.2.v20120111-2020 stopped
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.app@1.3.100.v20110321 256
+INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.app@1.3.100.v20110321 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.registry@3.5.200.v20120522-1841 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.equinox.registry@3.5.200.v20120522-1841 stopped
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.core.jobs@3.5.101.v20120113-1953 256
