@@ -283,10 +283,6 @@ com.arduinofile.parser.PDESyntaxErrorHighlightingTaskFactory
 com.arduinofile.lexer.PDETokenId
 org.netbeans.modules.csl.spi.DefaultLanguageConfig
 com.arduinofile.PDELanguage
-||:com.arduinofile.jccparser.Token
-java.lang.Object
-com.arduinofile.jccparser.Token$GTToken
-com.arduinofile.jccparser.Token
 ||:com.arduinofile.jcclexer.JavaCharStream
 java.lang.UnsupportedOperationException
 java.lang.IllegalArgumentException
@@ -297,6 +293,10 @@ java.lang.Object
 org.netbeans.spi.lexer.LexerInput
 java.lang.String
 com.arduinofile.jcclexer.JavaCharStream
+||:com.arduinofile.jccparser.Token
+java.lang.Object
+com.arduinofile.jccparser.Token$GTToken
+com.arduinofile.jccparser.Token
 ||:com.arduinofile.jccparser.JavaParser$1
 java.lang.Object
 com.arduinofile.jccparser.JavaParser

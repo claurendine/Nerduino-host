@@ -67,7 +67,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
 	public StartUpBrowserTopComponent()
 	{
 		initComponents();
-		setName("Start Up");
+		setName("Browser");
 		putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
 		setLayout(new BorderLayout());
 
@@ -76,7 +76,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
 			@Override
 			public void run()
 			{
-				//initAndShowGUI("http://www.nerduino.com");
+				initAndShowGUI("http://www.nerduino.com");
 			}
 		});
 		
@@ -88,7 +88,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
 	private void initAndShowGUI(String _url)
 	{
 		final String url = _url;
-		
+
 		if (m_panel == null)
 		{
 			m_panel = new JFXPanel();
@@ -130,6 +130,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
 		m_engine.getLoadWorker().progressProperty().addListener(handler);
 		final TextField locationField = new TextField(url);
 		locationField.setMaxHeight(Double.MAX_VALUE);
+		
 		Button goButton = new Button("Go");
 		goButton.setDefaultButton(true);
 		EventHandler<ActionEvent> goAction = new EventHandler<ActionEvent>()
@@ -143,6 +144,26 @@ public final class StartUpBrowserTopComponent extends TopComponent
 		};
 		goButton.setOnAction(goAction);
 		locationField.setOnAction(goAction);
+		
+		Button backButton = new Button("Back");
+		EventHandler<ActionEvent> backAction = new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event)
+			{
+				int index = m_engine.getHistory().getCurrentIndex();
+				
+				if (index > 0)
+				{
+					String url = m_engine.getHistory().getEntries().get(index - 1).getUrl();
+				
+					m_engine.load(url);
+				}
+			}
+		};
+		backButton.setOnAction(backAction);
+
+		//locationField.setOnAction(goAction);
 		m_engine.locationProperty().addListener(new ChangeListener<String>()
 		{
 			@Override
@@ -157,14 +178,15 @@ public final class StartUpBrowserTopComponent extends TopComponent
 		grid.setHgap(5);
 		GridPane.setConstraints(locationField, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.SOMETIMES);
 		GridPane.setConstraints(goButton, 1, 0);
-		GridPane.setConstraints(view, 0, 1, 2, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+		GridPane.setConstraints(backButton, 2, 0);
+		GridPane.setConstraints(view, 0, 1, 3, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
 		GridPane.setConstraints(warningLabel, 0, 2, 2, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.SOMETIMES);
 		grid.getColumnConstraints().addAll(
 				new ColumnConstraints(widthDouble - 200, widthDouble - 200, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true),
 				new ColumnConstraints(40, 40, 40, Priority.NEVER, HPos.CENTER, true));
-		//grid.getChildren().addAll(locationField, goButton, warningLabel, view);
+		grid.getChildren().addAll(locationField, goButton, backButton, warningLabel, view);
 
-		grid.getChildren().addAll(view);
+		//grid.getChildren().addAll(view);
 
 		return grid;
 	}
@@ -186,7 +208,7 @@ public final class StartUpBrowserTopComponent extends TopComponent
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 304, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -232,7 +254,10 @@ public final class StartUpBrowserTopComponent extends TopComponent
 			@Override
 			public void run()
 			{
-				initAndShowGUI(url);
+				m_engine.load(url.startsWith("http://") ? url
+						 : "http://" + url);
+
+				//initAndShowGUI(url);
 			}
 		});
 	}

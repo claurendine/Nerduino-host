@@ -2,6 +2,6 @@
 
 <tc-ref version="2.2">
     <tc-id id="ExplorerTopComponent_1" />
-    <state opened="true" />
+    <state opened="false" />
     <docking-status maximized-mode="docked" />
 </tc-ref>

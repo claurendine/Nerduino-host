@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="javax.jmdns">
-    <module_version install_time="1424781570507" last="true" origin="installer" specification_version="1.0">
+    <module_version install_time="1425599511799" last="true" origin="installer" specification_version="1.0">
         <file crc="920044688" name="config/Modules/javax-jmdns.xml"/>
         <file crc="1727936618" name="modules/ext/jmdns-3.4.1.jar"/>
-        <file crc="385234924" name="modules/javax-jmdns.jar"/>
+        <file crc="4288878235" name="modules/javax-jmdns.jar"/>
     </module_version>
 </module>

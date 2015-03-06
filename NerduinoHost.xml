@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <root>
-    <WebHost Port="4444" Webroot="/Users/chaselaurendine/Documents/SvnProjects/WebServer"/>
+    <WebHost Port="8081" Webroot="/Users/chaselaurendine/Documents/SvnProjects/WebServer"/>
     <NerduinoHost BaudRate="9600" CommPort="" Port="17401"/>
-    <Scrolls/>
+    <Scrolls>
+        <Node Name="Scroll"/>
+        <Node Name="Scroll1"/>
+    </Scrolls>
     <Skits>
-        <Node Mode="Structured" Name="NewSkit"/>
+        <Node Mode="Structured" Name="Test"/>
     </Skits>
 </root>

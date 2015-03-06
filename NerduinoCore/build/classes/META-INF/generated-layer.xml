@@ -44,6 +44,26 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
+            <file name="com-nerduino-actions-ShowStartUpAction.instance">
+                <!--com.nerduino.actions.ShowStartUpAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowStartUpAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowStartUpAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Startup16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+            <file name="com-nerduino-actions-ShowArduinoAPIAction.instance">
+                <!--com.nerduino.actions.ShowArduinoAPIAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowArduinoAPIAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowArduinoAPIAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Arduino16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
         </folder>
         <folder name="System">
             <file name="com-nerduino-actions-CompileAction.instance">

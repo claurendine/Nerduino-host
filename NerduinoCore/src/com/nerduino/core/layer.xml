@@ -394,11 +394,19 @@
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="130"/>
 					</file>
+					<!--
 					<file name="com-nerduino-actions-TestAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-TestAction.instance"/>
 						<attr name="menuText" stringvalue="Test"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="150"/>
+					</file>
+					-->
+					<file name="com-nerduino-actions-ShowStartUpAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowStartUpAction.instance"/>
+						<attr name="menuText" stringvalue="StartUp"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="160"/>
 					</file>
 				</folder>
 
@@ -426,6 +434,26 @@
 						<attr name="position" intvalue="130"/>
 					</file>
 				</folder>
+				
+				<folder name="Browser">
+					<attr name="position" intvalue="500"/>
+					
+					<file name="com-nerduino-actions-ShowStartUpAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowStartUpAction.instance"/>
+						<attr name="menuText" stringvalue="StartUp"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="100"/>
+					</file>
+					
+					<file name="com-nerduino-actions-ShowArduinoAPIAction.shadow">
+						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowArduinoAPIAction.instance"/>
+						<attr name="menuText" stringvalue="Arduino API"/>
+						<attr name="priority" stringvalue="medium"/>
+						<attr name="position" intvalue="110"/>
+					</file>
+
+				</folder>
+
 			</folder>
 			<folder name="Sketches">
 				<attr name="position" intvalue="300"/>

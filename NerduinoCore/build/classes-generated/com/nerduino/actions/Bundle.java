@@ -101,6 +101,13 @@ class Bundle {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_PingAction");
     }
     /**
+     * @return <i>Show StartUp</i>
+     * @see ShowArduinoAPIAction
+     */
+    static String CTL_ShowArduinoAPIAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowArduinoAPIAction");
+    }
+    /**
      * @return <i>Show Explorer</i>
      * @see ShowExplorerAction
      */
@@ -113,6 +120,13 @@ class Bundle {
      */
     static String CTL_ShowPropertiesAction() {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowPropertiesAction");
+    }
+    /**
+     * @return <i>Show StartUp</i>
+     * @see ShowStartUpAction
+     */
+    static String CTL_ShowStartUpAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowStartUpAction");
     }
     /**
      * @return <i>Test</i>
