@@ -20,28 +20,22 @@
 
 package com.nerduino.services;
 
+import com.nerduino.core.AppConfiguration;
+import com.nerduino.core.AppManager;
 import com.nerduino.core.BaseManager;
-import com.nerduino.library.LocalDataPointConfigDialog;
 import com.nerduino.library.NerduinoBase;
-import com.nerduino.library.NerduinoHost;
 import com.nerduino.library.NerduinoManager;
 import com.nerduino.nodes.TreeNode;
-import processing.app.SourceFile;
-import processing.app.SourceFolder;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
+import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 public class ServiceManager extends BaseManager
@@ -54,6 +48,9 @@ public class ServiceManager extends BaseManager
 	Scriptable m_scope;
 	private Children m_nodes;
 	ServiceManagerScope m_managerScope;
+	
+	float m_scanInterval = 1.0f;
+	
 	
 	public ServiceManager()
 	{
@@ -70,26 +67,69 @@ public class ServiceManager extends BaseManager
 		
 		m_file = new File(getFilePath());
 		
-		loadChildren();
+		m_scanInterval = AppConfiguration.Current.getParameterFloat("ServiceScanInterval", 1.0f);
+
+		
+		loadServices();
+		scanServices();
 	}
 
-	void loadChildren()
+	private void loadServices()
 	{
 		File[] files = m_file.listFiles();
 		
-		for(File file : files)
+		if (files != null)
 		{
-			if (file.getName().endsWith(".js"))
+			for(File file : files)
 			{
-				NerduinoService ns = new NerduinoService(file);
-				
-				ns.apply();
+				if (file.getName().endsWith(NerduinoService.s_extension ))
+				{
+					NerduinoService ns = new NerduinoService(file);
 
-				addNode(ns);
+					ns.apply();
+
+					addNode(ns);
+				}
 			}
 		}
 	}
 		
+	private void scanServices()
+	{
+		Thread thread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{	
+					while(true)
+					{
+						if (!AppManager.loading)
+						{
+							Context context = Context.enter();
+
+							for (Object obj : getChildren().snapshot())
+							{
+								NerduinoService service = (NerduinoService) obj;
+
+								service.testTriggers(context);
+							}
+						}
+						
+						Thread.sleep((int) (m_scanInterval * 1000.0));
+					}
+				}
+				catch(Exception e)
+				{
+				}
+			}
+		}, "Service trigger thread");
+
+		thread.start();
+	
+	}
+	
 	public void addNode(Node node)
 	{
 		if (node != null && !contains(node))
@@ -117,42 +157,39 @@ public class ServiceManager extends BaseManager
 	@Override
 	protected TreeNode createNewChild()
 	{
-		try
-		{
-			// get a unique name and create a new script file
-			NerduinoService service = new NerduinoService();
-			
-			ServiceConfigDialog dialog = new ServiceConfigDialog(new javax.swing.JFrame(), true);
-			
-			dialog.setService(service);
-			dialog.setVisible(true);
-
-			service = dialog.m_service;
-
-			service.setName(getUniqueName(service.getName()));		
-
-			String newfilename = m_file.getAbsolutePath() + "/" + service.getFileName();
-			
-			service.m_file = new File(newfilename);
-			
-			service.m_file.createNewFile();
+		NerduinoService service = new NerduinoService();
 		
-			service.showTopComponent();
-
-			return service;
-		}
-		catch(IOException ex)
-		{
-			Exceptions.printStackTrace(ex);
-		}
+		ServiceConfigDialog dialog = new ServiceConfigDialog(new javax.swing.JFrame(), true);
 		
-		return null;
+		dialog.setService(service);
+		dialog.setVisible(true);
+		
+		service.setName(getUniqueName(service.getName()));
+		
+		String name = service.getName();
+		String source =
+				"<?xml version='1.0' encoding='UTF-8'?>\r\n" 
+				+ "<root>\r\n"
+				+ "  <!--\r\n"
+				+ "  <trigger method='" + name + "' async='60000'>javascript resulting in boolean, when true then start playing the scroll content</trigger>\r\n"
+				+ "  -->\r\n"
+				+ "  <source>\r\n"
+				+ "    function " + name + "()\r\n"
+				+ "	      // do something awesome\r\n"
+				+ "    end \r\n"
+				+ "  </source>\r\n"
+				+ "</root>\r\n";
+		
+		service.writeSourceFile(source);
+		service.showTopComponent();
+		
+		return service;
 	}
-
+	
 	@Override
 	public String getFilePath()
 	{
-		return NerduinoHost.Current.getDataPath() + "/Services";
+		return AppManager.Current.getDataPath() + "/Services";
 	}
 
 	public void applyServices(Context context)
@@ -180,6 +217,20 @@ public class ServiceManager extends BaseManager
 			}
 		}
 	}
+	
+		
+	public float getScanInterval()
+	{
+		return m_scanInterval;
+	}
+	
+	public void setScanInterval(float value)
+	{
+		m_scanInterval = value;
+		
+		AppConfiguration.Current.setParameter("ServiceScanInterval", Float.toString(value));
+	}
+
 	
 	public Scriptable getScope()
 	{
@@ -225,6 +276,11 @@ public class ServiceManager extends BaseManager
 				};
 	}
 
+	public Object execute(Context context, String script)
+	{
+		return context.evaluateString(m_scope, script, "Script", 1, null);
+	}
+
 	public final class CreateServiceAction extends AbstractAction
 	{
 		private ServiceManager node;
@@ -251,5 +307,20 @@ public class ServiceManager extends BaseManager
 				}
 			}
 		}
+	}
+	
+		
+	@Override
+	public Node.PropertySet[] getPropertySets()
+	{
+		final Sheet.Set sheet = Sheet.createPropertiesSet();
+
+		sheet.setDisplayName("Service Settings");
+		addProperty(sheet, float.class, null, "ScanInterval", "The interval (in seconds) that service triggers are evaluated.");
+
+		return new Node.PropertySet[]
+			{
+				sheet
+			};
 	}
 }

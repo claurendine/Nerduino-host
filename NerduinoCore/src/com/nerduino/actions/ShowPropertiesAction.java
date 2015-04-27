@@ -41,8 +41,15 @@ public final class ShowPropertiesAction implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+		if (PropertiesTopComponent.Current == null)
+		{
+			PropertiesTopComponent.Current = new PropertiesTopComponent();
+		}
+		
 		if (PropertiesTopComponent.Current.isOpened())
+		{
 			PropertiesTopComponent.Current.close();
+		}
 		else
 		{
 			PropertiesTopComponent.Current.open();

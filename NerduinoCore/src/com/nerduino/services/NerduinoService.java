@@ -23,35 +23,51 @@ package com.nerduino.services;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.nodes.TreeNode;
+import com.nerduino.uPnP.XmlUtil;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.mozilla.javascript.Context;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewFactory;
-import org.openide.actions.RenameAction;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Children;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.Lookups;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class NerduinoService extends TreeNode
 {
 	// Declarations
 	boolean m_configured = false;
 	ServiceSourceEditor m_editor;
+	static String s_extension = ".xml";
 	
-	File m_file;
+	ArrayList<ServiceTrigger> m_triggers = new ArrayList<ServiceTrigger>();
+	String m_source;
 	
 	// Constructors
 	public NerduinoService()
@@ -61,10 +77,20 @@ public class NerduinoService extends TreeNode
 		m_canDelete = true;
 		m_canRename = true;
 		
-		m_file = null;
 		m_name = getUniqueName("Service");
 	}
 
+	public NerduinoService(String name)
+	{
+        super(new Children.Array(), "Service", "/com/nerduino/resources/Service16.png");
+    
+		m_canDelete = true;
+		m_canRename = true;
+		
+		m_name = name;
+	}
+
+	
 	public NerduinoService(File file)
 	{
         super(new Children.Array(), "Service", "/com/nerduino/resources/Service16.png");
@@ -72,23 +98,18 @@ public class NerduinoService extends TreeNode
 		m_canDelete = true;
 		m_canRename = true;
 		
-		m_file = file;
-		m_name = m_file.getName();
+		m_name = file.getName();
 		
-		// strip off the '.js' extension
-		m_name = m_name.substring(0, m_name.length() - 3);
+		// strip off the extension
+		m_name = m_name.substring(0, m_name.length() - s_extension.length());
+		
+		parseXML();
 	}
-	
-	public File getFile()
-	{
-		return m_file;
-	}
-
 	
 	@Override
 	@SuppressWarnings({"unchecked"})
 	public TopComponent getTopComponent()
-	{
+	{		
 		//Loading the multiview windows:
 		FileObject multiviewsFolder = FileUtil.getConfigFile("servicemultiviews");
 		FileObject[] kids = multiviewsFolder.getChildren();
@@ -100,7 +121,10 @@ public class NerduinoService extends TreeNode
 			MultiViewDescription attribute = (MultiViewDescription) kid.getAttribute("multiview");
 
 			if (attribute instanceof ContextAwareInstance)
-				attribute = ((ContextAwareInstance<MultiViewDescription>) attribute).createContextAwareInstance(Lookups.fixed(this));
+			{
+				Lookup lu = Lookups.fixed(this);
+				attribute = ((ContextAwareInstance<MultiViewDescription>) attribute).createContextAwareInstance(lu);
+			}
 			
 			listOfDescs.add(attribute);
 		}
@@ -117,65 +141,12 @@ public class NerduinoService extends TreeNode
 
 	public String getFileName()
 	{
-		return m_name + ".js";
+		return ServiceManager.Current.getFilePath() + "/" + m_name + s_extension;
 	}
 
-	@Override
-	public void configure()
-	{
-		// show the configure data point dialog
-		//SkitConfigDialog dialog = new SkitConfigDialog(new javax.swing.JFrame(), true);
-		
-		//dialog.setSkit(this);
-		//dialog.setVisible(true);
-		
-		// update the tree in case the appearance changed
-		//NerduinoTreeView.Current.modelUpdated(this);
-	}
-
-	@Override
-	public void onEditorUpdated()
-	{
-	}
 	
 	@Override
-	public Action[] getActions(boolean context) 
-	{
-		return new Action[]
-		{
-			new TreeNode.TreeNodeAction(getLookup()),
-			SystemAction.get(RenameAction.class),
-			new NerduinoService.DeleteNodeAction(getLookup())
-		};
-	}
-	
-	public final class DeleteNodeAction extends AbstractAction
-	{
-		private NerduinoService node;
-		
-		public DeleteNodeAction( Lookup lookup )
-		{
-			node = lookup.lookup( NerduinoService.class );
-			
-			putValue( AbstractAction.NAME, "Delete");
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) 
-		{
-			if ( node!= null )
-				try 
-				{
-					delete();
-				} 
-				catch (Exception ex) 
-				{
-				}
-		}
-	}
-	
-
-	public void delete()
+	public void destroy()
 	{
 		// prompt the user to confirm the deletion
 		int resp = JOptionPane.showConfirmDialog(null,
@@ -189,8 +160,8 @@ public class NerduinoService extends TreeNode
 			// TODO
 			//closeView();
 			
-			// delete the associated html file
-			String filename = ServiceManager.Current.getFilePath() + "/" + getFileName();
+			// delete the associated file
+			String filename = getFileName();
 
 			File f = new File(filename);
 			
@@ -205,136 +176,198 @@ public class NerduinoService extends TreeNode
 	public void onRename(String oldName, String newName)
 	{
 		if (AppManager.loading)
-		{
 			return;
-		}
 
-		super.onRename(oldName, newName);
-
-		String oldFileName = ServiceManager.Current.getFilePath() + "/" + oldName + ".js";
-		String newFileName = ServiceManager.Current.getFilePath() + "/" + newName + ".js";
-
+		if (oldName.equals(newName))
+			return;
+		
+		setName(newName);
+		
+		String oldFileName = ServiceManager.Current.getFilePath() + "/" + oldName + s_extension;
+		String newFileName = ServiceManager.Current.getFilePath() + "/" + newName + s_extension;
+		
 		File f = new File(oldFileName);
-
+		
 		if (f.exists())
-		{
 			f.renameTo(new File(newFileName));
-		}
-
-		AppManager.Current.saveConfiguration();
 	}
 
-	@Override
-	public void doubleClick(java.awt.event.MouseEvent evt)
-	{
-		showTopComponent();
-	}
-	
 	public String getSource()
 	{
-		String source = "";
-		
-		
 		if (m_editor != null)
 		{
-			// get the current source within the editor (it may not have been saved)
-			source = m_editor.getText();
+			// trigger the editor to save its content
+			//m_editor.
+			
+			parseXML();
 		}
-		else
-		{
-			// read the content of the source file
-			StringBuffer buf = null;
-		    FileReader fr = null;
-			
-			try 
-			{
-				fr = new FileReader(m_file.getAbsolutePath());
-				
-				int theChar;
-				buf = new StringBuffer();
-
-				while( (theChar = fr.read()) != -1 ) 
-				{
-					buf.append( (char) theChar );
-				}
-			}
-			catch( IOException ioe ) 
-			{
-				ioe.printStackTrace();
-				return "";
-			}
-			finally 
-			{
-				if( fr != null ) 
-				{
-					try 
-					{
-						fr.close();
-					}
-					catch( IOException ioe ) 
-					{
-					}
-				}
-			}
-			
-			if (buf != null)
-				source = buf.toString();
-		}
-			
-		return source;
+		
+		return m_source;
 	}
 	
 	public boolean apply()
-	{
-		String source = "";
-		
-		
-		if (m_editor != null)
-		{
-			// get the current source within the editor (it may not have been saved)
-			source = m_editor.getText();
-		}
-		else
-		{
-			// read the content of the source file
-			StringBuffer buf = null;
-		    FileReader fr = null;
-			
-			try 
-			{
-				fr = new FileReader(m_file.getAbsolutePath());
-				
-				int theChar;
-				buf = new StringBuffer();
-
-				while( (theChar = fr.read()) != -1 ) 
-				{
-					buf.append( (char) theChar );
-				}
-			}
-			catch( IOException ioe ) 
-			{
-				ioe.printStackTrace();
-				return false;
-			}
-			finally 
-			{
-				if( fr != null ) 
-				{
-					try 
-					{
-						fr.close();
-					}
-					catch( IOException ioe ) 
-					{
-					}
-				}
-			}
-			
-			if (buf != null)
-				source = buf.toString();
-		}
-			
-		return ServiceManager.Current.applySource(source);
+	{			
+		return ServiceManager.Current.applySource(getSource());
 	}
+	
+	@Override
+	public Action[] getCustomActions(boolean context) 
+	{
+		return new Action[]
+		{
+			new NerduinoService.CloneNodeAction(getLookup()),
+		};
+	}
+
+	void testTriggers(Context context)
+	{
+		for(ServiceTrigger trigger : m_triggers)
+		{
+			trigger.testTrigger(context);
+		}
+	}
+
+	void load()
+	{
+		parseXML();
+
+		m_configured = true;
+	}
+	
+	public final class CloneNodeAction extends AbstractAction
+	{
+		private NerduinoService node;
+		
+		public CloneNodeAction( Lookup lookup )
+		{
+			node = lookup.lookup( NerduinoService.class );
+			
+			putValue( AbstractAction.NAME, "Clone");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			if ( node!= null )
+				try 
+				{
+					node.cloneService();
+				} 
+				catch (Exception ex) 
+				{
+				}
+		}
+	}
+	
+	public void cloneService()
+	{
+		try
+		{
+			// make sure that the new project name is valid and unique
+			TreeNode parent = (TreeNode) getParentNode();
+			
+			String newname = parent.getUniqueName(m_name);
+			
+			
+			String oldFileName = ServiceManager.Current.getFilePath() + "/" + m_name + s_extension;
+			String newFileName = ServiceManager.Current.getFilePath() + "/" + newname + s_extension;
+			
+			File f = new File(oldFileName);
+			
+			if (f.exists())
+			{
+				NerduinoService newService = new NerduinoService(newname);
+
+				ServiceManager.Current.addChild(newService);
+
+				Path oldPath = Paths.get(oldFileName);
+				Path newPath = Paths.get(newFileName);
+
+				Files.copy(oldPath, newPath);
+				
+				newService.load();
+
+				newService.select();
+			}
+		}
+		catch(IOException ex)
+		{
+			Exceptions.printStackTrace(ex);
+		}
+	}
+
+	void parseXML()
+	{
+		try
+		{
+			// clear content
+			m_source = null;
+			m_triggers.clear();
+			
+			// parse source xml
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			
+			FileInputStream fis = new FileInputStream(getFileName());
+			
+			Document document = builder.parse(fis);
+			
+			Element rootElement = document.getDocumentElement();
+			
+			if (rootElement != null)
+			{
+				// look for triggers
+				NodeList nodes = rootElement.getElementsByTagName("trigger");
+				
+				for(int i = 0; i < nodes.getLength(); i++)
+				{
+					Element element = (Element) nodes.item(i);
+
+					ServiceTrigger trigger = new ServiceTrigger();
+
+					trigger.loadXML(element);
+
+					m_triggers.add(trigger);
+				}
+				
+				// parse the source javascript
+				m_source = XmlUtil.GetChildElementText(rootElement, "source");
+			}
+		}
+		catch(ParserConfigurationException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(FileNotFoundException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(SAXException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(IOException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+	}
+	
+	public void writeSourceFile(String source)
+	{
+		try
+		{
+			String filename = getFileName();
+			
+			FileWriter fw = new FileWriter(filename);
+			
+			fw.write(source);
+			
+			fw.close();
+		}
+		catch(IOException ex)
+		{
+			Logger.getLogger(NerduinoService.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+	
 }

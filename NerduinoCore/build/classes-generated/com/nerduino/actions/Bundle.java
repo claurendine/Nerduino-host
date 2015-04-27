@@ -115,6 +115,13 @@ class Bundle {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowExplorerAction");
     }
     /**
+     * @return <i>Show Skits</i>
+     * @see ShowLocalhostAction
+     */
+    static String CTL_ShowLocalhostAction() {
+        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_ShowLocalhostAction");
+    }
+    /**
      * @return <i>Show Properties</i>
      * @see ShowPropertiesAction
      */
@@ -134,13 +141,6 @@ class Bundle {
      */
     static String CTL_TestAction() {
         return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_TestAction");
-    }
-    /**
-     * @return <i>Topo</i>
-     * @see TopologyAction
-     */
-    static String CTL_TopologyAction() {
-        return org.openide.util.NbBundle.getMessage(Bundle.class, "CTL_TopologyAction");
     }
     /**
      * @return <i>Nerduino</i>

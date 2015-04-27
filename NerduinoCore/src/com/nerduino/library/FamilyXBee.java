@@ -111,9 +111,9 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 	{
 		if (value)
 		{
-			AppManager.log("Connecting to XBee");
-			AppManager.log("CommPort: " + getComPort());
-			AppManager.log("Baud Rate: " + ((Integer) getBaudRate()).toString());
+//			AppManager.log("Connecting to XBee");
+//			AppManager.log("CommPort: " + getComPort());
+//			AppManager.log("Baud Rate: " + ((Integer) getBaudRate()).toString());
 
 			try
 			{
@@ -121,11 +121,11 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 
 				if (getEnabled())
 				{
-					AppManager.log("Validating XBee Configuration");
+					//AppManager.log("Validating XBee Configuration");
 
 					if (!validateConnection())
 					{
-						AppManager.log("Error Validating the XBee!  Check the Xbee configuration, insure that it is configured for API mode.");
+						//AppManager.log("Error Validating the XBee!  Check the Xbee configuration, insure that it is configured for API mode.");
 
 						// attempt to connect at other baud rates
 						// if another rate is validated then send api commands to change to the specified rate
@@ -138,22 +138,22 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 					}
 					else
 					{
-						AppManager.log("Connected to XBee");
+						//AppManager.log("Connected to XBee");
 					}
 				}
 				else
 				{
-					AppManager.log("Error Connecting to XBee!  Check port configuration.");
+					//AppManager.log("Error Connecting to XBee!  Check port configuration.");
 				}
 			}
 			catch(Exception e)
 			{
-				AppManager.log("Error Connecting to XBee!  Check port configuration.");
+				//AppManager.log("Error Connecting to XBee!  Check port configuration.");
 			}
 		}
 		else
 		{
-			AppManager.log("Disconnected from XBee");
+			//AppManager.log("Disconnected from XBee");
 
 			disconnect();
 		}
@@ -167,7 +167,7 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Zigbee", "com/nerduino/resources/ZigbeeDisabled.png");
 		}
 
-		AppManager.log("");
+		//AppManager.log("");
 	}
 
 	public int getBaudRate()

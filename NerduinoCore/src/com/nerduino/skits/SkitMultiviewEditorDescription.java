@@ -21,16 +21,13 @@
 package com.nerduino.skits;
 
 import com.nerduino.core.ContextAwareInstance;
-import com.nerduino.skits.Skit;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.HelpCtx;
@@ -40,7 +37,6 @@ import org.openide.windows.TopComponent;
 public class SkitMultiviewEditorDescription implements MultiViewDescription, ContextAwareInstance<SkitMultiviewEditorDescription>, Serializable
 {
 	private final Skit m_skit;
-	private static FileSystem m_files = null;
 
 	public SkitMultiviewEditorDescription()
 	{
@@ -90,9 +86,15 @@ public class SkitMultiviewEditorDescription implements MultiViewDescription, Con
 		try
 		{
 			FileObject file = skit2file(m_skit);
-			DataObject data = DataObject.find(file);
 			
-			return new SkitSourceEditor(data.getLookup());
+			if (file != null)
+			{
+				DataObject data = DataObject.find(file);
+
+				return new SkitSourceEditor(data.getLookup());
+			}
+			
+			return null;
 		}
 		catch(IOException ioe)
 		{

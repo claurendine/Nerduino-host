@@ -23,6 +23,8 @@ package processing.app;
 import com.nerduino.core.ExplorerTopComponent;
 import com.nerduino.library.NerduinoBase;
 import com.nerduino.library.NerduinoManager;
+import com.nerduino.scrolls.Scroll;
+import com.nerduino.services.NerduinoService;
 import com.nerduino.skits.Skit;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -67,6 +69,8 @@ public class ArduinoSourceEditor extends CloneableEditor implements MultiViewEle
 	Sketch m_sketch;
 	String m_displayName = "";
 	Skit m_skit;
+	Scroll m_scroll;
+	NerduinoService m_service;
 
 	ArduinoSourceEditor(Lookup lookup)
 	{
@@ -108,7 +112,6 @@ public class ArduinoSourceEditor extends CloneableEditor implements MultiViewEle
 				{
 					if (m_sketch != null && !m_sketch.isDirty())
 					{
-						
 						// check for a change in the source.. mark as dirty if a change is found
 						String source = getText();
 						String orig = m_sketch.getCode(0).getProgram();

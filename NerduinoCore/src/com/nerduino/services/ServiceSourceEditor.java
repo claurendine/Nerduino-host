@@ -25,7 +25,6 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.text.Document;
 import org.netbeans.core.spi.multiview.CloseOperationState;
@@ -35,6 +34,9 @@ import org.openide.text.CloneableEditor;
 import org.openide.text.CloneableEditorSupport;
 import org.openide.text.NbDocument;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ProxyLookup;
 
 public class ServiceSourceEditor extends CloneableEditor implements MultiViewElement
 {
@@ -46,7 +48,18 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 	
 	ServiceSourceEditor(Lookup lookup)
 	{
+		/*
+		CloneableEditorSupport.Env env = new CloneableEditorSupport.Env ();
+        CloneableEditorSupport tst = new EmptyCESHidden(env);
+		
+		CloneableEditorSupport support = new CloneableEditorSupport();
+		*/
+		
+		
 		super(lookup.lookup(CloneableEditorSupport.class));
+
+		CloneableEditorSupport ces = lookup.lookup(CloneableEditorSupport.class);
+
 		this.lookup = lookup;
 	}
 
@@ -99,14 +112,17 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 	}
 
 	@Override
-	public void setMultiViewCallback(MultiViewElementCallback callback)
+	public void setMultiViewCallback(MultiViewElementCallback mvecallback)
 	{
-		this.callback = callback;
+		this.callback = mvecallback;
 	}
 
 	@Override
 	public void componentActivated()
 	{
+		CloneableEditorSupport support = super.cloneableEditorSupport();
+		
+		
 		super.componentActivated();
 	}
 
@@ -138,9 +154,8 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 	public void componentShowing()
 	{
 		if (callback != null)
-		{
 			updateName();
-		}
+		
 		super.componentShowing();
 	}
 
@@ -160,7 +175,11 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 			System.out.println("~~   " + s2s(o));
 		}
 		System.out.println("~~ ------------------------------------");
-		return lookup;
+
+		InstanceContent content = new InstanceContent();
+		Lookup temp = new AbstractLookup(content);
+		
+		return new ProxyLookup(lookup, temp);
 	}
 
 	@Override
@@ -173,50 +192,36 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 	public void requestVisible()
 	{
 		if (callback != null)
-		{
 			callback.requestVisible();
-		}
 		else
-		{
 			super.requestVisible();
-		}
 	}
 
 	@Override
 	public void requestActive()
 	{
 		if (callback != null)
-		{
 			callback.requestActive();
-		}
 		else
-		{
 			super.requestActive();
-		}
 	}
 
 	@Override
 	public void updateName()
 	{
 		super.updateName();
+		
 		if (callback != null)
-		{
 			callback.updateTitle(getDisplayName());
-		}
 	}
 
 	@Override
 	public void open()
 	{
 		if (callback != null)
-		{
 			callback.requestVisible();
-		}
 		else
-		{
 			super.open();
-		}
-
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 
 package com.nerduino.core;
 
+import com.nerduino.library.FamilyUPNP;
 import com.nerduino.nodes.RootNode;
 import com.nerduino.nodes.TreeNode;
 import java.awt.Dimension;
@@ -38,6 +39,7 @@ import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -75,8 +77,8 @@ public final class ExplorerTopComponent extends TopComponent
 	private final ExplorerManager m_manager = new ExplorerManager();
 	public static ExplorerTopComponent Current;
 	Node m_rootNode;
-	private Lookup.Result<TreeNode> m_result;
-	private LookupListener weakLookup;
+	Lookup.Result<TreeNode> m_result;
+	LookupListener weakLookup;
 	TreeNode m_currentSelection;
 	
 	static JRibbon s_ribbon;
@@ -92,9 +94,6 @@ public final class ExplorerTopComponent extends TopComponent
 		putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 		putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
 
-		// Initialize the application manager
-		AppManager.initialize();
-
 		initComponents();
 		
 		myInitComponents();
@@ -107,17 +106,38 @@ public final class ExplorerTopComponent extends TopComponent
 		
 		o.setRootVisible(false);
 		
-		m_manager.setRootContext(m_rootNode);
-		
-		Lookup lookup = ExplorerUtils.createLookup(m_manager, getActionMap());
+		Thread thread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{	
+					// Initialize the application manager
+					AppManager.initialize();
 
-		associateLookup(lookup);
+					m_manager.setRootContext(m_rootNode);
 
-		m_result = lookup.lookupResult(TreeNode.class);
-		weakLookup = WeakListeners.create(LookupListener.class, this, m_result);
-		m_result.addLookupListener(weakLookup);
-		
-		AppManager.Current.initializeExplorer();
+					Lookup lookup = ExplorerUtils.createLookup(m_manager, getActionMap());
+
+					m_result = lookup.lookupResult(TreeNode.class);
+					weakLookup = WeakListeners.create(LookupListener.class, Current, m_result);
+					m_result.addLookupListener(weakLookup);
+
+					AppManager.Current.initializeExplorer();
+
+					FamilyUPNP.Current.engage();
+				}
+				catch(Exception e)
+				{
+					Exceptions.printStackTrace(e);
+				}
+			}
+		});
+
+		thread.start();
+
+		initializeRibbon();
 	}
 	
 	javax.swing.JPanel jPanel;
@@ -132,36 +152,11 @@ public final class ExplorerTopComponent extends TopComponent
 		jPanel = new javax.swing.JPanel();
 
 		outline1 = new org.openide.explorer.view.OutlineView();
-		/*
-		{
-			@Override
-			public void paint(Graphics g)
-			{
-				super.paint(g);
-				
-				JScrollBar sb = this.getVerticalScrollBar();
-				int i = 0;
-								
-				if (sb != null)
-				{
-					i = sb.getValue();
-					
-					updateCommands(i);
-				}
-				
-				i = i;
-			}
-		};
-		*/
 		
         outline1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         
- //       jScrollPane1.setViewportView(jPanel);
-        jScrollPane2.setViewportView(outline1);
+		jScrollPane2.setViewportView(outline1);
         
-//		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
-//		jPanel.setPreferredSize(new Dimension(4,4));
-		
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         
@@ -173,64 +168,8 @@ public final class ExplorerTopComponent extends TopComponent
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-		/*
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-		*/
 	}
 	
-	/*
-	EmptyCommand commandHeader = new EmptyCommand();
-	
-	void updateCommands(int offset)
-	{
-		jPanel.removeAll();
-		
-		int listoffset = offset / 22;
-		int displace = offset - listoffset * 22;
-		
-		int count = outline1.getHeight() / 22;
-		TableModel table = outline1.getOutline().getModel();
-		
-		commandHeader.setPreferredSize(new Dimension(60, 22 - displace));
-		commandHeader.setMaximumSize(new Dimension(60, 22 - displace));
-		commandHeader.setMinimumSize(new Dimension(60, 22 - displace));
-		commandHeader.setSize(60, 22 - displace);
-		
-		jPanel.add(commandHeader);
-
-		for(int i = 0; i < count; i++)
-		{
-			Object obj = table.getValueAt(i + listoffset, 0);
-			
-			if (obj != null)
-			{
-				TreeNode tn = (TreeNode) Visualizer.findNode(obj);
-				
-				jPanel.add(tn.getAction1());
-			}
-			else
-			{
-				jPanel.add(new EmptyCommand());				
-			}
-		}
-		
-		jPanel.validate();
-		jPanel.repaint();
-	}
-	*/
 	
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -256,17 +195,24 @@ public final class ExplorerTopComponent extends TopComponent
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-	@Override
-	public void componentOpened()
+	void initializeRibbon()
 	{	
-		// convenient time to get the instance of the jribbon class
-		Object obj = WindowManager.getDefault().getMainWindow();
-		
-		JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-		
-		if (frame.getRootPane().getLayeredPane().getComponent(0) instanceof JRibbon)
+		try
 		{
-			AppManager.Current.setRibbon((JRibbon) frame.getRootPane().getLayeredPane().getComponent(0));
+			// convenient time to get the instance of the jribbon class
+			Object obj = WindowManager.getDefault().getMainWindow();
+
+			JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+
+			if (frame.getRootPane().getLayeredPane().getComponent(0) instanceof JRibbon)
+			{
+				s_ribbon = (JRibbon) frame.getRootPane().getLayeredPane().getComponent(0);
+				
+				AppManager.Current.setRibbon(s_ribbon);
+			}
+		}
+		catch(Exception e)
+		{
 		}
  	}
 
@@ -368,8 +314,13 @@ public final class ExplorerTopComponent extends TopComponent
 
 	void expandNode(Node node)
 	{
-		//beanTreeView1.expandNode(node);
-		outline1.expandNode(node);
+		try
+		{
+			outline1.expandNode(node);
+		}
+		catch(Exception e)
+		{
+		}
 	}
 
 

@@ -22,13 +22,19 @@ package com.nerduino.scrolls;
 
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.scrolls.Scroll;
+import com.nerduino.skits.SkitSourceEditor;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewElement;
+import org.openide.filesystems.FileAttributeEvent;
+import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -54,7 +60,7 @@ public class ScrollMultiviewEditorDescription implements MultiViewDescription, C
 	@Override
 	public int getPersistenceType()
 	{
-		return TopComponent.PERSISTENCE_ONLY_OPENED;
+		return TopComponent.PERSISTENCE_NEVER; //PERSISTENCE_ONLY_OPENED;
 	}
 
 	@Override
@@ -88,10 +94,62 @@ public class ScrollMultiviewEditorDescription implements MultiViewDescription, C
 
 		try
 		{
-			FileObject file = skit2file(m_scroll);
-			DataObject data = DataObject.find(file);
+			FileObject file = scroll2file(m_scroll);
 			
-			return new ScrollSourceEditor(data.getLookup());
+			file.addFileChangeListener(new FileChangeListener() 
+				{
+
+					@Override
+					public void fileChanged(FileEvent fe)
+					{
+						m_scroll.parseScrollXML();
+					
+					}
+
+				@Override
+				public void fileFolderCreated(FileEvent fe)
+				{
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				@Override
+				public void fileDataCreated(FileEvent fe)
+				{
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				@Override
+				public void fileDeleted(FileEvent fe)
+				{
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				@Override
+				public void fileRenamed(FileRenameEvent fre)
+				{
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				@Override
+				public void fileAttributeChanged(FileAttributeEvent fae)
+				{
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				});
+			
+			if (file != null)
+			{
+				DataObject data = DataObject.find(file);
+
+				ScrollSourceEditor editor = new ScrollSourceEditor(data.getLookup());
+				
+				editor.m_scroll = m_scroll;
+				
+				return editor;
+			}
+			
+			return null;
 		}
 		catch(IOException ioe)
 		{
@@ -107,8 +165,16 @@ public class ScrollMultiviewEditorDescription implements MultiViewDescription, C
 		return new ScrollMultiviewEditorDescription(context.lookup(Scroll.class));
 	}
 
-	private static synchronized FileObject skit2file(Scroll scroll) throws IOException
+	private static synchronized FileObject scroll2file(Scroll scroll) throws IOException
 	{
+		String filepath = scroll.getFileName();
+		File f = new File(filepath);
+		
+		FileObject file = FileUtil.toFileObject(f);
+		
+		return file;
+
+		/*
 		if (m_files == null)
 			m_files = FileUtil.createMemoryFileSystem();
 		
@@ -135,5 +201,6 @@ public class ScrollMultiviewEditorDescription implements MultiViewDescription, C
 		}
 
 		return file;
+		*/
 	}
 }

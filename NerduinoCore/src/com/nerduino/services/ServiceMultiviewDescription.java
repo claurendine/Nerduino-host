@@ -22,14 +22,15 @@ package com.nerduino.services;
 
 import com.nerduino.core.ContextAwareInstance;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.text.CloneableEditorSupport;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
@@ -78,9 +79,6 @@ public class ServiceMultiviewDescription implements MultiViewDescription, Contex
 		return "service";
 	}
 
-//    public MultiViewElement createElement() {
-//        return new SourceTopComponent();
-//    }
 	@Override
 	public MultiViewElement createElement()
 	{
@@ -89,13 +87,19 @@ public class ServiceMultiviewDescription implements MultiViewDescription, Contex
 		try
 		{
 			FileObject file = service2file(m_service);
-			DataObject data = DataObject.find(file);
 			
-			m_service.m_editor = new ServiceSourceEditor(data.getLookup());
+			if (file != null)
+			{
+				DataObject data = DataObject.find(file);
 			
-			m_service.m_editor.m_service = m_service;
+				m_service.m_editor = new ServiceSourceEditor(data.getLookup());
 			
-			return m_service.m_editor;
+				m_service.m_editor.m_service = m_service;
+			
+				return m_service.m_editor;
+			}
+		
+			return null;
 		}
 		catch(IOException ioe)
 		{
@@ -111,11 +115,11 @@ public class ServiceMultiviewDescription implements MultiViewDescription, Contex
 		return new ServiceMultiviewDescription(context.lookup(NerduinoService.class));
 	}
 
-	private static FileSystem m_files = null;
-
 	private static synchronized FileObject service2file(NerduinoService service) throws IOException
-	{
-		FileObject file = FileUtil.toFileObject(service.getFile());
+	{		
+		String filepath = service.getFileName();
+		File f = new File(filepath);
+		FileObject file = FileUtil.toFileObject(f);
 		
 		return file;
 	}

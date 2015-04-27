@@ -20,6 +20,7 @@
 
 package com.nerduino.library;
 
+import com.nerduino.nodes.TreeNode;
 import processing.app.ArduinoManager;
 import processing.app.Preferences;
 import processing.app.SerialException;
@@ -88,7 +89,10 @@ public class NerduinoUSB extends NerduinoLight
 	@Override
 	public boolean configureNewNerduino()
 	{
-		setName(getUniqueName(getName()));
+		if (getParentNode() != null)
+		{
+			setName(((TreeNode) getParentNode()).getUniqueName(getName()));
+		}
 		
 		// show the configure dialog
 		NerduinoUSBConfigDialog dialog = new NerduinoUSBConfigDialog(new javax.swing.JFrame(), true);
@@ -168,8 +172,8 @@ public class NerduinoUSB extends NerduinoLight
 					
 					//TODO  add code to execute a script on the host
 //						onExecuteCommand(nerduino, data, 0);
-//					else
-//						onHostExecuteCommand(data, 0);
+					else
+						onHostExecuteCommand(data, 0);
 				}
 					break;
 				case 0x11: // MSG_ExecuteCommandResponse;

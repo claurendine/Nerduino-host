@@ -20,22 +20,14 @@
 
 package com.nerduino.scrolls;
 
-import java.io.IOException;
 import java.util.Collection;
-import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.text.Document;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
-import org.netbeans.spi.palette.PaletteActions;
-import org.netbeans.spi.palette.PaletteController;
-import org.netbeans.spi.palette.PaletteFactory;
-import org.openide.cookies.InstanceCookie;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.text.CloneableEditor;
 import org.openide.text.CloneableEditorSupport;
 import org.openide.text.NbDocument;
@@ -49,10 +41,13 @@ public class ScrollSourceEditor extends CloneableEditor implements MultiViewElem
 	private transient final Lookup lookup;
 	private transient JComponent toolbar;
 	private transient MultiViewElementCallback callback;
+	Scroll m_scroll;
 
+	
 	ScrollSourceEditor(Lookup lookup)
 	{
 		super(lookup.lookup(CloneableEditorSupport.class));
+
 		this.lookup = lookup;
 	}
 
@@ -79,6 +74,18 @@ public class ScrollSourceEditor extends CloneableEditor implements MultiViewElem
 			//attempt to create own toolbar?
 			{
 				toolbar = new JPanel();
+				
+				JButton jbutton = new JButton("Play");
+				jbutton.addActionListener(new java.awt.event.ActionListener()
+				{
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt)
+					{
+						m_scroll.playAsync();
+					}
+				});
+				
+				toolbar.add(jbutton);
 			}
 		}
 		return toolbar;
@@ -118,32 +125,8 @@ public class ScrollSourceEditor extends CloneableEditor implements MultiViewElem
 	public void componentOpened()
 	{
 		super.componentOpened();
-
-		FileObject fo = FileUtil.getConfigFile("Actions/Window/org-netbeans-modules-palette-ShowPaletteAction.instance");
-
-		if (fo != null && fo.isValid())
-		{
-			try
-			{
-				DataObject dob = DataObject.find(fo);
-				InstanceCookie ic = dob.getLookup().lookup(InstanceCookie.class);
-				if (ic != null)
-				{
-					Object instance = ic.instanceCreate();
-
-					if (instance instanceof Action)
-					{
-						Action a = (Action) instance;
-						a.actionPerformed(null);
-					}
-				}
-			}
-			catch(Exception e)
-			{
-			}
-		}
 	}
-
+	
 	@Override
 	public void componentShowing()
 	{
@@ -172,9 +155,7 @@ public class ScrollSourceEditor extends CloneableEditor implements MultiViewElem
 
 		InstanceContent content = new InstanceContent();
 		Lookup temp = new AbstractLookup(content);
-		PaletteController controller = createPalette();
-		content.add(controller);
-
+		
 		return new ProxyLookup(lookup, temp);
 	}
 
@@ -229,54 +210,5 @@ public class ScrollSourceEditor extends CloneableEditor implements MultiViewElem
 	private static String s2s(Object o)
 	{
 		return o == null ? "null" : o.getClass() + "@" + Integer.toHexString(System.identityHashCode(o));
-	}
-
-	private static PaletteController palette = null;
-
-	public static PaletteController createPalette()
-	{
-		try
-		{
-			if (null == palette)
-			{
-				palette = PaletteFactory.createPalette("HTMLPalette", new PaletteActions()
-				{
-					@Override
-					public Action[] getImportActions()
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomPaletteActions()
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomCategoryActions(Lookup lkp)
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomItemActions(Lookup lkp)
-					{
-						return null;
-					}
-
-					@Override
-					public Action getPreferredAction(Lookup lkp)
-					{
-						return null;
-					}
-				}, null, null);
-			}
-			return palette;
-		}
-		catch(IOException ex)
-		{
-		}
-		return null;
 	}
 }

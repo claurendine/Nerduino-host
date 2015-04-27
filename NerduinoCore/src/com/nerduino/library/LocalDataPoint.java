@@ -24,7 +24,6 @@ import com.nerduino.xbee.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
@@ -44,11 +43,14 @@ public class LocalDataPoint extends PointBase
     {
 		super();
 		
+		m_canRename = true;
+		m_canDelete = true;
+		
 		this.Id = nextIndex++;
     }
     
 	@Override
-	public void configure()
+	public void showTopComponent()
 	{
 		// show the configure data point dialog
 		LocalDataPointConfigDialog dialog = new LocalDataPointConfigDialog(new javax.swing.JFrame(), true);
@@ -230,28 +232,24 @@ public class LocalDataPoint extends PointBase
     			return;
     		}
     	}
-
     }
     
     public void onSetPointValue(ZigbeeReceivePacketFrame zrf)
     {
-    	if (isReadOnly())
+    	if (!isReadOnly())
     	{
-    		return;
-    	}
-    	
-    	DataTypeEnum dtype = DataTypeEnum.valueOf(zrf.Data[3]);
-    	
-    	if (dtype == DataType)
-    	{
-    		byte dlength = zrf.Data[4];
-    	
-    		Object value = NerduinoHost.parseValue(zrf.Data, 5, dtype, dlength);
-    	
-    		// the data type must match
-    	
-    		setValue(value);
-    	}
+			DataTypeEnum dtype = DataTypeEnum.valueOf(zrf.Data[3]);
+
+			if (dtype == DataType)
+			{
+				byte dlength = zrf.Data[4];
+
+				Object value = NerduinoHost.parseValue(zrf.Data, 5, dtype, dlength);
+
+				// the data type must match
+				setValue(value);
+			}
+		}
     }
     
 	public void sendGetPointValueResponse(NerduinoBase nerduino, short responseToken)
@@ -274,12 +272,6 @@ public class LocalDataPoint extends PointBase
     			m_callbacks.remove(i);
     		}
     	}
-    }
-	
-	@Override
-	public void doubleClick(java.awt.event.MouseEvent evt) 
-    {
-		configure();
     }
 	
 	@Override
@@ -379,17 +371,19 @@ public class LocalDataPoint extends PointBase
 		
 		m_setting = false;
     }
-	
+
+	/*
 	@Override
 	public Action[] getActions(boolean context)
 	{
 		return new Action[]
 			{
 				new LocalDataPoint.RenameAction(getLookup()),
-				new LocalDataPoint.DeleteAction(getLookup()),
+				new LocalDataPoint.DeleteAction(getLookup())
 			};
 	}
-
+	*/
+	
 	public final class RenameAction extends AbstractAction
 	{
 		private LocalDataPoint node;
@@ -412,56 +406,21 @@ public class LocalDataPoint extends PointBase
 				}
 				catch(Exception ex)
 				{
-					//Exceptions.printStackTrace(ex);
 				}
 			}
 		}
 	}
 	
-	public final class DeleteAction extends AbstractAction
+	@Override
+	public void onRename(String oldname, String newName)
 	{
-		private LocalDataPoint node;
-
-		public DeleteAction(Lookup lookup)
-		{
-			node = lookup.lookup(LocalDataPoint.class);
-
-			putValue(AbstractAction.NAME, "Delete Point");
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			if (node != null)
-			{
-				try
-				{
-					node.delete();
-				}
-				catch(Exception ex)
-				{
-					//Exceptions.printStackTrace(ex);
-				}
-			}
-		}
+		setName(newName);
+		
+		PointManager.Current.saveConfiguration();
 	}
 	
-	public void rename()
-	{
-		String oldname = getName();
-		
-		String newname = JOptionPane.showInputDialog(null, "New Name:", oldname);
-		
-		if (!newname.matches(oldname))
-		{
-			setName(newname);
-			
-			PointManager.Current.saveConfiguration();
-		}
-	}
-
-	
-	public void delete()
+	@Override
+	public void destroy()
 	{
 		// prompt to verify deletion
 		int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this point?", "Delete Point", JOptionPane.YES_NO_OPTION);
@@ -470,7 +429,7 @@ public class LocalDataPoint extends PointBase
 		{
 			try
 			{
-				destroy();
+				super.destroy();
 
 				PointManager.Current.saveConfiguration();
 			}

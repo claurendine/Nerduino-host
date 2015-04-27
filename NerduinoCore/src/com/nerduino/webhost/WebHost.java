@@ -20,6 +20,7 @@
 
 package com.nerduino.webhost;
 
+import com.nerduino.core.AppConfiguration;
 import com.nerduino.core.AppManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,44 +29,33 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public class WebHost
 {
-//	final MyServ srv;;
- 	String m_webroot = "/Users/chaselaurendine/Documents/SvnProjects/WebServer";
+ 	String m_webroot; 
 	int m_port = 8081;
 	Boolean m_enabled = true;
 	
 	public static WebHost Current;
 	
-/*	
-	class MyServ extends Acme.Serve.Serve 
-	{
-		// Overriding method for public access
-		@Override
-		public void setMappingTable(PathTreeDictionary mappingtable) 
-		{
-			super.setMappingTable(mappingtable);
-		}
+	public WebHost()
+    {
+		Current = this;
 
-		// add the method below when .war deployment is needed
-		@Override
-		public void addWarDeployer(String deployerFactory, String throttles) 
+		m_webroot = AppConfiguration.Current.getParameter("WebHostWebroot");
+		m_port = AppConfiguration.Current.getParameterInt("WebHostPort", 8081);
+		m_enabled = AppConfiguration.Current.getParameterBool("WebHostEnabled", true);
+		
+		if (m_webroot == null || m_webroot.length() == 0)
 		{
-			super.addWarDeployer(deployerFactory, throttles);
+			m_webroot = System.getProperty("user.dir") + "/webroot";
 		}
-	};
-*/	
+	}
 	
-	public WebHost() throws NoSuchMethodException 
+	public void initialize() throws NoSuchMethodException 
     {
 		try 
 		{
-			Current = this;
-		
 			Server server = new Server(8081);
 	        
 			// Create the servlet handler and define the Chat servlet
@@ -88,40 +78,6 @@ public class WebHost
 		{
             e.printStackTrace();
         }
-
-		/*
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine jsEngine = mgr.getEngineByName("JavaScript");
-        
-        try
-        {
-            jsEngine.eval("function sayHello() {" +
-                "  println('Hello, world!');" +
-                "}");
-            Invocable invocableEngine = (Invocable) jsEngine;
-            invocableEngine.invokeFunction("sayHello");
-        }
-        catch(ScriptException ex)
-        {
-            ex.printStackTrace();
-        }
-        
-		setWebRoot(m_webroot);
-		
-		srv = new MyServ();
-		
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				srv.notifyStop();
-				srv.destroyAllServlets();
-			}
-		}));
-		
-		setEnabled(true);
-		
-		srv.serve();
-		*/
     }
 	
 	public Boolean getEnabled()
@@ -135,34 +91,14 @@ public class WebHost
 				
 		if (m_enabled)
 		{
-			/*
-			Acme.Serve.Serve.PathTreeDictionary aliases = new Acme.Serve.Serve.PathTreeDictionary();
-			aliases.put("/*", new java.io.File(m_webroot));
-		    srv.setMappingTable(aliases);
 
-			
-			// setting properties for the server, and exchangeable Acceptors
-			java.util.Properties properties = new java.util.Properties();
-
-			properties.put("port", m_port);
-			properties.setProperty(Acme.Serve.Serve.ARG_NOHUP, "nohup");
-			srv.arguments = properties;
-			srv.addDefaultServlets(null); // optional file servlet
-			srv.addServlet("/nerduino/*", new NerduinoServlet());
-			//srv.addServlet("/*", new NerduinoServlet());
-			
-			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Web", "com/nerduino/resources/HostEnabled.png");
-			
-			//srv.serve();
-			*/
 		}
 		else
-		{
-			AppManager.log("Web Host Disabled.");
-			AppManager.log("");
-			
+		{			
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Web", "com/nerduino/resources/HostDisabled.png");
 		}
+		
+		AppConfiguration.Current.setParameter("WebHostEnabled", Boolean.toString(value));
 	}
 	
 	public String getHttpAddress()
@@ -196,58 +132,19 @@ public class WebHost
 	public void setPort(int value)
 	{
 		m_port = value;
+		
+		AppConfiguration.Current.setParameter("WebHostPort", Integer.toString(value));
 	}
 	
 	public void setWebRoot(String path)
 	{
 		m_webroot = path;
 		
+		AppConfiguration.Current.setParameter("WebHostWebroot", m_webroot);
 	}
 	
 	public String getWebRoot()
 	{
 		return m_webroot;
-	}
-	
-	public void readXML(Element node)
-	{
-		if (node != null)
-		{
-			NodeList nl = node.getElementsByTagName("WebHost");
-
-			if (nl != null && nl.getLength() > 0)
-			{
-				Element config = (Element) nl.item(0);
-
-				m_webroot = config.getAttribute("Webroot");
-				String str = config.getAttribute("Port");
-				
-				try
-				{
-					m_port = Integer.decode(str);
-				}
-				catch(Exception e)
-				{
-					m_port = 8081;
-				}
-				
-				if (m_webroot == null || m_webroot.length() == 0)
-				{
-					m_webroot = System.getProperty("user.dir") + "/webroot";
-				}
-			}
-
-			//setEnabled(true);
-		}
-	}
-
-	public void writeXML(Document doc, Element node)
-	{
-		Element element = doc.createElement("WebHost");
-		
-		element.setAttribute("Webroot", m_webroot);
-		element.setAttribute("Port", ((Integer) m_port).toString());
-		
-		node.appendChild(element);
 	}
 }

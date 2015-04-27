@@ -20,16 +20,18 @@
 
 package processing.app;
 
+import com.nerduino.core.AppConfiguration;
 import com.nerduino.nodes.TreeNode;
 import java.io.File;
+import javax.swing.JFileChooser;
 import org.openide.nodes.Children;
 import org.openide.util.Exceptions;
 
-public class ArduinoManager extends TreeNode
+public final class ArduinoManager extends TreeNode
 {
 	// declarations
 	public static ArduinoManager Current;
-	String m_arduinoPath = "/Users/chaselaurendine/Documents/Nerduino";
+	String m_arduinoPath = null;
 
 	BoardManager m_boardManager;
 	LibraryManager m_libraryManager;
@@ -58,31 +60,101 @@ public class ArduinoManager extends TreeNode
 		
 		m_nodes.add(nodes);
 
-		Base.initPlatform();
-		Preferences.init(null);
-		try
+		initializePlatform();
+	}
+	
+	
+	void initializePlatform()
+	{
+		// scan scrolls folder in background thread
+		Thread thread = new Thread(new Runnable()
 		{
-			new Base();
-		}
-		catch(Exception ex)
-		{
-			Exceptions.printStackTrace(ex);
-		}
+			@Override
+			public void run()
+			{
+				Base.initPlatform();
+				Preferences.init(null);
+				try
+				{
+					new Base();
+				}
+				catch(Exception ex)
+				{
+					Exceptions.printStackTrace(ex);
+				}
+
+
+				m_sketchManager.readSketchList();
+				m_libraryManager.readLibraryList();
+				m_boardManager.readBoardDefinitions();
+			}
+		}, "Arduino Platform Initialization thread");
+		
+		thread.start();
 	}
 	
 	// Properties
 	public String getArduinoPath()
 	{
+		if (m_arduinoPath == null)
+		{
+			boolean found = false;
+			String path = AppConfiguration.Current.getParameter("ArduinoPath");
+
+			while (!found)
+			{
+				if (path != null)
+				{
+					File pathFile = new File(path);
+
+					if (pathFile.exists() && pathFile.isDirectory())
+					{
+						File preferenceFile = new File(path + "/lib/preferences.txt");
+						
+						if (preferenceFile.exists())
+						{
+							AppConfiguration.Current.setParameter("ArduinoPath", pathFile.getAbsolutePath());
+							
+							m_arduinoPath = path;
+							return m_arduinoPath;
+						}
+					}
+				}
+				
+				JFileChooser chooser;
+				
+				chooser = new JFileChooser(); 
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Select the Arduino installation directory");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				//
+				// disable the "All files" option.
+				//
+				chooser.setAcceptAllFileFilterUsed(false);
+				//    
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+				{ 
+					path = chooser.getSelectedFile().getPath();
+					System.out.println("getCurrentDirectory(): " 
+						+  chooser.getCurrentDirectory());
+					System.out.println("getSelectedFile() : " 
+						+  chooser.getSelectedFile());
+				}
+				else 
+				{
+					System.out.println("No Selection ");
+				}
+			}
+		}
+		
+		
 		return m_arduinoPath;
 	}
 	
 	public void setArduinoPath(String value)
 	{
 		m_arduinoPath = value;
-		
-		m_sketchManager.readSketchList();
-		m_libraryManager.readLibraryList();
-		m_boardManager.readBoardDefinitions();
+		AppConfiguration.Current.setParameter("ArduinoPath", m_arduinoPath);
 	}
 	
 	public String getBuildPath()

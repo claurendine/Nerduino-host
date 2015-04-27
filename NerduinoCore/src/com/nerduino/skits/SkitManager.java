@@ -20,36 +20,172 @@
 
 package com.nerduino.skits;
 
-import com.nerduino.core.AppManager;
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
 import com.nerduino.webhost.WebHost;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.nio.charset.CoderResult.OVERFLOW;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
-import processing.app.ArduinoManager;
 
 
 public class SkitManager extends BaseManager
 {
 	// Declarations
 	public static SkitManager Current;
-
+	boolean m_loading = false;
+	
 	public SkitManager()
 	{
 		super("Skits", "/com/nerduino/resources/SkitManager16.png");
 	
 		Current = this;
+		
+		loadSkits();
 	}
 
+	private void loadSkits()
+	{
+		// scan skits folder in background thread
+		Thread thread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				// get the path to the skits folder
+				String filePath = getFilePath();
+
+				File directory = new File(filePath);
+
+				if (directory.exists() && directory.isDirectory())
+				{
+					File[] files = directory.listFiles();
+
+					for(File f : files)
+					{
+						String filename = f.getName();
+
+						if (filename.startsWith("bee.") || filename.startsWith("env."))
+							continue; // skip the internal data files
+						
+						if (f.isFile() && filename.toLowerCase().endsWith(Skit.s_extension))
+						{
+							// strip off the file extension for the scroll name
+							String skitName = filename.substring(0, filename.length() - Skit.s_extension.length());
+
+							// create and load each skit
+							Skit skit = new Skit(skitName);
+
+							addChild(skit);					
+						}
+					}
+
+					/*
+					try
+					{
+						// register for notification of file changes in the scrolls folder
+						WatchService watcher = FileSystems.getDefault().newWatchService();
+
+						Path path = Paths.get(filePath);
+						WatchKey watchKey = path.register(watcher, ENTRY_CREATE, ENTRY_DELETE);
+
+						for (;;) 
+						{
+							// wait for key to be signaled
+							WatchKey key;
+							try 
+							{
+								key = watcher.take();
+							} 
+							catch (InterruptedException x) 
+							{
+								return;
+							}
+
+							for (WatchEvent<?> event: key.pollEvents()) 
+							{
+								WatchEvent.Kind<?> kind = event.kind();
+
+								if (kind == OVERFLOW) 
+								{
+									continue;
+								}
+
+								WatchEvent<Path> ev = (WatchEvent<Path>)event;
+								Path filepath = ev.context();
+
+								String childfilename = filepath.toString();
+
+								// verify that the file has an xml extension
+								if (childfilename.toLowerCase().endsWith(Skit.s_extension))
+								{
+									// strip off the file extension for the scroll name
+									String skitName = childfilename.substring(0, childfilename.length() - Skit.s_extension.length());
+
+									if (kind == ENTRY_CREATE)
+									{
+										// ignore any file called 'index'
+										if (!"index".equals(skitName))
+										{
+											// make sure this skit is not already loaded
+											Node node = getChildren().findChild(skitName);
+
+											if (node == null)
+											{
+												// create and load each skit
+												Skit skit = new Skit(skitName);
+
+												addChild(skit);
+											}
+										}
+									}
+									else if (kind == ENTRY_DELETE)
+									{
+										// remove the scroll
+										Node node = getChildren().findChild(skitName);
+
+										if (node != null)
+										{
+											removeChild((TreeNode) node);
+										}
+									}
+								}
+							}
+
+							if (!key.reset()) 
+							{
+								break;
+							}
+						}
+					}
+					catch(IOException ex)
+					{
+					}
+					*/
+				}
+			}
+		}, "Skit loading thread");
+
+		thread.start();
+	}
+	
 	@Override
 	public TreeNode createNewChild()
 	{
@@ -81,9 +217,11 @@ public class SkitManager extends BaseManager
 		
 		java.net.URL url;
 		
-		if (ns.m_skitMode.equals("Structured"))
+		String mode = ns.getSkitMode();
+		
+		if (mode.equals("Structured"))
 			url = getClass().getResource("/com/nerduino/resources/StructuredSkit.html");
-		else if (ns.m_skitMode.equals("Mobile Template"))
+		else if (mode.equals("Mobile Template"))
 			url = getClass().getResource("/com/nerduino/resources/MobileSkit.html");
 		else 
 			url = getClass().getResource("/com/nerduino/resources/DesktopSkit.html");
@@ -119,17 +257,6 @@ public class SkitManager extends BaseManager
 		
 		return true;
 	}
-		
-	@Override
-	public void saveConfiguration()
-	{
-		if (!AppManager.loading)
-		{
-			updateSkitIndexHtml();
-
-			AppManager.Current.saveConfiguration();
-		}
-	}
 	
 	public void updateSkitIndexHtml()
 	{
@@ -156,10 +283,11 @@ public class SkitManager extends BaseManager
 			{
 				Skit skit = (Skit) node;
 				String name = skit.getName();
+				String nfilename = skit.getFileName();
 				
 				writer.write("<li><a href='");
-				writer.write(name);
-				writer.write(".html'>");
+				writer.write(nfilename);
+				writer.write("'>");
 				writer.write(name);
 				writer.write("</a></li>\n");
 			}
@@ -169,18 +297,59 @@ public class SkitManager extends BaseManager
 			writer.write("</html>");
 			
 			writer.close();
+			
+			//saveSkitList();
 		}
 		catch(IOException ex)
 		{
 			Logger.getLogger(Skit.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
 	}
 
 	@Override
+	public void addChild(TreeNode node)
+	{
+		super.addChild(node);
+		
+		updateSkitIndexHtml();
+	}
+	
+	@Override
+	public void removeChild(TreeNode node)
+	{
+		super.removeChild(node);
+		
+		updateSkitIndexHtml();
+	}
+	
+	/*	
+	void saveSkitList()
+	{
+		if (!m_loading)
+		{
+			ArrayList<String> names = new ArrayList<String>();
+			
+			for (Object obj : getChildren().snapshot())
+			{
+				Skit skit = (Skit) obj;
+
+				names.add(skit.getName());
+			}
+			
+			String[] nameList = new String[names.size()];
+			
+			names.toArray(nameList);
+			
+			AppConfiguration.Current.setList("SkitList", nameList);
+		}
+	}
+	*/
+	
+	@Override
 	public String getFilePath()
 	{
-		return ArduinoManager.Current.getArduinoPath() + "/Services";
+		return WebHost.Current.getWebRoot();
+//		return ArduinoManager.Current.getArduinoPath() + "/Skits";
 	}
 
 	@Override
@@ -188,9 +357,9 @@ public class SkitManager extends BaseManager
 	{
 		// A list of actions for this node
 		return new Action[]
-				{
-					new SkitManager.CreateSkitAction(getLookup())
-				};
+			{
+				new SkitManager.CreateSkitAction(getLookup())
+			};
 	}
 
 	public final class CreateSkitAction extends AbstractAction
@@ -215,7 +384,6 @@ public class SkitManager extends BaseManager
 				}
 				catch(Exception ex)
 				{
-					//Exceptions.printStackTrace(ex);
 				}
 			}
 		}

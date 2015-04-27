@@ -20,6 +20,7 @@
 
 package com.nerduino.library;
 
+import com.nerduino.nodes.TreeNode;
 import com.nerduino.propertybrowser.BluetoothPortPropertyEditor;
 import processing.app.ArduinoManager;
 import processing.app.Preferences;
@@ -93,7 +94,10 @@ public class NerduinoBT extends NerduinoLight
 	@Override
 	public boolean configureNewNerduino()
 	{
-		setName(getUniqueName(getName()));
+		if (getParentNode() != null)
+		{
+			setName(((TreeNode) getParentNode()).getUniqueName(getName()));
+		}
 		
 		// show the configure dialog
 		NerduinoBTConfigDialog dialog = new NerduinoBTConfigDialog(new javax.swing.JFrame(), true);

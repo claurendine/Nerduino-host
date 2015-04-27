@@ -32,7 +32,6 @@ public class BaseManager extends TreeNode
 {
 	// Declarations
 	protected Children m_children;
-	//String m_path = "/Users/chaselaurendine/Documents/Nerduino/Services";
 
 	public BaseManager(String name, String icon)
 	{
@@ -93,8 +92,6 @@ public class BaseManager extends TreeNode
 			nodes[0] = node;
 			
 			m_children.add(nodes);
-
-			saveConfiguration();
 		}
 	}
 	
@@ -105,18 +102,9 @@ public class BaseManager extends TreeNode
 			Node[] nodes = new Node[1];
 			nodes[0] = node;
 			
-			m_children.remove(nodes);
-			
-			saveConfiguration();
+			m_children.remove(nodes);			
 		}
 	}
-	
-	public void saveConfiguration()
-	{
-		if (AppManager.Current != null)
-			AppManager.Current.saveConfiguration();	
-	}
-
 	
 	@Override
 	public void readXML(Element elem)

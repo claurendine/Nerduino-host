@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<configuration interval="0.05">
+	<!--
+	<trigger>javascript resulting in boolean, when true then start playing the scroll content</trigger>
+	-->
+	<container time="0.0" span="10.0" loopCount="1">
+		<!--
+		<script time="0.5">javacript</script>
+		<keyFrame time="0.4" span="0.5" prototype="pointname=%x%;" inerpolate="linear">
+			<sample time="0.0" x="5.0"/>
+		</keyFrame> 
+		<container time="1.0" span="3.0" loopCount="3">
+			<script time="0.0">javacript</script>
+		</container>
+		-->
+	</container>
+</root>

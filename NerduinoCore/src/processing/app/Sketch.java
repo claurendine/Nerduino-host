@@ -31,7 +31,6 @@ import com.nerduino.nodes.TreeNode;
 
 import processing.app.debug.*;
 import processing.app.debug.Compiler;
-import processing.app.forms.PasswordAuthorizationDialog;
 import processing.app.helpers.PreferencesMap;
 import processing.app.packages.Library;
 import processing.app.packages.LibraryList;
@@ -50,12 +49,10 @@ import javax.swing.*;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewFactory;
 import org.netbeans.spi.actions.AbstractSavable;
-import org.openide.actions.RenameAction;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Children;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.actions.SystemAction;
@@ -244,24 +241,11 @@ public class Sketch extends TreeNode
 		}
 	}
 	
-	
-	@Override
-	public Component getAction1()
-	{
-		if (m_compileButton == null)
-			m_compileButton = new CompileAllCommand(this);
-		
-		return m_compileButton;
-	}
-	
 	public void cloneSketch(Sketch selectedSketch)
 	{
 		// make sure that the new project name is valid and unique
 		String newname = SketchManager.Current.getUniqueName(m_name);
 		String oldname = selectedSketch.getName();
-		
-		//TreeNode parent = (TreeNode) getParentNode();
-		//String newname = parent.getUniqueName(m_name);
 		
 		// verify that the path exists
 		String path = ArduinoManager.Current.getArduinoPath() + "/" + newname;
@@ -398,7 +382,7 @@ public class Sketch extends TreeNode
 		return new Action[]
 				{
 					new TreeNode.TreeNodeAction(getLookup()),
-					SystemAction.get(RenameAction.class),
+					//SystemAction.get(RenameAction.class),
 					new Sketch.CloneNodeAction(getLookup()),
 					new Sketch.DeleteNodeAction(getLookup())
 				};

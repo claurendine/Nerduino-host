@@ -50,7 +50,48 @@ public class PointBase extends TreeNode
 	public boolean getBoolean()
 	{
 		if (DataType == DataTypeEnum.DT_Boolean)
-			return (Boolean) m_value;
+		{
+			if (m_value instanceof Boolean)
+			{
+				return (Boolean) m_value;
+			}
+			
+			if (m_value instanceof Byte)
+			{
+				return ((Byte) m_value) != 0;
+			}
+
+			if (m_value instanceof Integer)
+			{
+				return ((Integer) m_value) != 0;
+			}
+			if (m_value instanceof Float)
+			{
+				return ((Float) m_value) != 0.0f;
+			}
+			if (m_value instanceof String)
+			{
+				String str = (String) m_value;
+				
+				str = str.toLowerCase();
+				
+				if ("true".equals(str))
+					return true;
+				
+				// attempt to parse the string as a number
+				try
+				{
+					Float fval = Float.parseFloat(str);
+					
+					return fval != 0.0f;
+				}
+				catch(Exception e)
+				{
+				}
+				
+				return false;
+			}	
+		}
 		
 		return false;
 	}
@@ -216,13 +257,60 @@ public class PointBase extends TreeNode
 			case DT_Boolean:
 				if (value instanceof Boolean)
 					m_value = value;
+				else if (value instanceof Byte)
+					m_value = ((Byte) value != 0);
+				else if (value instanceof Short)
+					m_value = ((Short) value != 0);
+				else if (value instanceof Integer)
+					m_value = ((Integer) value != 0);
+				else if (value instanceof Float)
+					m_value = ((Float) value != 0.0);
+				else if (value instanceof Double)
+					m_value = ((Double) value != 0.0);
 				else if (value instanceof String)
-					m_value = Boolean.parseBoolean((String)value);
+				{
+					String str = (String) value;
+					
+					str = str.toLowerCase();
+					
+					if ("true".equals(str))
+					{
+						m_value = true;
+						return;
+					}
+					else if ("false".equals(str))
+					{
+						m_value = false;
+						return;
+					}
+					
+					// look at the numeric value..
+					try
+					{
+						float fval = Float.parseFloat(str);
+					
+						m_value = (fval != 0.0f);
+					}
+					catch(Exception e)
+					{
+						m_value = false;
+					}
+				}
 
 				break;
 			case DT_Byte:
 				if (value instanceof Byte)
 					m_value = value;
+				else if (value instanceof Boolean)
+					m_value = ((Boolean) value) ? 1 : 0;
+				else if (value instanceof Short)
+					m_value = ((Short) value).byteValue();
+				else if (value instanceof Integer)
+					m_value = ((Integer) value).byteValue();
+				else if (value instanceof Float)
+					m_value = ((Float) value).byteValue();
+				else if (value instanceof Double)
+					m_value = ((Double) value).byteValue();
 				else if (value instanceof String)
 					m_value = Byte.parseByte((String)value);
 
@@ -230,6 +318,16 @@ public class PointBase extends TreeNode
 			case DT_Short:
 				if (value instanceof Short)
 					m_value = value;
+				else if (value instanceof Boolean)
+					m_value = ((Boolean) value) ? 1 : 0;
+				else if (value instanceof Byte)
+					m_value = ((Byte) value).shortValue();
+				else if (value instanceof Integer)
+					m_value = ((Integer) value).shortValue();
+				else if (value instanceof Float)
+					m_value = ((Float) value).shortValue();
+				else if (value instanceof Double)
+					m_value = ((Double) value).shortValue();
 				else if (value instanceof String)
 					m_value = Short.parseShort((String)value);
 
@@ -237,6 +335,16 @@ public class PointBase extends TreeNode
 			case DT_Integer:
 				if (value instanceof Integer)
 					m_value = value;
+				else if (value instanceof Boolean)
+					m_value = ((Boolean) value) ? 1 : 0;
+				else if (value instanceof Byte)
+					m_value = ((Byte) value).intValue();
+				else if (value instanceof Short)
+					m_value = ((Short) value).intValue();
+				else if (value instanceof Float)
+					m_value = ((Float) value).intValue();
+				else if (value instanceof Double)
+					m_value = ((Double) value).intValue();
 				else if (value instanceof String)
 					m_value = Integer.parseInt((String)value);
 
@@ -244,6 +352,16 @@ public class PointBase extends TreeNode
 			case DT_Float:
 				if (value instanceof Float)
 					m_value = value;
+				else if (value instanceof Boolean)
+					m_value = ((Boolean) value) ? 1.0f : 0.0f;
+				else if (value instanceof Byte)
+					m_value = ((Byte) value).floatValue();
+				else if (value instanceof Short)
+					m_value = ((Short) value).floatValue();
+				else if (value instanceof Integer)
+					m_value = ((Integer) value).floatValue();
+				else if (value instanceof Double)
+					m_value = ((Double) value).floatValue();
 				else if (value instanceof String)
 					m_value = Float.parseFloat((String)value);
 

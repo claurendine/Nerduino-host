@@ -20,24 +20,13 @@
 
 package com.nerduino.skits;
 
-import java.awt.Toolkit;
-import java.io.IOException;
 import java.util.Collection;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.text.Document;
-import javax.swing.text.EditorKit;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
-import org.netbeans.spi.palette.PaletteActions;
-import org.netbeans.spi.palette.PaletteController;
-import org.netbeans.spi.palette.PaletteFactory;
-import org.openide.cookies.InstanceCookie;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.text.CloneableEditor;
 import org.openide.text.CloneableEditorSupport;
 import org.openide.text.NbDocument;
@@ -51,9 +40,6 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 	private transient final Lookup lookup;
 	private transient JComponent toolbar;
 	private transient MultiViewElementCallback callback;
-	
-	private static PaletteController palette = null;
-	
 	
 	SkitSourceEditor(Lookup lookup)
 	{
@@ -78,22 +64,16 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 				
 				if (doc instanceof NbDocument.CustomToolbar)
 					toolbar = ((NbDocument.CustomToolbar) doc).createToolbar(pane);
-
-				String ct = pane.getContentType();
-				EditorKit ek = pane.getEditorKit();
-				Toolkit tk = pane.getToolkit();
-				
 			}
 	
 			if (toolbar == null)
-				//attempt to create own toolbar?
+			//attempt to create own toolbar?
+			{
 				toolbar = new JPanel();
+			}
 		}
 		return toolbar;
 	}
-
-				
-
 	
 	@Override
 	public void setMultiViewCallback(MultiViewElementCallback callback)
@@ -129,33 +109,9 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 	public void componentOpened()
 	{
 		super.componentOpened();
-		/*
-		FileObject fo = FileUtil.getConfigFile("Actions/Window/org-netbeans-modules-palette-ShowPaletteAction.instance");
-		
-		if (fo != null && fo.isValid())
-		{
-			try
-			{
-				DataObject dob = DataObject.find(fo);
-				InstanceCookie ic = dob.getLookup().lookup(InstanceCookie.class);
-				if (ic != null)
-				{
-					Object instance = ic.instanceCreate();
-					
-					if (instance instanceof Action)
-					{
-						Action a = (Action) instance;
-						a.actionPerformed(null);
-					}
-				}
-			}
-			catch(Exception e)
-			{
-			}
-		}
-		*/
 	}
 
+	@Override
 	public void componentShowing()
 	{
 		if (callback != null)
@@ -179,16 +135,10 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 		{
 			System.out.println("~~   " + s2s(o));
 		}
-		
 		System.out.println("~~ ------------------------------------");
 		
 		InstanceContent content = new InstanceContent();
 		Lookup temp = new AbstractLookup(content);
-		
-		/*
-		PaletteController controller = createPalette();
-		content.add(controller);
-		*/
 		
 		return new ProxyLookup(lookup, temp);
 	}
@@ -245,53 +195,4 @@ public class SkitSourceEditor extends CloneableEditor implements MultiViewElemen
 	{
 		return o == null ? "null" : o.getClass() + "@" + Integer.toHexString(System.identityHashCode(o));
 	}
-
-	/*
-	public static PaletteController createPalette()
-	{
-		try
-		{
-			if (null == palette)
-			{
-				palette = PaletteFactory.createPalette("HTMLPalette", new PaletteActions()
-				{
-					@Override
-					public Action[] getImportActions()
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomPaletteActions()
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomCategoryActions(Lookup lkp)
-					{
-						return null;
-					}
-
-					@Override
-					public Action[] getCustomItemActions(Lookup lkp)
-					{
-						return null;
-					}
-
-					@Override
-					public Action getPreferredAction(Lookup lkp)
-					{
-						return null;
-					}
-				}, null, null);
-			}
-			return palette;
-		}
-		catch(IOException ex)
-		{
-		}
-		return null;
-	}
-	*/
 }

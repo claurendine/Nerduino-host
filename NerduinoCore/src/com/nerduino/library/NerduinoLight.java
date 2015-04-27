@@ -31,9 +31,9 @@ import org.openide.util.Exceptions;
 
 public class NerduinoLight extends NerduinoFull
 {
-	ArrayList<LocalDataPoint> m_localDataPoints = new ArrayList<LocalDataPoint>();
-	ArrayList<LinkDataPoint> m_linkDataPoints = new ArrayList<LinkDataPoint>();
-	ArrayList<PointBase> m_points = new ArrayList<PointBase>();
+	protected ArrayList<LocalDataPoint> m_localDataPoints = new ArrayList<LocalDataPoint>();
+	protected ArrayList<LinkDataPoint> m_linkDataPoints = new ArrayList<LinkDataPoint>();
+	protected ArrayList<PointBase> m_points = new ArrayList<PointBase>();
 	HashMap<Integer, String> m_unresolvedAddresses = new HashMap<Integer, String>();
 	protected NerduinoBase[] m_addresses = new NerduinoBase[255];
 	
@@ -1499,7 +1499,7 @@ public class NerduinoLight extends NerduinoFull
 		final Sheet.Set pointsSheet = Sheet.createPropertiesSet();
 		
 		nerduinoSheet.setDisplayName("Nerduino Settings");
-		addProperty(nerduinoSheet, short.class, null, "PointCount", "The number of points reported by the nerduino.");
+		//addProperty(nerduinoSheet, short.class, null, "PointCount", "The number of points reported by the nerduino.");
 		addProperty(nerduinoSheet, DeviceTypeEnum.class, null, "DeviceType", "The device type reported by the nerduino.");
 		addProperty(nerduinoSheet, NerduinoStatusEnum.class, null, "Status", "The status reported by the nerduino.");
 

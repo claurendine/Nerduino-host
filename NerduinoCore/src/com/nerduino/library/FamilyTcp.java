@@ -27,16 +27,12 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Hashtable;
 import org.openide.util.Exceptions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class FamilyTcp extends FamilyBase
 {
 	public static FamilyTcp Current;
 	ServerSocket m_servSock;
 	Thread m_connectionThread;
-	int m_port = 17401;
-	Boolean m_enabled;
 	
 	int m_udpDiscoveryPort = 17451;
 	DatagramSocket m_udpDiscoverySocket; 
@@ -56,7 +52,7 @@ public class FamilyTcp extends FamilyBase
 		super();
 		
 		Current = this;
-		
+				
 		// respond to udp broadcast requests
 		try
 		{
@@ -85,7 +81,7 @@ public class FamilyTcp extends FamilyBase
 						}
 				  }
 				}
-			});
+			}, "Nerduino TCP discovery request thread");
 			
 			// create a thread to process incoming discovery requests
 			Thread messageThread = new Thread(new Runnable()
@@ -117,7 +113,7 @@ public class FamilyTcp extends FamilyBase
 						}
 				  }
 				}
-			});
+			}, "Nerduino TCP discovery processing thread");
 			
 			discoveryThread.start();
 			messageThread.start();
@@ -162,75 +158,5 @@ public class FamilyTcp extends FamilyBase
 		m_addresses.put(address, nerd);
 		
 		return true;
-	}
-	
-	public int getPort()
-	{
-		return m_port;
-	}
-	
-	public void setPort(int port)
-	{
-		if (m_port != port)
-		{
-			m_port = port;
-			
-			if (m_enabled)
-			{
-				setEnabled(false);
-				
-				try
-				{
-					Thread.sleep(100);
-				}
-				catch(InterruptedException ex)
-				{
-					Exceptions.printStackTrace(ex);
-				}
-				
-				setEnabled(true);
-			}
-		}
-	}
-	
-	public Boolean getEnabled()
-	{
-		return m_enabled;
-	}
-
-	public void setEnabled(Boolean value)
-	{
-		m_enabled = value;			
-	}
-	
-	private void onOutput(String data)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void readXML(Element element)
-	{
-		if (element != null)
-		{
-			String portStr = element.getAttribute("Port");
-			String enabledStr = element.getAttribute("Enabled");
-
-			try
-			{
-				int port = Integer.decode(portStr);
-				
-				setPort(port);
-			}
-			catch(Exception e)
-			{
-			}
-			
-			setEnabled(true);
-		}
-	}
-
-	public void writeXML(Document doc, Element element)
-	{
-		element.setAttribute("Port", ((Integer) getPort()).toString());
 	}
 }

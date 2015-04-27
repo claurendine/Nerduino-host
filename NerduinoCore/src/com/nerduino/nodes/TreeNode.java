@@ -22,11 +22,13 @@ package com.nerduino.nodes;
 
 import com.nerduino.core.ExplorerTopComponent;
 import com.nerduino.core.PropertiesTopComponent;
+import com.nerduino.library.PointManager;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import org.openide.nodes.AbstractNode;
@@ -34,6 +36,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.datatransfer.NewType;
@@ -85,36 +88,22 @@ public class TreeNode extends AbstractNode
 
 		if (m_name.equals(name))
 			return;
+
+		super.setName(name);
+
+		m_name = name;
 		
-		m_name = getUniqueName(name);
-
-		super.setName(m_name);
-
 		onRename(oldName, m_name);
-
-		// TODO mark the tab text
+		
 		if (m_topComponent != null)
 			m_topComponent.setDisplayName(m_name);
 	}
 	
-	Component action1;
-	
-	public Component getAction1()
-	{
-		if (action1 == null)
-		{
-			action1 = new EmptyCommand();
-			
-			action1.setSize(60, 18);
-		}
-
-		return action1;
-	}
-
 	public void onRename(String oldName, String newName)
 	{
 	}
-
+	
+	// get a unique name from this node's children
 	public String getUniqueName(String name)
 	{
 		return getUniqueName(getChildren().snapshot(), name);
@@ -186,20 +175,6 @@ public class TreeNode extends AbstractNode
 		ExplorerTopComponent.Current.setSelectedNode(this);
 	}
 
-	public void click(java.awt.event.MouseEvent evt)
-	{
-	}
-
-	public void doubleClick(java.awt.event.MouseEvent evt)
-	{
-		configure();
-	}
-
-	public void configure()
-	{
-		showTopComponent();
-	}
-
 	public void showTopComponent()
 	{
 		if (m_topComponent == null)
@@ -222,6 +197,8 @@ public class TreeNode extends AbstractNode
 			// repeated on purpose to assert the display name
 			m_topComponent.requestActive();
 
+			
+			m_topComponent.setDisplayName(m_name);
 		}
 	}
 
@@ -258,10 +235,6 @@ public class TreeNode extends AbstractNode
 	{
 	}
 
-	public void onEditorUpdated()
-	{
-	}
-
 	@Override
 	protected Sheet createSheet()
 	{
@@ -289,16 +262,38 @@ public class TreeNode extends AbstractNode
 	@Override
 	public Action[] getActions(boolean context)
 	{
+		super.getActions(context);
+		
+		ArrayList<Action> actions = new ArrayList<Action>();
+		
 		// A list of actions for this node
 		if (m_hasEditor)
-			return new Action[]
-					{
-						new TreeNodeAction(getLookup())
-					};
+			actions.add(new TreeNodeAction(getLookup()));
 		
-		return new Action[]
-				{
-				};
+		if (m_canRename)
+			actions.add(new RenameAction(getLookup()));
+		
+		if (m_canDelete)
+			actions.add(new DeleteAction(getLookup()));
+		
+		Action[] customActions = getCustomActions(context);
+		
+		if (customActions != null)
+		{
+			for(Action ca : customActions)
+			{
+				actions.add(ca);
+			}
+		}
+		
+		Action[] array = new Action[actions.size()];
+		
+		return actions.toArray(array);
+	}
+	
+	public Action[] getCustomActions(boolean context)
+	{
+		return null;
 	}
 
 	public final class TreeNodeAction extends AbstractAction
@@ -319,11 +314,67 @@ public class TreeNode extends AbstractNode
 			{
 				try
 				{
-					node.doubleClick(null);
+					node.showTopComponent();
 				}
 				catch(Exception ex)
 				{
-					//Exceptions.printStackTrace(ex);
+					Exceptions.printStackTrace(ex);
+				}
+			}
+		}
+	}
+	
+	public final class RenameAction extends AbstractAction
+	{
+		private TreeNode node;
+
+		public RenameAction(Lookup lookup)
+		{
+			node = lookup.lookup(TreeNode.class);
+			
+			putValue(AbstractAction.NAME, "Rename");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if (node != null)
+			{
+				try
+				{
+					node.rename();
+				}
+				catch(Exception ex)
+				{
+					Exceptions.printStackTrace(ex);
+				}
+			}
+		}
+	}
+	
+	public final class DeleteAction extends AbstractAction
+	{
+		private TreeNode node;
+
+		public DeleteAction(Lookup lookup)
+		{
+			node = lookup.lookup(TreeNode.class);
+			
+			putValue(AbstractAction.NAME, "Delete");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if (node != null)
+			{
+				try
+				{
+					node.destroy();
+				}
+				catch(Exception ex)
+				{
+					Exceptions.printStackTrace(ex);
 				}
 			}
 		}
@@ -363,6 +414,24 @@ public class TreeNode extends AbstractNode
 	{
 		return m_canRename;
 	}
+	
+	public void rename()
+	{
+		// prompt for a new name
+		String oldname = getName();
+		
+		String newname = JOptionPane.showInputDialog(null, "New Name:", oldname);
+		
+		if (!newname.matches(oldname))
+		{
+			TreeNode parent = (TreeNode) getParentNode();
+			
+			if (parent != null)
+				newname = parent.getUniqueName(newname);
+			
+			onRename(oldname, newname);
+		}
+	}
 
 	@Override
 	public boolean canDestroy()
@@ -374,19 +443,7 @@ public class TreeNode extends AbstractNode
 	public PropertySet[] getPropertySets()
 	{
 		final Sheet.Set ps = Sheet.createPropertiesSet();
-		/*	
-		 try 
-		 {
-		 Property indexProp = new PropertySupport.Reflection(this, String.class, "getName", null);
-
-		 indexProp.setName("index");
-
-		 ps.put(indexProp);
-		 } 
-		 catch (NoSuchMethodException ex) 
-		 {
-		 }
-		 */
+		
 		return new PropertySet[]
 				{
 					ps
@@ -468,7 +525,39 @@ public class TreeNode extends AbstractNode
 		}
 		catch(NoSuchMethodException ex)
 		{
-			//Exceptions.printStackTrace(ex);
+			Exceptions.printStackTrace(ex);
+		}
+	}
+	
+	protected void addProperty(Sheet.Set sheet, Object target, Class valueType, Class editorType, String name, String description)
+	{
+		PropertySupport.Reflection prop = null;
+		
+		try
+		{
+			prop = new PropertySupport.Reflection(target, valueType, name);
+		}
+		catch(NoSuchMethodException ex)
+		{
+			try
+			{
+				prop = new PropertySupport.Reflection(target, valueType, "get" + name, null);
+			}
+			catch(NoSuchMethodException ex1)
+			{
+				//Exceptions.printStackTrace(ex1);
+			}
+		}
+		
+		if (prop != null)
+		{
+			prop.setName(name);
+			prop.setShortDescription(description);
+			
+			if (editorType != null)
+				prop.setPropertyEditorClass(editorType);
+			
+			sheet.put(prop);
 		}
 	}
 }

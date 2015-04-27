@@ -23,45 +23,75 @@ package com.nerduino.scrolls;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.nodes.TreeNode;
+import com.nerduino.services.ServiceManager;
+import com.nerduino.uPnP.XmlUtil;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.mozilla.javascript.Context;
 import org.netbeans.core.spi.multiview.MultiViewDescription;
 import org.netbeans.core.spi.multiview.MultiViewFactory;
-import org.openide.actions.RenameAction;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Children;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.Lookups;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+import processing.app.ArduinoSourceEditor;
 
 public class Scroll extends TreeNode
 {
 	// Declarations
 	boolean m_configured = false;
+	boolean m_playing = false;
 	String m_source = "";
+	String m_trigger = null;
+	String m_while = null;
+	String m_until = null;
+	float m_interval = 0.05f;
+
+	static Context s_commonContext = null;
+	static String s_extension = ".xml";
+	public ArduinoSourceEditor m_editor;
+	
+	Container m_container;
 	
 	// Constructors
     public Scroll()
     {
         super(new Children.Array(), "Scroll", "/com/nerduino/resources/Scroll16.png");
     
+		m_canDelete = true;
+		m_canRename = true;
+	}
+
+	Scroll(String scrollName)
+	{
+        super(new Children.Array(), "Scroll", "/com/nerduino/resources/Scroll16.png");
+		
+		m_name = scrollName;
 		m_canDelete = true;
 		m_canRename = true;
 	}
@@ -98,7 +128,7 @@ public class Scroll extends TreeNode
 
 	public String getFileName()
 	{
-		return m_name + ".xml";
+		return ScrollManager.Current.getFilePath() + "/" + m_name + s_extension;
 	}
 	
 	public String getSource()
@@ -112,187 +142,160 @@ public class Scroll extends TreeNode
 	}
 
 	@Override
-	public void configure()
-	{
-		// show the configure data point dialog
-		//SkitConfigDialog dialog = new SkitConfigDialog(new javax.swing.JFrame(), true);
-		
-		//dialog.setSkit(this);
-		//dialog.setVisible(true);
-		
-		// update the tree in case the appearance changed
-		//NerduinoTreeView.Current.modelUpdated(this);
-	}
-
-	@Override
-	public void onEditorUpdated()
-	{
-		/*
-		 if (m_editor != null)
-		 {
-		 m_html = m_editor.getDocument();
-			
-		 writeHtmlFile();
-
-		 AppManager.Current.saveConfiguration();
-		 }
-		 */
-	}
-	
-	@Override
-	public Action[] getActions(boolean context) 
+	public Action[] getCustomActions(boolean context) 
 	{
 		return new Action[]
 		{
-			new TreeNode.TreeNodeAction(getLookup()),
-			SystemAction.get(RenameAction.class),
 			new Scroll.CloneNodeAction(getLookup()),
-			new Scroll.DeleteNodeAction(getLookup())
+			new Scroll.PlayAction(getLookup())
 		};
 	}
 	
-	public final class CloneNodeAction extends AbstractAction
+	public void playAsync()
 	{
-		private Scroll node;
-		
-		public CloneNodeAction( Lookup lookup )
-		{
-			node = lookup.lookup( Scroll.class );
-			
-			putValue( AbstractAction.NAME, "Clone");
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) 
-		{
-			if ( node!= null )
-				try 
-				{
-					node.cloneScroll();
-				} 
-				catch (Exception ex) 
-				{
-				}
-		}
-	}
-	
-	public void cloneScroll()
-	{
-		// make sure that the new project name is valid and unique
-		TreeNode parent = (TreeNode) getParentNode();
-		
-		String newname = parent.getUniqueName(m_name);
-		
-		Scroll newScroll = new Scroll();
-		
-		newScroll.setName(newname);
-		newScroll.setSource(m_source);
-		
-		ScrollManager.Current.addChild(newScroll);
-
-		newScroll.select();
-	}
-
-	public final class DeleteNodeAction extends AbstractAction
-	{
-		private Scroll node;
-		
-		public DeleteNodeAction( Lookup lookup )
-		{
-			node = lookup.lookup( Scroll.class );
-			
-			putValue( AbstractAction.NAME, "Delete");
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) 
-		{
-			if ( node!= null )
-				try 
-				{
-					delete();
-				} 
-				catch (Exception ex) 
-				{
-				}
-		}
-	}
-	
-
-	public void delete()
-	{
-		// prompt the user to confirm the deletion
-		int resp = JOptionPane.showConfirmDialog(null,
-												 "Are you sure you want to delete this Scroll?",
-												 "Scroll Manager",
-												 JOptionPane.YES_NO_OPTION);
-
-		if (resp == 0)
-		{
-			// close any open editors
-			// TODO
-			//closeView();
-			
-			// delete the associated html file
-			String filename = getFileName();
-			
-			File f = new File(filename);
-			
-			if (f.exists())
-				f.delete();
-			
-			ScrollManager.Current.removeChild(this);
-		}
-	}
-
-	@Override
-	public void onRename(String oldName, String newName)
-	{
-		if (AppManager.loading)
+		if (m_playing)
 			return;
-
-		super.onRename(oldName, newName);
-
-		String oldFileName = ScrollManager.Current.getFilePath() + "/" + oldName + ".xml";
-		String newFileName = ScrollManager.Current.getFilePath() + "/" + newName + ".xml";
-
-		File f = new File(oldFileName);
-
-		if (f.exists())
-			f.renameTo(new File(newFileName));
-
-		AppManager.Current.saveConfiguration();
+		
+		// create thread and call play from this thread
+		Thread pthread = new Thread(new Runnable() 
+			{
+				@Override
+				public void run()
+				{
+					try
+					{
+						// create a new context for this thread
+						Context context = Context.enter();
+						
+						play(context);
+					}
+					catch(Exception e)
+					{
+					}
+				}
+			});
+		
+		pthread.start();
 	}
 
-	public void writeSourceFile()
+	public void play()
+	{
+		if (m_playing)
+			return;
+		
+		if (s_commonContext == null)
+		{
+			// create the common context using the current thread.. assumed to be the primary ui thread
+			s_commonContext = Context.enter();
+		}
+		
+		play(s_commonContext);
+	}
+	
+	public void play(Context context)
+	{
+		if (m_playing)
+			return;
+	
+		m_playing = true;
+		
+		if (m_container != null)
+		{
+			m_container.reset();
+			
+			int cont = 1;
+			double currentTime = 0.0;
+			double lastTime = 0.0;
+			long intervalTime = (long) (m_interval * 1000.0);
+			
+			while(cont > 0)
+			{
+				long startTime = System.currentTimeMillis();
+				
+				if (m_while != null)
+				{
+					Object obj = execute(context, m_while);
+
+					if (obj != null && obj instanceof Boolean && !((Boolean) obj))
+					{
+						m_playing = false;		
+						return;
+					}
+				}				
+	
+				cont = m_container.play(context, lastTime, currentTime);
+
+				if (cont == 0)
+				{
+					m_playing = false;		
+					return;
+				}
+				
+				lastTime = currentTime;
+				currentTime += m_interval;
+				
+				if (m_until != null)
+				{
+					Object obj = execute(context, m_until);
+
+					if (obj != null && obj instanceof Boolean && !((Boolean) obj))
+					{
+						m_playing = false;		
+						return;
+					}
+				}
+				
+				long measuredTime = System.currentTimeMillis() - startTime;
+				
+				try
+				{
+					long sleepTime = (int) (m_interval * 1000.0f) - measuredTime;
+					
+					if (sleepTime > intervalTime)
+						sleepTime = intervalTime;
+					
+					if (sleepTime > 0)
+						Thread.sleep(sleepTime);
+				}
+				catch(InterruptedException ex)
+				{
+					Exceptions.printStackTrace(ex);
+				}
+			};
+		}
+		
+		m_playing = false;		
+	}
+
+	Object execute(Context context, String script)
 	{
 		try
 		{
-			String filename = getFileName();
-
-			FileWriter fw = new FileWriter(filename);
-
-			fw.write(m_source);
-
-			fw.close();
+			return ServiceManager.Current.execute(context, script);
 		}
-		catch(IOException ex)
+		catch(Exception e)
 		{
-			Logger.getLogger(Scroll.class.getName()).log(Level.SEVERE, null, ex);
 		}
+				
+		return true;
+	}
+	
+	void testTrigger(Context context)
+	{
+		if (!m_playing && m_trigger != null)
+		{
+			Object ret = execute(context, m_trigger);
+			
+			if (ret instanceof Boolean && ((Boolean) ret))
+			{
+				playAsync();
+			}
+		}
+	
 	}
 
-	@Override
-	public void doubleClick(java.awt.event.MouseEvent evt)
+	void load()
 	{
-		showTopComponent();
-	}
-
-	@Override
-	public void readXML(Element node)
-	{
-		setName(node.getAttribute("Name"));
-
 		// read in the source file
 		String filename = getFileName();
 
@@ -329,7 +332,10 @@ public class Scroll extends TreeNode
 			{
 				try
 				{
-					fin.close();
+					if (fin != null)
+						fin.close();
+					
+					parseScrollXML();
 				}
 				catch(IOException ex)
 				{
@@ -341,13 +347,230 @@ public class Scroll extends TreeNode
 		m_configured = true;
 	}
 
-	@Override
-	public void writeXML(Document doc, Element node)
+	public final class PlayAction extends AbstractAction
 	{
-		Element element = doc.createElement("Node");
+		private Scroll node;
+		
+		public PlayAction( Lookup lookup )
+		{
+			node = lookup.lookup( Scroll.class );
+			
+			putValue( AbstractAction.NAME, "Play");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			try 
+			{
+				playAsync();
+			} 
+			catch (Exception ex) 
+			{
+			}
+		}
+	}
 
-		element.setAttribute("Name", getName());
+	public final class CloneNodeAction extends AbstractAction
+	{
+		private Scroll node;
+		
+		public CloneNodeAction( Lookup lookup )
+		{
+			node = lookup.lookup( Scroll.class );
+			
+			putValue( AbstractAction.NAME, "Clone");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			if ( node!= null )
+				try 
+				{
+					node.cloneScroll();
+				} 
+				catch (Exception ex) 
+				{
+				}
+		}
+	}
+	
+	public void cloneScroll()
+	{
+		try
+		{
+			// make sure that the new project name is valid and unique
+			TreeNode parent = (TreeNode) getParentNode();
+			
+			String newname = parent.getUniqueName(m_name);
+			
+			
+			String oldFileName = ScrollManager.Current.getFilePath() + "/" + m_name + s_extension;
+			String newFileName = ScrollManager.Current.getFilePath() + "/" + newname + s_extension;
+			
+			File f = new File(oldFileName);
+			
+			if (f.exists())
+			{
+				Scroll newScroll = new Scroll(newname);
 
-		node.appendChild(element);
-	}	
+				ScrollManager.Current.addChild(newScroll);
+
+				Path oldPath = Paths.get(oldFileName);
+				Path newPath = Paths.get(newFileName);
+
+				Files.copy(oldPath, newPath);
+				
+				newScroll.load();
+
+				newScroll.select();
+			}
+		}
+		catch(IOException ex)
+		{
+			Exceptions.printStackTrace(ex);
+		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		// prompt the user to confirm the deletion
+		int resp = JOptionPane.showConfirmDialog(null,
+												 "Are you sure you want to delete this Scroll?",
+												 "Scroll Manager",
+												 JOptionPane.YES_NO_OPTION);
+
+		if (resp == 0)
+		{
+			// close any open editors
+			// TODO
+			//closeView();
+			
+			// delete the associated file
+			String filename = getFileName();
+			
+			File f = new File(filename);
+			
+			if (f.exists())
+				f.delete();
+			
+			ScrollManager.Current.removeChild(this);
+		}
+	}
+
+	@Override
+	public void onRename(String oldName, String newName)
+	{
+		if (AppManager.loading)
+			return;
+
+		if (oldName.equals(newName))
+			return;
+		
+		setName(newName);
+
+		
+		String oldFileName = ScrollManager.Current.getFilePath() + "/" + oldName + s_extension;
+		String newFileName = ScrollManager.Current.getFilePath() + "/" + newName + s_extension;
+
+		File f = new File(oldFileName);
+
+		if (f.exists())
+			f.renameTo(new File(newFileName));
+	}
+
+	public File getFile()
+	{
+		return new File(getFileName());
+	}
+
+	public void writeSourceFile()
+	{
+		try
+		{
+			String filename = getFileName();
+
+			FileWriter fw = new FileWriter(filename);
+
+			fw.write(m_source);
+
+			fw.close();
+		}
+		catch(IOException ex)
+		{
+			Logger.getLogger(Scroll.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+	
+	void parseScrollXML()
+	{
+		try
+		{
+			// clear content
+			m_container = null;
+			m_trigger = null;
+			m_while = null;
+			m_until = null;
+			m_interval = 0.1f;
+			
+			// parse source xml
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			
+			FileInputStream fis = new FileInputStream(getFileName());
+			
+			Document document = builder.parse(fis);
+			
+			Element rootElement = document.getDocumentElement();
+			
+			if (rootElement != null)
+			{
+				// look for configuration element
+				Element econfig = XmlUtil.GetChildElement(rootElement, "configuration");
+				
+				try
+				{
+					m_interval = Float.parseFloat(econfig.getAttribute("interval"));
+				}
+				catch(Exception e)
+				{
+				}
+				
+				// look for trigger, while, until statements
+				m_trigger = XmlUtil.GetChildElementText(rootElement, "trigger");
+				m_while = XmlUtil.GetChildElementText(rootElement, "while");
+				m_until = XmlUtil.GetChildElementText(rootElement, "until");
+				
+				// parse root container
+				Element econtainer = XmlUtil.GetChildElement(rootElement, "container");
+				
+				if (econtainer != null)
+				{
+					m_container = new Container();
+					
+					m_container.loadXML(econtainer);
+					
+					m_container.validate();
+				}
+			}
+		}
+		catch(ParserConfigurationException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(FileNotFoundException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(SAXException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+		catch(IOException ex)
+		{
+//			Exceptions.printStackTrace(ex);
+		}
+	}
 }

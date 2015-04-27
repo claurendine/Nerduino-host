@@ -20,7 +20,6 @@
 
 package com.nerduino.core;
 
-import com.nerduino.actions.FixedAction;
 import com.nerduino.library.*;
 import processing.app.ArduinoManager;
 import com.nerduino.scrolls.ScrollManager;
@@ -28,28 +27,20 @@ import com.nerduino.services.ServiceManager;
 import com.nerduino.skits.SkitManager;
 import com.nerduino.webhost.WebHost;
 import com.pinkmatter.api.flamingo.ResizableIcons;
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import java.awt.Component;
-import java.awt.event.*;
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.swing.JFileChooser;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.ribbon.JRibbon;
 import org.pushingpixels.flamingo.api.ribbon.JRibbonBand;
+import org.pushingpixels.flamingo.api.ribbon.RibbonApplicationMenu;
 import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
 import org.pushingpixels.flamingo.internal.ui.ribbon.JBandControlPanel;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import org.pushingpixels.flamingo.internal.ui.ribbon.appmenu.JRibbonApplicationMenuButton;
+import org.tmatesoft.sqljet.core.table.ISqlJetTable;
+import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 public final class AppManager
 {
@@ -61,10 +52,16 @@ public final class AppManager
 	SkitManager m_skitManager;
 	PointManager m_pointManager;
 	ArduinoManager m_arduinoManager;
+	String m_dataPath = null;
 	String configFilename = "NerduinoHost.xml";
 	JRibbon m_ribbon;
 	ServiceManager m_scriptManager;
+	WebHost m_webHost;
 	
+	String m_dbFileName = "NerduinoHost.sqlit";
+	SqlJetDb m_db;
+	ISqlJetTable m_paramTable;
+
 	static ArrayList<String> s_logArray = new ArrayList<String>();
 	public static boolean loading = false;
 
@@ -75,24 +72,20 @@ public final class AppManager
 
 	// Constructors
 	private AppManager()
-	{		
+	{
+		loading = true;
 		Current = this;
 		
+		AppConfiguration config = new AppConfiguration(m_dbFileName);
+
+		m_webHost = new WebHost();
+		m_arduinoManager = new ArduinoManager();
 		m_nerduinoHost = new NerduinoHost();
 		m_nerduinoManager = NerduinoManager.Current;
 		m_scrollManager = new ScrollManager();
 		m_skitManager = new SkitManager();
 		m_scriptManager = new ServiceManager();
 		m_pointManager = new PointManager();
-		m_arduinoManager = new ArduinoManager();
-
-		ArduinoManager.Current.setArduinoPath("/Users/chaselaurendine/Documents/Nerduino");
-
-		Runtime runtime = Runtime.getRuntime();
-
-		Thread shutdownThread = new Thread(new ShutdownListener());
-
-		runtime.addShutdownHook(shutdownThread);
 
 		Thread thread = new Thread(new Runnable()
 		{
@@ -101,123 +94,19 @@ public final class AppManager
 			{
 				try
 				{
-					WebHost wh = new WebHost();
+					m_webHost.initialize();
 				}
 				catch(NoSuchMethodException ex)
 				{
 					Logger.getLogger(AppManager.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-		});
+		}, "Nerduino WebHost Initialization");
 
 		thread.start();
 		
-		// deserialize configuration
-		loadConfiguration();
-		
-		NerduinoManager.Current.engage();
-	}
-
-	void loadConfiguration()
-	{
-		loading = true;
-
-		try
-		{
-			File f = new File(configFilename);
-
-			if (f.exists())
-			{
-				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder = builderFactory.newDocumentBuilder();
-
-				FileInputStream fis = new FileInputStream(configFilename);
-
-				Document document = builder.parse(fis);
-
-				Element rootElement = document.getDocumentElement();
-
-				if (rootElement != null)
-				{
-					// load web host settings
-					WebHost.Current.readXML(rootElement);
-
-					// load nerduino host settings
-					NerduinoHost.Current.readXML(rootElement);
-
-					// load collections
-					ScrollManager.Current.readXML(rootElement);
-					SkitManager.Current.readXML(rootElement);
-					//ServiceManager.Current.readXML(rootElement);
-					//PointManager.Current.readXML(rootElement);
-					NerduinoManager.Current.readXML(rootElement);
-				}
-			}
-		}
-		catch(IOException ex)
-		{
-			Logger.getLogger(AppManager.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		catch(SAXException ex)
-		{
-			Logger.getLogger(AppManager.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		catch(ParserConfigurationException e)
-		{
-		}
-
 		loading = false;
-	}
-
-	public void saveConfiguration()
-	{
-		if (loading)
-			return;
-
-		try
-		{
-			Element e = null;
-			Node n = null;
-
-			// Document (Xerces implementation only).
-			Document xmldoc = new DocumentImpl();
-
-			// Root element.
-			Element root = xmldoc.createElement("root");
-
-			// save web host configuration
-			WebHost.Current.writeXML(xmldoc, root);
-
-			// save nerduino host configuration
-			NerduinoHost.Current.writeXML(xmldoc, root);
-
-			// save collections
-			ScrollManager.Current.writeXML(xmldoc, root);
-			SkitManager.Current.writeXML(xmldoc, root);
-			//ServiceManager.Current.writeXML(xmldoc, root);
-			NerduinoManager.Current.writeXML(xmldoc, root);
-
-			xmldoc.appendChild(root);
-
-
-
-			FileOutputStream fos = new FileOutputStream(configFilename);
-			OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-
-			of.setIndent(1);
-			of.setIndenting(true);
-			//of.setDoctype(null,"users.dtd");
-
-			XMLSerializer serializer = new XMLSerializer(fos, of);
-
-			serializer.asDOMSerializer();
-			serializer.serialize(xmldoc.getDocumentElement());
-
-			fos.close();
-		}
-		catch(IOException ex)
-		{
-		}
+		NerduinoManager.Current.engage();
 	}
 
 	public void initializeExplorer()
@@ -236,10 +125,71 @@ public final class AppManager
 		nodes[6] = m_scriptManager;
 
 		root.getChildren().add(nodes);
+	}
+	
+	public String getDataPath()
+	{
+		if (m_dataPath == null)
+		{
+			m_dataPath = AppConfiguration.Current.getParameter("DataPath");
+			
+			if (m_dataPath == null)
+			{
+				boolean found = false;
+				String path = AppConfiguration.Current.getParameter("ArduinoPath");
 
-		//explorer.expandAll();
+				while (!found)
+				{
+					if (path != null)
+					{
+						File pathFile = new File(path);
+
+						if (pathFile.exists() && pathFile.isDirectory())
+						{
+							AppConfiguration.Current.setParameter("DataPath", pathFile.getAbsolutePath());
+
+							m_dataPath = path;
+							return m_dataPath;
+						}
+					}
+
+					JFileChooser chooser;
+
+					chooser = new JFileChooser(); 
+					chooser.setCurrentDirectory(new java.io.File("."));
+					chooser.setDialogTitle("Select the Nerduino Data directory");
+					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					//
+					// disable the "All files" option.
+					//
+					chooser.setAcceptAllFileFilterUsed(false);
+					//    
+					if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+					{ 
+						path = chooser.getSelectedFile().getPath();
+						System.out.println("getCurrentDirectory(): " 
+							+  chooser.getCurrentDirectory());
+						System.out.println("getSelectedFile() : " 
+							+  chooser.getSelectedFile());
+					}
+					else 
+					{
+						System.out.println("No Selection ");
+					}
+				}
+			}
+		}
 		
-		explorer.expandNode(m_nerduinoManager);
+		return m_dataPath;
+		
+//		return System.getProperty("user.dir");
+	}
+
+	public void setDataPath(String value)
+	{
+		m_dataPath = value;
+		
+		AppConfiguration.Current.setParameter("DataPath", value);
 	}
 
 	public void setRibbon(JRibbon jRibbon)
@@ -249,11 +199,18 @@ public final class AppManager
 
 	public JRibbon getRibbon()
 	{
+		if (m_ribbon == null)
+		{
+			m_ribbon = ExplorerTopComponent.s_ribbon;
+		}
+		
 		return m_ribbon;
 	}
 
 	public void setRibbonComponentLabel(String path, String label)
 	{
+		getRibbon();
+		
 		if (m_ribbon != null)
 		{
 			String[] parts = path.split("/");
@@ -307,6 +264,8 @@ public final class AppManager
 
 	public void setRibbonComponentImage(String path, String image)
 	{
+		getRibbon();
+		
 		if (m_ribbon != null)
 		{
 			String[] parts = path.split("/");
@@ -344,150 +303,5 @@ public final class AppManager
 				}
 			}
 		}
-	}
-	
-	JComponent getNamedComponent(JComponent parent, String name)
-	{
-		Component[] components = parent.getComponents();
-		
-		for(Component child : components)
-		{
-			if (child.getName().matches(name))
-				return (JComponent) child;
-		}
-			
-		return null;
-	}
-	
-	// Actions
-	final class EnableHostAction extends FixedAction
-	{
-		private ImageIcon m_enabledIcon;
-		private ImageIcon m_disabledIcon;
-
-		public EnableHostAction()
-		{
-			super("Enable", "");
-
-			java.net.URL imgURL = getClass().getResource("/com/nerduino/resources/PowerOff32.png");
-
-			if (imgURL != null)
-			{
-				m_disabledIcon = new ImageIcon(imgURL);
-			}
-
-			imgURL = getClass().getResource("/com/nerduino/resources/PowerOn32.png");
-
-			if (imgURL != null)
-			{
-				m_enabledIcon = new ImageIcon(imgURL);
-			}
-
-			update();
-		}
-
-		@Override
-		public void update()
-		{
-			try
-			{
-				if (FamilyXBee.Current.getEnabled())
-				{
-					putValue(SMALL_ICON, m_enabledIcon);
-					putValue(NAME, "Disable");
-					putValue(SHORT_DESCRIPTION, "Disable Host Communications");
-				}
-				else
-				{
-					putValue(SMALL_ICON, m_disabledIcon);
-					putValue(NAME, "Enable");
-					putValue(SHORT_DESCRIPTION, "Enable Host Communications");
-				}
-			}
-			catch(Exception e)
-			{
-				putValue(SMALL_ICON, m_disabledIcon);
-				putValue(NAME, "Enable");
-				putValue(SHORT_DESCRIPTION, "Enable Host Communications");
-			}
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			if (FamilyXBee.Current.getEnabled())
-			{
-				FamilyXBee.Current.setEnabled(false);
-			}
-			else
-			{
-				FamilyXBee.Current.setEnabled(true);
-			}
-
-			update();
-		}
-	}
-
-	final class ConfigHostAction extends FixedAction
-	{
-		public ConfigHostAction()
-		{
-			super("Config", "/com/nerduino/resources/Config32.png");
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			NerduinoHost.Current.configure();
-		}
-	}
-
-	final class PingAction extends FixedAction
-	{
-		public PingAction()
-		{
-			super("Ping All", "/com/nerduino/resources/Ping32.png");
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			NerduinoManager.Current.pingAll();
-		}
-	}
-
-	final class ShutdownListener implements Runnable
-	{
-		@Override
-		public void run()
-		{
-
-			// TODO move this to the netbeans shutdown
-			Current.saveConfiguration();
-		}
-	}
-
-	public static void log(String text)
-	{
-		s_logArray.add(text);
-
-		logUpdated();
-	}
-
-	static void logUpdated()
-	{
-		/*
-		 for(ILogListener listener : s_logListeners)
-		 {
-		 try
-		 {
-		 listener.onLogUpdated();
-		 }
-		 catch(Exception e)
-		 {
-		 removeLogListener(listener);
-		 }
-		 }
-		 */
 	}
 }

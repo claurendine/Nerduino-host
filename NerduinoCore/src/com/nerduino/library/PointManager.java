@@ -118,10 +118,19 @@ public class PointManager extends BaseManager
 	@Override
 	public String getFilePath()
 	{
-		return NerduinoHost.Current.getDataPath() + "/Points.xml";
+		return AppManager.Current.getDataPath() + "/Points.xml";
 	}
 	
-	public void loadConfiguration()
+	@Override
+	public void addChild(TreeNode node)
+	{
+		super.addChild(node);
+		
+		if (!m_loading)
+			saveConfiguration();
+	}
+	
+	private void loadConfiguration()
 	{
 		try
 		{
@@ -157,7 +166,6 @@ public class PointManager extends BaseManager
 		}
 	}
 
-	@Override
 	public void saveConfiguration()
 	{
 		if (m_loading)
@@ -258,7 +266,7 @@ public class PointManager extends BaseManager
 
 	public final class CreatePointAction extends AbstractAction
 	{
-		private PointManager node;
+		private final PointManager node;
 
 		public CreatePointAction(Lookup lookup)
 		{

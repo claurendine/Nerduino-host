@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+    <trigger>PorchLight.State</trigger>
+    <!--<until>testUntil</until> -->
+    <configuration interval="0.05 "/>
+    <container time="0.0" span="1" loopCount="1">
+	<script time="0.25">BT1_Led = false</script>
+	<script time="0.5">sampleInt = sampleInt + 1</script>
+        
+        <container time="0.0" span="2.0" loopCount="5">
+            <script time="0.1">DenLamp.State = false</script>
+            <script time="1.1">DenLamp.State = true</script>
+        </container>
+    </container>
+</root>

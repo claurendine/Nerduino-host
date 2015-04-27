@@ -20,6 +20,7 @@
 
 package com.nerduino.library;
 
+import com.nerduino.core.AppManager;
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
 import processing.app.Sketch;
@@ -107,61 +108,67 @@ public class NerduinoManager extends BaseManager
 		processThread.start();
 	}
 	
-	void loadChildren()
+	private void loadChildren()
 	{
 		File[] files = m_file.listFiles();
 		
-		for(File file : files)
+		if (files != null)
 		{
-			if (file.getName().endsWith(".nerd"))
+			for(File file : files)
 			{
-				try
+				if (file.getName().endsWith(".nerd"))
 				{
-					DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-					DocumentBuilder builder;
-					
-					builder = builderFactory.newDocumentBuilder();
-				
-					FileInputStream fis = new FileInputStream(file);
-					
-					Document document = builder.parse(fis);
-					
-					Element rootElement = document.getDocumentElement();
-
-					if (rootElement != null)
+					try
 					{
-						try
+						DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+						DocumentBuilder builder;
+
+						builder = builderFactory.newDocumentBuilder();
+
+						FileInputStream fis = new FileInputStream(file);
+
+						Document document = builder.parse(fis);
+
+						Element rootElement = document.getDocumentElement();
+
+						if (rootElement != null)
 						{
-							String type = rootElement.getAttribute("Type");
+							try
+							{
+								String type = rootElement.getAttribute("Type");
 
-							NerduinoBase nerduino = null;
+								NerduinoBase nerduino = null;
 
-							if (type.matches("USB"))
-								nerduino = new NerduinoUSB();
-							else if (type.matches("XBee"))
-								nerduino = new NerduinoXBee();
-							else if (type.matches("TCP"))
-								nerduino = new NerduinoTcp();
-							else if (type.matches("BT"))
-								nerduino = new NerduinoBT();
-							
-							nerduino.readXML(rootElement);
+								if (type.matches("USB"))
+									nerduino = new NerduinoUSB();
+								else if (type.matches("XBee"))
+									nerduino = new NerduinoXBee();
+								else if (type.matches("TCP"))
+									nerduino = new NerduinoTcp();
+								else if (type.matches("BT"))
+									nerduino = new NerduinoBT();
 
-							addChild(nerduino);
-						}
-						catch(Exception e)
-						{
+								if (nerduino != null)
+								{
+									nerduino.readXML(rootElement);
+								}
+
+								addChild(nerduino);
+							}
+							catch(Exception e)
+							{
+							}
 						}
 					}
-				}
-				catch(IOException ex)
-				{
-				}
-				catch(ParserConfigurationException ex)
-				{
-				}
-				catch(SAXException ex)
-				{
+					catch(IOException ex)
+					{
+					}
+					catch(ParserConfigurationException ex)
+					{
+					}
+					catch(SAXException ex)
+					{
+					}
 				}
 			}
 		}
@@ -179,7 +186,7 @@ public class NerduinoManager extends BaseManager
 	@Override
 	public String getFilePath()
 	{
-		return NerduinoHost.Current.getDataPath() + "/Nerduinos";
+		return AppManager.Current.getDataPath() + "/Nerduinos";
 	}
 
 	
@@ -356,16 +363,6 @@ public class NerduinoManager extends BaseManager
 	}
 	
 	@Override
-	public void readXML(Element node)
-	{
-	}
-
-	@Override
-	public void writeXML(Document doc, Element parent)
-	{
-	}
-
-	@Override
 	public TreeNode createNewChild()
 	{
 		return new NerduinoUSB();
@@ -375,16 +372,13 @@ public class NerduinoManager extends BaseManager
 	{
 		TreeNode newnode =  new NerduinoXBee();
 		
-		if (newnode != null)
+		if (configureChild(newnode))
 		{
-			if (configureChild(newnode))
-			{
-				addChild(newnode);
-				
-				newnode.select();
-				
-				return newnode;
-			}
+			addChild(newnode);
+
+			newnode.select();
+
+			return newnode;
 		}
 		
 		return null;
@@ -394,16 +388,13 @@ public class NerduinoManager extends BaseManager
 	{
 		TreeNode newnode =  new NerduinoTcp();
 		
-		if (newnode != null)
+		if (configureChild(newnode))
 		{
-			if (configureChild(newnode))
-			{
-				addChild(newnode);
-				
-				newnode.select();
-				
-				return newnode;
-			}
+			addChild(newnode);
+
+			newnode.select();
+
+			return newnode;
 		}
 		
 		return null;
@@ -413,16 +404,13 @@ public class NerduinoManager extends BaseManager
 	{
 		TreeNode newnode =  new NerduinoBT();
 		
-		if (newnode != null)
+		if (configureChild(newnode))
 		{
-			if (configureChild(newnode))
-			{
-				addChild(newnode);
-				
-				newnode.select();
-				
-				return newnode;
-			}
+			addChild(newnode);
+
+			newnode.select();
+
+			return newnode;
 		}
 		
 		return null;
@@ -477,8 +465,13 @@ public class NerduinoManager extends BaseManager
 		{
 			NerduinoBase nerd = (NerduinoBase) node;
 			
-			if (nerd.getSketch().equals(sname))
-				nerds.add(nerd);
+			if (nerd != null)
+			{
+				String sketchName = nerd.getSketch();
+				
+				if (sketchName != null && sketchName.equals(sname))
+					nerds.add(nerd);
+			}
 		}
 		
 		return nerds.toArray();

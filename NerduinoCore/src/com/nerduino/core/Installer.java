@@ -33,8 +33,6 @@ public class Installer extends ModuleInstall
 	@Override
 	public boolean closing()
 	{
-		AppManager.Current.saveConfiguration();
-		
 		return true;
 	}
 }

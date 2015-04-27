@@ -20,6 +20,7 @@
 
 package com.nerduino.library;
 
+import com.nerduino.nodes.TreeNode;
 import processing.app.ArduinoManager;
 import processing.app.Preferences;
 import processing.app.SerialException;
@@ -187,7 +188,10 @@ public class NerduinoTcp extends NerduinoFull //implements FrameReceivedListener
 	@Override
 	public boolean configureNewNerduino()
 	{
-		setName(getUniqueName(getName()));
+		if (getParentNode() != null)
+		{
+			setName(((TreeNode) getParentNode()).getUniqueName(getName()));
+		}
 		
 		// show the configure dialog
 		NerduinoTCPConfigDialog dialog = new NerduinoTCPConfigDialog(new javax.swing.JFrame(), true);

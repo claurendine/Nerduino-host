@@ -20,6 +20,7 @@
 
 package com.nerduino.library;
 
+import com.nerduino.nodes.TreeNode;
 import com.nerduino.xbee.*;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -49,7 +50,10 @@ public class NerduinoXBee extends NerduinoFull
 	@Override
 	public boolean configureNewNerduino()
 	{
-		setName(getUniqueName(getName()));
+		if (getParentNode() != null)
+		{
+			setName(((TreeNode) getParentNode()).getUniqueName(getName()));
+		}
 		
 		// show the configure dialog
 		NerduinoXBeeConfigDialog dialog = new NerduinoXBeeConfigDialog(new javax.swing.JFrame(), true);

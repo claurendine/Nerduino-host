@@ -21,6 +21,7 @@
 package processing.app;
 
 import com.nerduino.core.ContextAwareInstance;
+import com.nerduino.scrolls.Scroll;
 import com.nerduino.skits.Skit;
 import java.awt.Image;
 import java.io.IOException;
@@ -39,11 +40,16 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 	private final SketchCode m_sketchCode;
 	Sketch m_sketch;
 	Skit m_skit;
+	Scroll m_scroll;
 	SourceFile m_sourceFile;
 	
 	public ArduinoMultiviewDescription()
 	{
 		m_sketchCode = null;
+		m_scroll = null;
+		m_skit = null;
+		m_sourceFile = null;
+		m_sketch = null;
 	}
 
 	private ArduinoMultiviewDescription(Sketch sketch)
@@ -51,6 +57,7 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 		m_sketch = sketch;
 		m_sketchCode = sketch.getCode(0);
 		m_skit = null;
+		m_scroll = null;
 	}
 
 	
@@ -59,6 +66,7 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 		m_sourceFile = sourceFile;
 		m_sketchCode = null;
 		m_skit = null;
+		m_scroll = null;
 	}
 	
 	private ArduinoMultiviewDescription(Skit skit)
@@ -66,6 +74,15 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 		m_skit = skit;
 		m_sourceFile = null;
 		m_sketchCode = null;
+		m_scroll = null;
+	}
+	
+	private ArduinoMultiviewDescription(Scroll scroll)
+	{
+		m_skit = null;
+		m_sourceFile = null;
+		m_sketchCode = null;
+		m_scroll = scroll;
 	}
 	
 	@Override
@@ -105,6 +122,19 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 		
 		try
 		{
+			if (m_scroll != null)
+			{
+				FileObject file = arduino2file(m_scroll);
+				DataObject data = DataObject.find(file);
+
+				m_scroll.m_editor = new ArduinoSourceEditor(data.getLookup());
+				m_scroll.m_editor.m_scroll = m_scroll;
+
+				m_scroll.m_editor.m_displayName = m_scroll.getName();
+				
+				return m_scroll.m_editor;
+			}
+			
 			if (m_skit != null)
 			{
 				FileObject file = arduino2file(m_skit);
@@ -112,8 +142,6 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 
 				m_skit.m_editor = new ArduinoSourceEditor(data.getLookup());
 				m_skit.m_editor.m_skit = m_skit;
-
-				m_skit.m_editor.
 				
 				m_skit.m_editor.m_displayName = m_skit.getName();
 				
@@ -180,6 +208,13 @@ public class ArduinoMultiviewDescription implements MultiViewDescription, Contex
 	private static synchronized FileObject arduino2file(Skit skit) throws IOException
 	{
 		FileObject file = FileUtil.toFileObject(skit.getFile());
+		
+		return file;
+	}
+	
+	private static synchronized FileObject arduino2file(Scroll scroll) throws IOException
+	{
+		FileObject file = FileUtil.toFileObject(scroll.getFile());
 		
 		return file;
 	}

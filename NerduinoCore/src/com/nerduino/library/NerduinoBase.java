@@ -89,7 +89,7 @@ public class NerduinoBase extends TreeNode
 	private final List<UpdateEventListener> m_updateListeners = new ArrayList<UpdateEventListener>();
 	
 	DeviceTypeEnum m_deviceType;
-	short m_pointCount = 0;
+	public short m_pointCount = 0;
 	long m_lastResponseMillis;
 	
 	boolean m_compileError = false;
@@ -303,15 +303,6 @@ public class NerduinoBase extends TreeNode
 	public void setVerbose(Boolean value)
 	{
 		m_verbose = value;
-	}
-	
-	@Override
-	public Component getAction1()
-	{
-		if (m_compileButton == null)
-			m_compileButton = new CompileCommand(this);
-		
-		return m_compileButton;
 	}
 	
 	public Serial getSerialMonitor()

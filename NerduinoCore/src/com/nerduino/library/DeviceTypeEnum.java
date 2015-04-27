@@ -27,7 +27,9 @@ public enum DeviceTypeEnum
 	DT_ZigbeeRouter(1),
 	DT_ZigbeeEndPoint(2),
 	DT_USB(3),
-	DT_TCP(4);
+	DT_TCP(4),
+	DT_UPNP(5),
+	DT_Plugin(6);
 	
     
     private final byte value;
@@ -56,6 +58,10 @@ public enum DeviceTypeEnum
 				return DT_USB;
 			case 4:
 				return DT_TCP;
+			case 5:
+				return DT_UPNP;
+			case 6:
+				return DT_Plugin;
 		}
 		
 		return null;

@@ -133,7 +133,7 @@ private void btnOkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
 	{
 		m_skit.setName(txtName.getText());
 		
-		m_skit.m_skitMode = cmbType.getSelectedItem().toString();
+		m_skit.setSkitMode(cmbType.getSelectedItem().toString());
 		//m_skit.DataType = DataTypeEnum.valueOf((byte) dt);
 		//m_skit.setValue(txtValue.getText());
 	}
@@ -160,7 +160,7 @@ private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 		{
 			txtName.setText(m_skit.getName());
 
-			cmbType.setSelectedItem(m_skit.m_skitMode);
+			cmbType.setSelectedItem(m_skit.getSkitMode());
 			cmbType.setEnabled(!m_skit.m_configured);
 		}
 	}

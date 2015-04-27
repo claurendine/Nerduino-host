@@ -14,6 +14,16 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/help.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
+            <file name="com-nerduino-actions-ShowArduinoAPIAction.instance">
+                <!--com.nerduino.actions.ShowArduinoAPIAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowArduinoAPIAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowArduinoAPIAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Arduino16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
             <file name="com-nerduino-actions-ShowExplorerAction.instance">
                 <!--com.nerduino.actions.ShowExplorerAction-->
                 <attr
@@ -24,6 +34,16 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Explorer16.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
+            <file name="com-nerduino-actions-ShowLocalhostAction.instance">
+                <!--com.nerduino.actions.ShowLocalhostAction-->
+                <attr
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowLocalhostAction" name="displayName"/>
+                <attr
+                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.ShowLocalhostAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Skit16.png"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
             <file name="com-nerduino-actions-ShowPropertiesAction.instance">
                 <!--com.nerduino.actions.ShowPropertiesAction-->
                 <attr
@@ -31,16 +51,6 @@
                 <attr
                     methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
                 <attr name="delegate" newvalue="com.nerduino.actions.ShowPropertiesAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-            </file>
-            <file name="com-nerduino-actions-TestAction.instance">
-                <!--com.nerduino.actions.TestAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_TestAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.TestAction"/>
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
@@ -54,14 +64,14 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Startup16.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
-            <file name="com-nerduino-actions-ShowArduinoAPIAction.instance">
-                <!--com.nerduino.actions.ShowArduinoAPIAction-->
+            <file name="com-nerduino-actions-TestAction.instance">
+                <!--com.nerduino.actions.TestAction-->
                 <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowArduinoAPIAction" name="displayName"/>
+                    bundlevalue="com.nerduino.actions.Bundle#CTL_TestAction" name="displayName"/>
                 <attr
                     methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.ShowArduinoAPIAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Arduino16.png"/>
+                <attr name="delegate" newvalue="com.nerduino.actions.TestAction"/>
+                <attr name="iconBase" stringvalue="com/nerduino/resources/Properties16.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
         </folder>
@@ -196,16 +206,6 @@
                     methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
                 <attr name="delegate" newvalue="com.nerduino.actions.PingAction"/>
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Ping.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-            </file>
-            <file name="com-nerduino-actions-TopologyAction.instance">
-                <!--com.nerduino.actions.TopologyAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_TopologyAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.TopologyAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Topo.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
             <file name="com-nerduino-actions-UploadAction.instance">

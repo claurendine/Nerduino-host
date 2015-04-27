@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <root>
-    <WebHost Port="8081" Webroot="/Users/chaselaurendine/Documents/SvnProjects/WebServer"/>
-    <NerduinoHost BaudRate="9600" CommPort="" Port="17401"/>
-    <Scrolls/>
-    <Skits>
-        <Node Mode="Structured" Name="HeatingCooling"/>
-        <Node Mode="Structured" Name="GarageDoor"/>
-        <Node Mode="Structured" Name="Grill"/>
-        <Node Mode="Structured" Name="MailBox"/>
-        <Node Mode="Structured" Name="Lighting"/>
-        <Node Mode="Structured" Name="Blinds"/>
-    </Skits>
+    <Nerduinos Active="false" BT="true" BaudRate="57600" Board=""
+        Name="JAGUAR: Administrator:" Port="/dev/tty.FireFly-E18E-SPP"
+        Sketch="" Type="BT" USB="true"
+        UsbPort="/dev/tty.usbserial-A700fjvZ" UsbUpload="true"/>
 </root>

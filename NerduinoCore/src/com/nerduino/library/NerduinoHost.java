@@ -20,10 +20,9 @@
 
 package com.nerduino.library;
 
+import com.nerduino.core.AppManager;
 import com.nerduino.nodes.TreeNode;
 import processing.app.ArduinoManager;
-import com.nerduino.propertybrowser.BaudRatePropertyEditor;
-import com.nerduino.propertybrowser.ComPortPropertyEditor;
 import com.nerduino.webhost.WebHost;
 import com.nerduino.xbee.BitConverter;
 import java.io.ByteArrayInputStream;
@@ -34,9 +33,6 @@ import java.util.ArrayList;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public class NerduinoHost extends TreeNode 
 {
@@ -59,15 +55,17 @@ public class NerduinoHost extends TreeNode
 
 		m_hostPoints = this.getChildren();
 		m_hasEditor = false;
-
+		
 		Current = this;
 
+		m_manager = new NerduinoManager();
+
 		addFamily(new FamilyTcp());
-		addFamily(new FamilyXBee());
+		//addFamily(new FamilyXBee());
 		addFamily(new FamilyUSB());
 		addFamily(new FamilyBluetooth());
-		
-		m_manager = new NerduinoManager();
+		addFamily(new FamilyUPNP());
+
 		
 		Thread sleepThread = new Thread(new Runnable()
 		{
@@ -91,7 +89,7 @@ public class NerduinoHost extends TreeNode
 					}
 				}
 			}
-		}, "Sleep thread");
+		}, "Nerduino manager thread");
 
 		sleepThread.setPriority(Thread.MIN_PRIORITY);
 		sleepThread.start();
@@ -112,50 +110,13 @@ public class NerduinoHost extends TreeNode
 		return (LocalDataPoint) m_hostPoints.getNodeAt(index);
 	}
 	
-	public String getDataPath()
-	{
-		return "/Users/chaselaurendine/Documents/Nerduino";
-	}		
-	
-	@Override
-	public void readXML(Element node)
-	{
-		if (node != null)
-		{
-			NodeList nl = node.getElementsByTagName("NerduinoHost");
-
-			if (nl != null && nl.getLength() > 0)
-			{
-				Element config = (Element) nl.item(0);
-
-				for(FamilyBase family : m_families)
-				{
-					family.readXML(config);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void writeXML(Document doc, Element node)
-	{
-		Element element = doc.createElement("NerduinoHost");
-
-		for(FamilyBase family : m_families)
-		{
-			family.writeXML(doc, element);
-		}
-		
-		node.appendChild(element);
-	}
-
 	@Override
 	public PropertySet[] getPropertySets()
 	{
 		final Sheet.Set webSheet = Sheet.createPropertiesSet();
 		//final Sheet.Set xbeeSheet = Sheet.createPropertiesSet();
 		final Sheet.Set arduinoSheet = Sheet.createPropertiesSet();
-		final Sheet.Set tcpSheet = Sheet.createPropertiesSet();
+		final Sheet.Set upnpSheet = Sheet.createPropertiesSet();
 		
 		try
 		{
@@ -207,24 +168,24 @@ public class NerduinoHost extends TreeNode
 			httpAddressProp.setShortDescription("The http path to engage this web server.");
 			webSheet.put(httpAddressProp);
 			
-			arduinoSheet.setDisplayName("Arduino Settings");
+			arduinoSheet.setDisplayName("Path Settings");
 			
 			Property<String> arduinoSourcePathProp = new PropertySupport.Reflection<String>(ArduinoManager.Current, String.class, "ArduinoPath");
 			arduinoSourcePathProp.setName("Arduino Path");
 			arduinoSourcePathProp.setShortDescription("Installed Arduino Data Path");
 			arduinoSheet.put(arduinoSourcePathProp);
 			
-			tcpSheet.setDisplayName("TCP Discovery Settings");
+			Property<String> nerduinoSourcePathProp = new PropertySupport.Reflection<String>(AppManager.Current, String.class, "DataPath");
+			nerduinoSourcePathProp.setName("Nerduino Data Path");
+			nerduinoSourcePathProp.setShortDescription("Installed Nerduino Data Path");
+			arduinoSheet.put(nerduinoSourcePathProp);
 			
-			Property<Boolean> tcpEnabledProp = new PropertySupport.Reflection<Boolean>(FamilyTcp.Current, Boolean.class, "Enabled");
-			tcpEnabledProp.setName("Enable Discovery");
-			tcpEnabledProp.setShortDescription("Enable/Disable the Tcp Discovery.");
-			tcpSheet.put(tcpEnabledProp);
+			upnpSheet.setDisplayName("uPnP Discovery Settings");
 			
-			Property<Integer> tcpPortProp = new PropertySupport.Reflection<Integer>(FamilyTcp.Current, int.class, "Port");
-			tcpPortProp.setName("Discovery Port");
-			tcpPortProp.setShortDescription("Tcp Listening Port");
-			tcpSheet.put(tcpPortProp);	
+			Property<String> upnpServicesProp = new PropertySupport.Reflection<String>(FamilyUPNP.Current, String.class, "Map");
+			upnpServicesProp.setName("Upnp-Nerduino Map");
+			upnpServicesProp.setShortDescription("XML map of upnp actions/state variables to nerduino points and methods.");
+			upnpSheet.put(upnpServicesProp);
 		}
 		catch(NoSuchMethodException ex)
 		{
@@ -232,7 +193,7 @@ public class NerduinoHost extends TreeNode
 		
 		return new PropertySet[]
 				{
-					arduinoSheet, tcpSheet, webSheet
+					arduinoSheet, webSheet, upnpSheet
 				};
 	}
 	
