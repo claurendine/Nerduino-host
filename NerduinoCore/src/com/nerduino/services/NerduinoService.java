@@ -233,7 +233,7 @@ public class NerduinoService extends TreeNode
 
 		m_configured = true;
 	}
-	
+
 	public final class CloneNodeAction extends AbstractAction
 	{
 		private NerduinoService node;
@@ -323,7 +323,7 @@ public class NerduinoService extends TreeNode
 				{
 					Element element = (Element) nodes.item(i);
 
-					ServiceTrigger trigger = new ServiceTrigger();
+					ServiceTrigger trigger = new ServiceTrigger(this);
 
 					trigger.loadXML(element);
 

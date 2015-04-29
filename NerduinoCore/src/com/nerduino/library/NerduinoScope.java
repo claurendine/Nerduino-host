@@ -51,4 +51,17 @@ public class NerduinoScope extends ScriptableObject
 		
 		return NOT_FOUND;
     }
+	
+	
+	@Override
+	public void put(String name, Scriptable start, Object value)
+	{
+		PointBase point = m_nerd.getPoint(name);
+		
+		// look through all local points for a matching name
+		if (point != null) 
+		{
+			point.setValue(value);
+		}
+	}
 }

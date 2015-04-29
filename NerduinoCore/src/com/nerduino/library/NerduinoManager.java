@@ -52,7 +52,7 @@ public class NerduinoManager extends BaseManager
 	// Constructors
 	public NerduinoManager() 
 	{
-        super("Nerduinos", "/com/nerduino/resources/NerduinoManager16.png");
+        super("Things", "/com/nerduino/resources/NerduinoManager16.png");
         
         Current = this;
 		

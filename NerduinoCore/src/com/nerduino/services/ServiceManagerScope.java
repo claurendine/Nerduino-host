@@ -33,6 +33,8 @@ public class ServiceManagerScope extends ScriptableObject
         return toString();
     }
 	
+	
+	
 	@Override
     public Object get(String name, Scriptable start) 
 	{
@@ -68,4 +70,22 @@ public class ServiceManagerScope extends ScriptableObject
 				
 		return NOT_FOUND;
     }
+	
+	@Override
+	public void put(String name, Scriptable start, Object value)
+	{
+		// look through all local points for a matching name
+		if (PointManager.Current != null)
+		{
+			LocalDataPoint point = PointManager.Current.getPoint(name);
+
+			if (point != null) 
+			{
+				point.setValue(value);
+				return;
+			}
+		}
+		
+		super.put(name, start, value);
+	}
 }

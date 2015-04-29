@@ -28,6 +28,7 @@ import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.JFrame;
+import javax.swing.table.TableColumnModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.swing.outline.Outline;
 import org.openide.actions.CopyAction;
@@ -38,6 +39,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -104,6 +106,10 @@ public final class ExplorerTopComponent extends TopComponent
 		
 		Outline o = outline1.getOutline();
 		
+		TableColumnModel tcm = o.getColumnModel();
+
+		tcm.getColumn(0).setHeaderValue("Loading...");
+		
 		o.setRootVisible(false);
 		
 		Thread thread = new Thread(new Runnable()
@@ -126,7 +132,18 @@ public final class ExplorerTopComponent extends TopComponent
 
 					AppManager.Current.initializeExplorer();
 
+					
+							
+					Outline o = outline1.getOutline();
+
+					TableColumnModel tcm = o.getColumnModel();
+
+					tcm.getColumn(0).setHeaderValue("Nodes");
+
+					
 					FamilyUPNP.Current.engage();
+					
+					int i = 0;
 				}
 				catch(Exception e)
 				{

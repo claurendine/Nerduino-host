@@ -168,14 +168,6 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 	@Override
 	public org.openide.util.Lookup getLookup()
 	{
-		System.out.println("~~ Dumping lookup of " + s2s(this) + ":");
-		Collection<?> all = lookup.lookupAll(Object.class);
-		for (Object o : all)
-		{
-			System.out.println("~~   " + s2s(o));
-		}
-		System.out.println("~~ ------------------------------------");
-
 		InstanceContent content = new InstanceContent();
 		Lookup temp = new AbstractLookup(content);
 		
@@ -214,7 +206,7 @@ public class ServiceSourceEditor extends CloneableEditor implements MultiViewEle
 		if (callback != null)
 			callback.updateTitle(getDisplayName());
 	}
-
+	
 	@Override
 	public void open()
 	{
