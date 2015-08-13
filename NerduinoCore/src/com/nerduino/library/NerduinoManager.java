@@ -23,7 +23,6 @@ package com.nerduino.library;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.BaseManager;
 import com.nerduino.nodes.TreeNode;
-import processing.app.Sketch;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -455,31 +454,9 @@ public class NerduinoManager extends BaseManager
 			};
 	}
 
-	public Object[] getNerduinos(Sketch sketch)
-	{
-		String sname = sketch.getName();
-		
-		ArrayList<NerduinoBase> nerds = new ArrayList<NerduinoBase>();
-		
-		for(Node node : getNodes() )
-		{
-			NerduinoBase nerd = (NerduinoBase) node;
-			
-			if (nerd != null)
-			{
-				String sketchName = nerd.getSketch();
-				
-				if (sketchName != null && sketchName.equals(sname))
-					nerds.add(nerd);
-			}
-		}
-		
-		return nerds.toArray();
-	}
-
 	public final class CreateNerduinoAction extends AbstractAction
 	{
-		private NerduinoManager node;
+		private final NerduinoManager node;
 
 		public CreateNerduinoAction(Lookup lookup)
 		{

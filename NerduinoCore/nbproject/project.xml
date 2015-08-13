@@ -500,6 +500,10 @@
             </module-dependencies>
             <public-packages/>
             <class-path-extension>
+                <runtime-relative-path>ext/bcpg-jdk15on-149.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/bcpg-jdk15on-149.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/websocket-api-9.0.0.RC0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/websocket-api-9.0.0.RC0.jar</binary-origin>
             </class-path-extension>
@@ -508,16 +512,44 @@
                 <binary-origin>release/modules/ext/jetty-annotations-9.0.0.RC0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jackson-module-mrbean-2.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-module-mrbean-2.2.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-logging-1.0.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-logging-1.0.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-codec-1.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-codec-1.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jetty-continuation-9.0.0.RC0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-continuation-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-lang3-3.3.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-lang3-3.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/websocket-common-9.0.0.RC0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/websocket-common-9.0.0.RC0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-compress-1.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-compress-1.8.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jetty-io-9.0.0.RC0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-io-9.0.0.RC0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/java-semver-0.8.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/java-semver-0.8.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-exec-1.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-exec-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-http-9.0.0.RC0.jar</runtime-relative-path>
@@ -534,6 +566,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/flamingo.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/flamingo.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/bcprov-jdk15on-149.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/bcprov-jdk15on-149.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/guava-18.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-18.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqljet-1.1.10.jar</runtime-relative-path>

@@ -38,7 +38,6 @@ import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.Service;
 import org.cybergarage.upnp.ServiceList;
 import org.openide.nodes.Sheet;
-import processing.app.Sketch;
 
 public class NerduinoUPNP extends NerduinoLight
 {
@@ -152,12 +151,6 @@ public class NerduinoUPNP extends NerduinoLight
 		return null;
 	}
 
-	@Override
-	public String upload(Sketch sketch)
-	{
-		return null;
-	}
-	
 	@Override
 	public String getHTML()
 	{

@@ -21,15 +21,8 @@
 package com.nerduino.library;
 
 import com.nerduino.nodes.TreeNode;
-import processing.app.ArduinoManager;
-import processing.app.Preferences;
-import processing.app.SerialException;
-import processing.app.Sketch;
-import processing.app.debug.RunnerException;
 import com.nerduino.propertybrowser.BaudRatePropertyEditor;
 import com.nerduino.propertybrowser.ComPortPropertyEditor;
-import com.nerduino.propertybrowser.DeviceTypePropertyEditor;
-import com.nerduino.propertybrowser.SketchPropertyEditor;
 import com.nerduino.xbee.Serial;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -44,7 +37,6 @@ public class NerduinoUSB extends NerduinoLight
 	Serial m_serial;
 	String m_comPort;
 	int m_baudRate = 115200;
-	NerduinoUSB m_nerduino;
 	
 	byte[] outBuffer = new byte[128];
 	byte[] endBuffer = new byte[3];
@@ -54,14 +46,13 @@ public class NerduinoUSB extends NerduinoLight
 		super("USB", "/com/nerduino/resources/NerduinoUSBUninitialized16.png");
 
 		m_canDelete = true;
-		m_nerduino = this;
 		
 		m_serial = new Serial()
 		{
 			@Override
 			public void processNerduinoMessage(byte target, byte addressIndex, byte message, byte length, byte[] m_data)
 			{
-				m_nerduino.processMessage(target, addressIndex, message, length, m_data);
+				processMessage(target, addressIndex, message, length, m_data);
 			}
 		};
 		
@@ -514,8 +505,6 @@ public class NerduinoUSB extends NerduinoLight
 		
 		addProperty(usbSheet, String.class, ComPortPropertyEditor.class, "ComPort", "The serial port used to communicate to the arduino device.");
 		addProperty(usbSheet, int.class, BaudRatePropertyEditor.class, "BaudRate", "The baud rate used to communicate to the arduino device.");
-		addProperty(usbSheet, String.class, DeviceTypePropertyEditor.class, "BoardType", "The arduino board type.");
-		addProperty(usbSheet, String.class, SketchPropertyEditor.class, "Sketch", "The arduino sketch.");
 		addProperty(usbSheet, Boolean.class, null, "Active", "");
 		
 		PropertySet[] basesets = super.getPropertySets();
@@ -531,7 +520,7 @@ public class NerduinoUSB extends NerduinoLight
 	@Override
 	public Serial getSerialMonitor()
 	{
-		if (m_serial == null && m_comPort != null && m_comPort!="")
+		if (m_serial == null && m_comPort != null && !"".equals(m_comPort))
 		{
 			m_serial = new Serial();
 			
@@ -547,61 +536,6 @@ public class NerduinoUSB extends NerduinoLight
 		//m_serial.resetPort();
 	}
 
-	
-	@Override
-	public String upload(Sketch sketch)
-	{
-		setStatus(NerduinoStatusEnum.Uninitialized);
-
-		m_points.clear();
-		
-		closeComPort();
-
-		Preferences.set("serial.port", m_comPort);
-
-		try
-		{
-			fireUploadStatusUpdate(true, false, 0, "");
-			
-			boolean success = sketch.upload(ArduinoManager.Current.getBuildPath(), sketch.getPrimaryClassName(), false);
-
-			if (!success)
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-				
-				fireUploadStatusUpdate(false, false, 0, "Upload failed for unknown reason!");
-				
-				return "Upload failed for unknown reason!";
-			}
-			else
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Completed!");
-
-				fireUploadStatusUpdate(false, true, 0, "");
-				
-				//openComPort();
-
-				return null;
-			}
-		}
-		catch(RunnerException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-
-			fireUploadStatusUpdate(false, false, 0, "Runner Exception!");
-
-			return ex.getMessage();
-		}
-		catch(SerialException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-			
-			fireUploadStatusUpdate(false, false, 0, "Serial Port Exception!");
-			
-			return ex.getMessage();
-		}
-	}
-	
 	@Override
 	public String getHTML()
 	{
@@ -610,13 +544,9 @@ public class NerduinoUSB extends NerduinoLight
                           + "<h1>Nerduino: " + this.getName() + "  (USB Connection: " + getComPort() + ")</h1>\n"
                           + "<h2>" 
 						  + "Status: " + this.getStatus().toString() + "<br>"
-                          + "Board: " + this.getBoardType() + "<br>"
-                          + "Sketch: " + this.getSketch() + "<br>"
 						  + "</h2>\n"
                           + "<a href='ping'>Ping</a>\n"
                           + "<a href='reset'>Reset</a>\n"
-                          + "<a href='verify'>Verify</a>\n"
-                          + "<a href='upload'>Upload</a>\n"
                           + "<a href='engage'>Engage</a>\n"
 						  + "</body>\n";
 		

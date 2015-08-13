@@ -21,15 +21,8 @@
 package com.nerduino.library;
 
 import com.nerduino.nodes.TreeNode;
-import processing.app.ArduinoManager;
-import processing.app.Preferences;
-import processing.app.SerialException;
-import processing.app.Sketch;
-import processing.app.debug.RunnerException;
 import com.nerduino.propertybrowser.BaudRatePropertyEditor;
 import com.nerduino.propertybrowser.ComPortPropertyEditor;
-import com.nerduino.propertybrowser.DeviceTypePropertyEditor;
-import com.nerduino.propertybrowser.SketchPropertyEditor;
 import com.nerduino.xbee.Serial;
 import java.awt.Image;
 import java.io.IOException;
@@ -38,7 +31,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.ImageIcon;
-import org.openide.awt.StatusDisplayer;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 import org.openide.windows.IOProvider;
@@ -114,7 +106,7 @@ public class NerduinoTcp extends NerduinoFull //implements FrameReceivedListener
 	@Override
 	public Serial getSerialMonitor()
 	{
-		if (m_serial == null && m_comPort != null && m_comPort!="")
+		if (m_serial == null && m_comPort != null && !"".equals(m_comPort))
 		{
 			m_serial = new Serial();
 			
@@ -237,8 +229,6 @@ public class NerduinoTcp extends NerduinoFull //implements FrameReceivedListener
 		
 		addProperty(tcpSheet, String.class, ComPortPropertyEditor.class, "ComPort", "The serial port used to program the arduino device.");
 		addProperty(tcpSheet, int.class, BaudRatePropertyEditor.class, "BaudRate", "The baud rate used to program the arduino device.");
-		addProperty(tcpSheet, String.class, DeviceTypePropertyEditor.class, "BoardType", "The arduino board type.");
-		addProperty(tcpSheet, String.class, SketchPropertyEditor.class, "Sketch", "The arduino sketch.");
 		addProperty(tcpSheet, String.class, null, "IPAddress", "The ip address used by the arduino to communicate to the host.");
 		addProperty(tcpSheet, Boolean.class, null, "Active", "");
 		
@@ -467,73 +457,6 @@ public class NerduinoTcp extends NerduinoFull //implements FrameReceivedListener
 	}
 
 	@Override
-	public String upload(Sketch sketch)
-	{
-		boolean monitored = false;
-		String message = null;
-		m_uploaded = false;
-		
-		setStatus(NerduinoStatusEnum.Uninitialized);
-		
-		m_points.clear();
-		
-		if (m_serial != null)
-		{
-			monitored = m_serial.getEnabled();
-			
-			m_serial.setEnabled(false);
-		}
-
-		Preferences.set("serial.port", m_comPort);
-
-		try
-		{
-			fireUploadStatusUpdate(true, false, 0, "");
-			
-			boolean success = sketch.upload(ArduinoManager.Current.getBuildPath(), sketch.getPrimaryClassName(), false);
-
-			if (!success)
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-
-				fireUploadStatusUpdate(false, false, 0, "Upload failed for unknown reason!");
-				
-				message = "Upload failed for unknown reason!";
-			}
-			else
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Completed!");
-
-				fireUploadStatusUpdate(false, true, 0, "");
-				m_uploaded = true;
-			}
-		}
-		catch(RunnerException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-
-			fireUploadStatusUpdate(false, false, 0, "Runner Exception!");
-
-			message = ex.getMessage();
-		}
-		catch(SerialException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-
-			fireUploadStatusUpdate(false, false, 0, "Serial Port Exception!");
-			
-			message = ex.getMessage();
-		}
-
-		if (monitored && m_serial != null)
-		{
-			m_serial.setEnabled(true);
-		}
-
-		return message;
-	}
-	
-	@Override
 	public String getHTML()
 	{
 		String htmlString = "<html>\n"
@@ -541,13 +464,9 @@ public class NerduinoTcp extends NerduinoFull //implements FrameReceivedListener
                           + "<h1>Nerduino: " + this.getName() + "  (TCP Connection: " + getIPAddress() + ")</h1>\n"
                           + "<h2>" 
 						  + "Status: " + this.getStatus().toString() + "<br>"
-                          + "Board: " + this.getBoardType() + "<br>"
-                          + "Sketch: " + this.getSketch() + "<br>"
-						  + "</h2>\n"
+    					  + "</h2>\n"
                           + "<a href='ping'>Ping</a>\n"
                           + "<a href='reset'>Reset</a>\n"
-                          + "<a href='verify'>Verify</a>\n"
-                          + "<a href='upload'>Upload</a>\n"
                           + "<a href='engage'>Engage</a>\n"
                           + "<a href='test'>Test</a>\n"
 						  + "</body>\n";

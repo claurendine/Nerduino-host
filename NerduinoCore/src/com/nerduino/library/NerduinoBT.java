@@ -22,14 +22,6 @@ package com.nerduino.library;
 
 import com.nerduino.nodes.TreeNode;
 import com.nerduino.propertybrowser.BluetoothPortPropertyEditor;
-import processing.app.ArduinoManager;
-import processing.app.Preferences;
-import processing.app.SerialException;
-import processing.app.Sketch;
-import processing.app.debug.RunnerException;
-import com.nerduino.propertybrowser.ComPortPropertyEditor;
-import com.nerduino.propertybrowser.DeviceTypePropertyEditor;
-import com.nerduino.propertybrowser.SketchPropertyEditor;
 import com.nerduino.xbee.Serial;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -44,9 +36,6 @@ public class NerduinoBT extends NerduinoLight
 {
 	Serial m_serial;
 	String m_comPort;
-	
-	boolean m_usbUpload;
-	String m_usbPort;
 	
 	int m_baudRate = 57600;
 	NerduinoBT m_nerduino;
@@ -417,33 +406,6 @@ public class NerduinoBT extends NerduinoLight
 		if (isReadyToSend())
 			m_serial.writeData(data, length);
 	}
-
-	
-	public String getUsbPort()
-	{
-		return m_usbPort;
-	}
-	
-	public void setUsbPort(String port)
-	{
-		m_usbPort = port;
-		
-		fireUpdate();
-		save();
-	}
-	
-	public boolean getUsbUpload()
-	{
-		return m_usbUpload;
-	}
-	
-	public void setUsbUpload(Boolean upload)
-	{
-		m_usbUpload = upload;
-		
-		fireUpdate();
-		save();
-	}
 	
 	public String getComPort()
 	{
@@ -521,9 +483,6 @@ public class NerduinoBT extends NerduinoLight
 		m_comPort = node.getAttribute("Port");
 		m_baudRate = Integer.valueOf(node.getAttribute("BaudRate"));
 
-		m_usbPort = node.getAttribute("UsbPort");
-		m_usbUpload = Boolean.valueOf(node.getAttribute("UsbUpload"));
-		
 		m_serial.setBaudRate(m_baudRate);
 		m_serial.setComPort(m_comPort);	
 	}
@@ -538,9 +497,6 @@ public class NerduinoBT extends NerduinoLight
 		
 		element.setAttribute("BT", "true");
 		element.setAttribute("Type", "BT");
-
-		element.setAttribute("UsbPort", m_usbPort);
-		element.setAttribute("UsbUpload", Boolean.toString(m_usbUpload));
 	}
 
 	public void setRTS(Boolean val)
@@ -562,14 +518,9 @@ public class NerduinoBT extends NerduinoLight
 		
 		addProperty(btSheet, String.class, BluetoothPortPropertyEditor.class, "ComPort", "The bluetooth port used to engage the arduino device.");
 		//addProperty(btSheet, int.class, BaudRatePropertyEditor.class, "BaudRate", "The baud rate used to communicate to the arduino device.");
-		addProperty(btSheet, String.class, DeviceTypePropertyEditor.class, "BoardType", "The arduino board type.");
-		addProperty(btSheet, String.class, SketchPropertyEditor.class, "Sketch", "The arduino sketch.");
 		addProperty(btSheet, Boolean.class, null, "Active", "");
 		addProperty(btSheet, Boolean.class, null, "RTS", "");
 		
-		addProperty(btSheet, String.class, ComPortPropertyEditor.class, "UsbPort", "The serial port used to upload sketches to the arduino device.");
-		addProperty(btSheet, Boolean.class, null, "UsbUpload", "");
-
 		PropertySet[] basesets = super.getPropertySets();
 		PropertySet[] sets = new PropertySet[basesets.length + 1];
 		
@@ -583,7 +534,7 @@ public class NerduinoBT extends NerduinoLight
 	@Override
 	public Serial getSerialMonitor()
 	{
-		if (m_serial == null && m_comPort != null && m_comPort!="")
+		if (m_serial == null && m_comPort != null && !"".equals(m_comPort))
 		{
 			m_serial = new Serial();
 			
@@ -598,88 +549,6 @@ public class NerduinoBT extends NerduinoLight
 	{
 		//m_serial.resetPort();
 	}
-
-	
-	@Override
-	public String upload(Sketch sketch)
-	{
-		setStatus(NerduinoStatusEnum.Uninitialized);
-		
-		m_points.clear();
-		
-		//closeComPort();
-		
-		if (m_usbUpload)
-		{
-			Preferences.set("serial.port", m_usbPort);
-		}
-		else
-		{
-			Preferences.set("serial.port", m_comPort);
-			
-			// configure the remote bt baud rate to match the
-			
-			// target devices default upload rate
-			// toggle the state of the cts pin to trigger a reset
-			// close the com port 
-			closeComPort();
-			
-			// attempt to upload
-		}
-		
-		try
-		{
-			fireUploadStatusUpdate(true, false, 0, "");
-			
-			boolean success = sketch.upload(ArduinoManager.Current.getBuildPath(), sketch.getPrimaryClassName(), false);
-
-			if (!success)
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-				
-				fireUploadStatusUpdate(false, false, 0, "Upload failed for unknown reason!");
-
-				if (!m_usbUpload)
-					openComPort();
-
-				return "Upload failed for unknown reason!";
-			}
-			else
-			{
-				StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Completed!");
-
-				fireUploadStatusUpdate(false, true, 0, "");
-				
-				if (!m_usbUpload)
-					openComPort();
-
-				return null;
-			}
-		}
-		catch(RunnerException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-
-			fireUploadStatusUpdate(false, false, 0, "Runner Exception!");
-
-			if (!m_usbUpload)
-				openComPort();
-
-			return ex.getMessage();
-		}
-		catch(SerialException ex)
-		{
-			StatusDisplayer.getDefault().setStatusText("Uploading to " + this.getName() + " Failed!");
-			
-			fireUploadStatusUpdate(false, false, 0, "Serial Port Exception!");
-			
-			if (!m_usbUpload)
-				openComPort();
-
-			return ex.getMessage();
-		}
-	}
-	
 	
 	@Override
 	public String engage()
@@ -921,13 +790,9 @@ public class NerduinoBT extends NerduinoLight
                           + "<h1>Nerduino: " + this.getName() + "  (BT Connection: " + getComPort() + ")</h1>\n"
                           + "<h2>" 
 						  + "Status: " + this.getStatus().toString() + "<br>"
-                          + "Board: " + this.getBoardType() + "<br>"
-                          + "Sketch: " + this.getSketch() + "<br>"
-						  + "</h2>\n"
+    					  + "</h2>\n"
                           + "<a href='ping'>Ping</a>\n"
                           + "<a href='reset'>Reset</a>\n"
-                          + "<a href='verify'>Verify</a>\n"
-                          + "<a href='upload'>Upload</a>\n"
                           + "<a href='engage'>Engage</a>\n"
 						  + "</body>\n";
 		

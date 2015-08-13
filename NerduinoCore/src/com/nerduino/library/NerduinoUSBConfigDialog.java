@@ -20,10 +20,6 @@
 
 package com.nerduino.library;
 
-import processing.app.Board;
-import processing.app.BoardManager;
-import processing.app.Sketch;
-import processing.app.SketchManager;
 import jssc.SerialPortList;
 import org.openide.nodes.Node;
 
@@ -51,12 +47,8 @@ public class NerduinoUSBConfigDialog extends javax.swing.JDialog
 
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        cmbType = new javax.swing.JComboBox();
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        cmbSketch = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         cmbCommPort = new javax.swing.JComboBox();
 
@@ -66,12 +58,6 @@ public class NerduinoUSBConfigDialog extends javax.swing.JDialog
         jLabel1.setName("jLabel1"); // NOI18N
 
         txtName.setName("txtName"); // NOI18N
-
-        jLabel2.setText("Board Type:");
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Structured", "Mobile Template", "Desktop Template" }));
-        cmbType.setName("cmbType"); // NOI18N
 
         btnOk.setLabel("Ok");
         btnOk.setName("btnOk"); // NOI18N
@@ -100,13 +86,6 @@ public class NerduinoUSBConfigDialog extends javax.swing.JDialog
             }
         });
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel3.setText("Sketch:");
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        cmbSketch.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Structured", "Mobile Template", "Desktop Template" }));
-        cmbSketch.setName("cmbSketch"); // NOI18N
-
         jLabel4.setText("Comm Port:");
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -126,19 +105,16 @@ public class NerduinoUSBConfigDialog extends javax.swing.JDialog
             .add(layout.createSequentialGroup()
                 .add(19, 19, 19)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(jLabel1)
-                        .add(jLabel2))
-                    .add(jLabel4)
-                    .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 74, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(33, 33, 33)
+                        .add(jLabel1))
+                    .add(jLabel4))
                 .add(5, 5, 5)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cmbSketch, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(cmbCommPort, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(txtName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 286, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 0, Short.MAX_VALUE))
-                    .add(cmbType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -148,19 +124,11 @@ public class NerduinoUSBConfigDialog extends javax.swing.JDialog
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
                     .add(txtName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(cmbType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(39, 39, 39)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cmbCommPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel4))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(cmbSketch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 59, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnCancel)
                     .add(btnOk))
@@ -179,17 +147,7 @@ private void btnOkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
 		Object obj = cmbCommPort.getSelectedItem();
 		
 		if (obj != null)
-			m_nerduino.setComPort(obj.toString());
-		
-		obj = cmbSketch.getSelectedItem();
-		
-		if (obj != null)
-			m_nerduino.setSketch(obj.toString());
-		
-		obj = cmbSketch.getSelectedItem();
-		
-		if (obj != null)
-			m_nerduino.setSketch(obj.toString());
+			m_nerduino.setComPort(obj.toString());		
 	}
 	
 	setVisible(false);
@@ -243,24 +201,6 @@ private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 					if (!found)
 						cmbCommPort.addItem(name);
 				}
-				
-				cmbType.removeAllItems();
-				
-				for(Node node : BoardManager.Current.getChildren().getNodes())
-				{
-					Board board = (Board) node;
-					
-					cmbType.addItem(board.getName());
-				}
-				
-				cmbSketch.removeAllItems();
-				
-				for(Node node : SketchManager.Current.getChildren().getNodes())
-				{
-					Sketch sketch = (Sketch) node;
-					
-					cmbSketch.addItem(sketch.getName());
-				}
 			}
 			catch(Exception e)
 			{
@@ -272,11 +212,7 @@ private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
     private javax.swing.JComboBox cmbCommPort;
-    private javax.swing.JComboBox cmbSketch;
-    private javax.swing.JComboBox cmbType;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables

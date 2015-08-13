@@ -46,7 +46,6 @@ public class ServiceManager extends BaseManager
 	
 	Context m_context;
 	Scriptable m_scope;
-	private Children m_nodes;
 	ServiceManagerScope m_managerScope;
 	
 	float m_scanInterval = 1.0f;
@@ -58,8 +57,6 @@ public class ServiceManager extends BaseManager
 		
 		Current = this;
 		
-		m_nodes = this.getChildren();
-
 		m_context = Context.enter();
 		
 		m_managerScope = new ServiceManagerScope();
@@ -130,30 +127,6 @@ public class ServiceManager extends BaseManager
 	
 	}
 	
-	public void addNode(Node node)
-	{
-		if (node != null && !contains(node))
-		{
-			org.openide.nodes.Node[] nodes = new org.openide.nodes.Node[1];
-			nodes[0] = node;
-			
-			m_nodes.add(nodes);
-		}
-	}
-	
-	
-	public boolean contains(Node node)
-	{
-		for(int i = 0; i < m_nodes.getNodesCount(); i++)
-		{
-			if (node == m_nodes.getNodeAt(i))
-				return true;
-		}
-		
-		return false;
-	}
-
-	
 	@Override
 	protected TreeNode createNewChild()
 	{
@@ -194,7 +167,7 @@ public class ServiceManager extends BaseManager
 
 	public void applyServices(Context context)
 	{
-		Node[]  nodes = m_nodes.getNodes();
+		Node[]  nodes = getChildren().getNodes();
 		
 		for(Node n : nodes)
 		{

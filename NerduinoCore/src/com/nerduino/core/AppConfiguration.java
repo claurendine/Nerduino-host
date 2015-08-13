@@ -35,6 +35,7 @@ public class AppConfiguration
 	public static AppConfiguration Current = null;
 	SqlJetDb m_db;
 	ISqlJetTable m_paramTable;
+	ISqlJetTable m_pointTable;
 
 	
 	public AppConfiguration(String filename)
@@ -78,6 +79,21 @@ public class AppConfiguration
 				m_db.createIndex(indexQuery);
 				
 				m_paramTable = m_db.getTable("ParamTable");
+			}
+			
+			try
+			{
+				m_pointTable = m_db.getTable("PointTable");
+			}
+			catch(SqlJetException ex)
+			{
+				String createQuery = "CREATE TABLE PointTable (point TEXT NOT NULL PRIMARY KEY, type TEXT, value TEXT NOT NULL)";
+				String indexQuery = "CREATE INDEX pointIndex ON PointTable (point)";
+				
+				m_db.createTable(createQuery);
+				m_db.createIndex(indexQuery);
+				
+				m_pointTable = m_db.getTable("PointTable");
 			}
 		}
 		catch(SqlJetException ex)

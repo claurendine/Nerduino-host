@@ -21,7 +21,6 @@
 package com.nerduino.core;
 
 import com.nerduino.library.*;
-import processing.app.ArduinoManager;
 import com.nerduino.scrolls.ScrollManager;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.skits.SkitManager;
@@ -51,7 +50,6 @@ public final class AppManager
 	ScrollManager m_scrollManager;
 	SkitManager m_skitManager;
 	PointManager m_pointManager;
-	ArduinoManager m_arduinoManager;
 	String m_dataPath = null;
 	String configFilename = "NerduinoHost.xml";
 	JRibbon m_ribbon;
@@ -79,7 +77,6 @@ public final class AppManager
 		AppConfiguration config = new AppConfiguration(m_dbFileName);
 
 		m_webHost = new WebHost();
-		m_arduinoManager = new ArduinoManager();
 		m_nerduinoHost = new NerduinoHost();
 		m_nerduinoManager = NerduinoManager.Current;
 		m_scrollManager = new ScrollManager();
@@ -114,15 +111,14 @@ public final class AppManager
 		ExplorerTopComponent explorer = ExplorerTopComponent.Current;
 
 		org.openide.nodes.Node root = explorer.getRootNode();
-		org.openide.nodes.Node[] nodes = new org.openide.nodes.Node[7];
+		org.openide.nodes.Node[] nodes = new org.openide.nodes.Node[6];
 
 		nodes[0] = m_nerduinoHost;
-		nodes[1] = m_arduinoManager;
-		nodes[2] = m_nerduinoManager;
-		nodes[3] = m_pointManager;
-		nodes[4] = m_skitManager;
-		nodes[5] = m_scrollManager;
-		nodes[6] = m_scriptManager;
+		nodes[1] = m_nerduinoManager;
+		nodes[2] = m_pointManager;
+		nodes[3] = m_skitManager;
+		nodes[4] = m_scrollManager;
+		nodes[5] = m_scriptManager;
 
 		root.getChildren().add(nodes);
 	}

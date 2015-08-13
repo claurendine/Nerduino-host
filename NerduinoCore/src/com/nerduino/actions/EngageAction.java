@@ -47,41 +47,33 @@ public final class EngageAction implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (!CompileAction.s_busy)
+		Thread thread = new Thread(new Runnable()
 		{
-			Thread thread = new Thread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				// get the currently selected target nerduino
+				TreeNode node = ExplorerTopComponent.Current.getSelectedNode();
+
+				if (node instanceof NerduinoBase)
 				{
-					CompileAction.s_busy = true;
-					
-					// get the currently selected target nerduino
-					TreeNode node = ExplorerTopComponent.Current.getSelectedNode();
-					
-					if (node instanceof NerduinoBase)
+					NerduinoBase nerduino = (NerduinoBase) node;
+
+					if (nerduino != null)
 					{
-						NerduinoBase nerduino = (NerduinoBase) node;
-						
-						if (nerduino != null)
-						{
-							StatusDisplayer.getDefault().setStatusText("Engaging " + nerduino.getName() + " ...");
-							
-							nerduino.engage();
+						StatusDisplayer.getDefault().setStatusText("Engaging " + nerduino.getName() + " ...");
 
-							CompileAction.s_busy = false;
-							return;
-						}
+						nerduino.engage();
+
+						return;
 					}
-					
-					StatusDisplayer.getDefault().setStatusText("Select a Nerduino to engage.");
-					
-					CompileAction.s_busy = false;
 				}
-			});
 
-			thread.start();
-		}
+				StatusDisplayer.getDefault().setStatusText("Select a Nerduino to engage.");
+			}
+		});
+
+		thread.start();
 	}
 }
 

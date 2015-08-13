@@ -45,8 +45,6 @@ public class NerduinoFull extends NerduinoBase //implements FrameReceivedListene
 	public void readXML(Element node)
 	{
 		m_name = node.getAttribute("Name");
-		m_sketch = node.getAttribute("Sketch");
-		m_boardType = node.getAttribute("Board");
 		m_active = Boolean.valueOf(node.getAttribute("Active"));		
 
 		setStatus(NerduinoStatusEnum.Offline);
@@ -56,8 +54,6 @@ public class NerduinoFull extends NerduinoBase //implements FrameReceivedListene
 	public void writeXML(Document doc, Element element)
 	{
 		element.setAttribute("Name", m_name);
-		element.setAttribute("Sketch", m_sketch);
-		element.setAttribute("Board", m_boardType);
 		element.setAttribute("Active", Boolean.toString(m_active));
 		
 	}

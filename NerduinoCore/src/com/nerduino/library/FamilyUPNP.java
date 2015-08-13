@@ -41,7 +41,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import processing.app.ArduinoManager;
 
 /**
  *
@@ -308,7 +307,7 @@ public class FamilyUPNP extends FamilyBase
 				
 				// save the xml to a file
 				
-				String filename = ArduinoManager.Current.getArduinoPath() + "/UpnpMap.xml";
+				String filename = AppManager.Current.getDataPath() + "/UpnpMap.xml";
 				BufferedWriter writer = null;
 				try
 				{

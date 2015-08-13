@@ -23,21 +23,14 @@ package com.nerduino.library;
 
 import com.nerduino.core.ExplorerTopComponent;
 import com.nerduino.nodes.TreeNode;
-import processing.app.Board;
-import processing.app.BoardManager;
-import processing.app.CompileCommand;
-import processing.app.Preferences;
-import processing.app.Sketch;
-import processing.app.SketchManager;
-import processing.app.StatusUpdateEventClass;
-import processing.app.StatusUpdateEventListener;
+import com.nerduino.arduino.StatusUpdateEventClass;
+import com.nerduino.arduino.StatusUpdateEventListener;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.xbee.BitConverter;
 import com.nerduino.xbee.Serial;
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,13 +70,10 @@ public class NerduinoBase extends TreeNode
 	
 	boolean m_loading = false;
 	boolean m_interactive = true;
-	String m_sketch;
-	String m_boardType;
     NerduinoStatusEnum m_status = NerduinoStatusEnum.Uninitialized;
 	
 	Address m_address;
 	
-	CompileCommand m_compileButton;	
 	private final List<StatusUpdateEventListener> m_statusUpdateListeners = new ArrayList<StatusUpdateEventListener>();
 	private final List<CommandEventListener> m_commandListeners = new ArrayList<CommandEventListener>();
 	private final List<UpdateEventListener> m_updateListeners = new ArrayList<UpdateEventListener>();
@@ -92,7 +82,6 @@ public class NerduinoBase extends TreeNode
 	public short m_pointCount = 0;
 	long m_lastResponseMillis;
 	
-	boolean m_compileError = false;
 	boolean m_engaged = false;
 	boolean m_engaging = false;
 	boolean m_checkedIn = false;
@@ -150,21 +139,10 @@ public class NerduinoBase extends TreeNode
 			ping();
 		else if ("reset".equals(command))
 			reset();
-		else if ("verify".equals(command))
-			compile();
 		else if ("engage".equals(command))
 			engage();
 		else if ("test".equals(command))
 			test();
-		else if ("upload".equals(command))
-		{
-			if (m_sketch != null)
-			{
-				Sketch sketch = SketchManager.Current.getSketch(m_sketch);
-				
-				upload(sketch);
-			}
-		}	
 	}
 	
 	public void resetBoard()
@@ -259,23 +237,6 @@ public class NerduinoBase extends TreeNode
 		m_statusUpdateListeners.remove(listener);
 	}
 	
-	protected synchronized void fireUploadStatusUpdate(boolean uploading, boolean uploaded, int percentComplete, String error) 
-	{
-		StatusUpdateEventClass event = new StatusUpdateEventClass(this);
-		
-		event.statusType = StatusUpdateEventClass.UPLOAD;
-		event.pending = uploading;
-		event.succeeded = uploaded;
-		event.percentComplete = percentComplete;
-		event.error = error;
-		
-		Iterator<StatusUpdateEventListener> i = m_statusUpdateListeners.iterator();
-		
-		while(i.hasNext())  
-		{
-			i.next().handleStatusUpdateEvent(event);
-		}
-	}
 
 	protected synchronized void fireEngageStatusUpdate(boolean engaging, boolean engaged, int percentComplete, String error) 
 	{
@@ -308,33 +269,6 @@ public class NerduinoBase extends TreeNode
 	public Serial getSerialMonitor()
 	{
 		return null;
-	}
-	
-	public boolean compile()
-	{
-		Board board = BoardManager.Current.getBoard(m_boardType);
-		
-		if (board != null)
-		{
-			Preferences.set("target", "arduino");
-			Preferences.set("board", board.getShortName());
-			
-			String mcu = board.getBuildMCU();
-			
-			if (mcu != null)
-				Preferences.set("build.mcu", mcu);
-			
-			Sketch sketch = SketchManager.Current.getSketch(m_sketch);
-			
-			if (sketch != null)
-			{
-				sketch.compile();
-			
-				return !sketch.hasError();
-			}
-		}
-		
-		return false;
 	}
 	
 	public NerduinoStatusEnum getStatus()
@@ -411,45 +345,9 @@ public class NerduinoBase extends TreeNode
 	@Override
 	public TopComponent getTopComponent()
 	{
-		Sketch sketch = SketchManager.Current.getSketch(m_sketch);
-		
-		if (sketch != null)
-		{
-			sketch.setTarget(this);
-			return sketch.getTopComponent();
-		}
-		
 		return null;
 	}
 	
-	public String getSketch()
-	{
-		return m_sketch;
-	}
-	
-	public void setSketch(String value)
-	{
-		m_sketch = value;
-		
-		fireUpdate();
-		save();
-		
-		m_topComponent = null;
-	}
-	
-	public String getBoardType()
-	{
-		return m_boardType;
-	}
-	
-	public void setBoardType(String value)
-	{
-		m_boardType = value;
-		
-		fireUpdate();
-		save();
-	}
-
 	public DeviceTypeEnum getDeviceType()
 	{
 		return m_deviceType;
@@ -573,12 +471,6 @@ public class NerduinoBase extends TreeNode
 		// TODO see the NerduinoXbee implementation.. this may need to be the 
 		// base implementation
 	}
-
-	public String upload(Sketch sketch)
-	{
-		// abstract method to be overridden by derived classes
-		return null;
-	}	
 	
 	public String engage()
 	{
@@ -976,7 +868,7 @@ public class NerduinoBase extends TreeNode
 	{
 		touch();
 		
-		short responseToken = (short) (data[offset++] * 0x100 + data[offset++]);
+		//short responseToken = (short) (data[offset++] * 0x100 + data[offset++]);
 		
 		ResponseStatusEnum rstatus = ResponseStatusEnum.valueOf(data[offset++]);
 		m_commandResponse.DataType = DataTypeEnum.valueOf(data[offset++]);
@@ -1213,7 +1105,6 @@ public class NerduinoBase extends TreeNode
 				if (nerd != null)
 				{
 					nerd.onGetPoint(originator, data, initialoffset);
-					return;
 				}
 			}
 			else
@@ -1617,11 +1508,7 @@ public class NerduinoBase extends TreeNode
 			switch(dataType)
 			{
 				case DT_Boolean:
-					if (bytes[0] == 0)
-						value = false;
-					else
-						value = true;
-
+					value = (bytes[0] != 0);
 					break;
 				case DT_Byte:
 					value = bytes[0];
@@ -1639,7 +1526,7 @@ public class NerduinoBase extends TreeNode
 			
 			point.setValue(value);
 			
-			if (m_verbose)
+			if (m_verbose && value != null)
 				fireCommandUpdate("N: SetPointValue  " + pid + " = " + value.toString(), CommandMessageTypeEnum.IncomingCommand);
 		}
 		else
@@ -1915,7 +1802,7 @@ public class NerduinoBase extends TreeNode
 	
 	public final class RenameAction extends AbstractAction
 	{
-		private NerduinoBase node;
+		private final NerduinoBase node;
 
 		public RenameAction(Lookup lookup)
 		{
@@ -1943,7 +1830,7 @@ public class NerduinoBase extends TreeNode
 	
 	public final class DashboardAction extends AbstractAction
 	{
-		private NerduinoBase node;
+		private final NerduinoBase node;
 
 		public DashboardAction(Lookup lookup)
 		{
@@ -1971,7 +1858,7 @@ public class NerduinoBase extends TreeNode
 		
 	public final class DeleteAction extends AbstractAction
 	{
-		private NerduinoBase node;
+		private final NerduinoBase node;
 
 		public DeleteAction(Lookup lookup)
 		{
@@ -2028,6 +1915,7 @@ public class NerduinoBase extends TreeNode
 		return htmlString;
 	}
 	
+	@Override
 	public void rename()
 	{
 		String oldname = getName();

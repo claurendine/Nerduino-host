@@ -22,7 +22,6 @@ package com.nerduino.nodes;
 
 import com.nerduino.core.ExplorerTopComponent;
 import com.nerduino.core.PropertiesTopComponent;
-import com.nerduino.library.PointManager;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.datatransfer.Transferable;
@@ -163,6 +162,30 @@ public class TreeNode extends AbstractNode
 		}
 
 		return newname;
+	}
+	
+	public void addNode(Node node)
+	{
+		if (node != null && !contains(node))
+		{
+			org.openide.nodes.Node[] nodes = new org.openide.nodes.Node[1];
+			nodes[0] = node;
+
+			getChildren().add(nodes);
+		}
+	}
+
+	public boolean contains(Node node)
+	{
+		for (int i = 0; i < getChildren().getNodesCount(); i++)
+		{
+			if (node == getChildren().getNodeAt(i))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public TopComponent getTopComponent()

@@ -25,7 +25,7 @@ import com.nerduino.core.AppConfiguration;
 import com.nerduino.core.AppManager;
 import com.nerduino.core.ContextAwareInstance;
 import com.nerduino.nodes.TreeNode;
-import processing.app.ArduinoSourceEditor;
+import com.nerduino.arduino.ArduinoSourceEditor;
 import com.nerduino.webhost.WebHost;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;

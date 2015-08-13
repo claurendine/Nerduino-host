@@ -59,7 +59,7 @@ import org.openide.windows.TopComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import processing.app.ArduinoSourceEditor;
+import com.nerduino.arduino.ArduinoSourceEditor;
 
 public class Scroll extends TreeNode
 {

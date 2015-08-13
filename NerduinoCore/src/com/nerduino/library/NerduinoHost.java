@@ -22,7 +22,6 @@ package com.nerduino.library;
 
 import com.nerduino.core.AppManager;
 import com.nerduino.nodes.TreeNode;
-import processing.app.ArduinoManager;
 import com.nerduino.webhost.WebHost;
 import com.nerduino.xbee.BitConverter;
 import java.io.ByteArrayInputStream;
@@ -169,11 +168,6 @@ public class NerduinoHost extends TreeNode
 			webSheet.put(httpAddressProp);
 			
 			arduinoSheet.setDisplayName("Path Settings");
-			
-			Property<String> arduinoSourcePathProp = new PropertySupport.Reflection<String>(ArduinoManager.Current, String.class, "ArduinoPath");
-			arduinoSourcePathProp.setName("Arduino Path");
-			arduinoSourcePathProp.setShortDescription("Installed Arduino Data Path");
-			arduinoSheet.put(arduinoSourcePathProp);
 			
 			Property<String> nerduinoSourcePathProp = new PropertySupport.Reflection<String>(AppManager.Current, String.class, "DataPath");
 			nerduinoSourcePathProp.setName("Nerduino Data Path");

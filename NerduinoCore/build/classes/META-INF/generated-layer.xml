@@ -14,16 +14,6 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/help.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
-            <file name="com-nerduino-actions-ShowArduinoAPIAction.instance">
-                <!--com.nerduino.actions.ShowArduinoAPIAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_ShowArduinoAPIAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.ShowArduinoAPIAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Arduino16.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-            </file>
             <file name="com-nerduino-actions-ShowExplorerAction.instance">
                 <!--com.nerduino.actions.ShowExplorerAction-->
                 <attr
@@ -76,17 +66,6 @@
             </file>
         </folder>
         <folder name="System">
-            <file name="com-nerduino-actions-CompileAction.instance">
-                <!--com.nerduino.actions.CompileAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_CompileAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.CompileAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Check16.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-                <attr boolvalue="true" name="surviveFocusChange"/>
-            </file>
             <file name="com-nerduino-actions-CreateConversationAction.instance">
                 <!--com.nerduino.actions.CreateConversationAction-->
                 <attr
@@ -167,16 +146,6 @@
                 <attr name="iconBase" stringvalue="com/nerduino/resources/NewService.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
             </file>
-            <file name="com-nerduino-actions-CreateSketchAction.instance">
-                <!--com.nerduino.actions.CreateSketchAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_CreateSketchAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.CreateSketchAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/NewSketch.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-            </file>
             <file name="com-nerduino-actions-CreateSkitAction.instance">
                 <!--com.nerduino.actions.CreateSkitAction-->
                 <attr
@@ -207,17 +176,6 @@
                 <attr name="delegate" newvalue="com.nerduino.actions.PingAction"/>
                 <attr name="iconBase" stringvalue="com/nerduino/resources/Ping.png"/>
                 <attr boolvalue="false" name="noIconInMenu"/>
-            </file>
-            <file name="com-nerduino-actions-UploadAction.instance">
-                <!--com.nerduino.actions.UploadAction-->
-                <attr
-                    bundlevalue="com.nerduino.actions.Bundle#CTL_UploadAction" name="displayName"/>
-                <attr
-                    methodvalue="org.openide.awt.Actions.alwaysEnabled" name="instanceCreate"/>
-                <attr name="delegate" newvalue="com.nerduino.actions.UploadAction"/>
-                <attr name="iconBase" stringvalue="com/nerduino/resources/Upload16.png"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
-                <attr boolvalue="true" name="surviveFocusChange"/>
             </file>
             <file name="com-nerduino-actions-WebServerEnabledAction.instance">
                 <!--com.nerduino.actions.WebServerEnabledAction-->
