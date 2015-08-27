@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(
 	iconBase = "com/nerduino/resources/NewService.png",
     displayName = "#CTL_CreateServiceAction")
-@Messages("CTL_CreateServiceAction=Service")
+@Messages("CTL_CreateServiceAction=Create Service")
 public final class CreateServiceAction implements ActionListener
 {
 	@Override

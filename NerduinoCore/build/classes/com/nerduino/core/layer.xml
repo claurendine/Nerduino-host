@@ -141,7 +141,7 @@
 			</file>
 		</folder>
 	</folder>
-	
+
 	<folder name="Menu">
         <file name="BuildProject_hidden"/>
         <folder name="Edit">
@@ -217,6 +217,151 @@
             <file name="org-netbeans-modules-tasks-ui-DashboardTopComponent.shadow_hidden"/>
         </folder>
     </folder>
+	
+	<folder name="Toolbars">
+		<folder name="Create">
+			<file name="com-nerduino-actions-CreateNerduinoUSBAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoUSBAction.instance"/>
+				<attr name="menuText" stringvalue="Nerduino USB"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="100"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateNerduinoBTAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoBTAction.instance"/>
+				<attr name="menuText" stringvalue="Nerduino BT"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="105"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateNerduinoTCPAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoTCPAction.instance"/>
+				<attr name="menuText" stringvalue="Nerduino TCP"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="115"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateSketchAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateSketchAction.instance"/>
+				<attr name="menuText" stringvalue="Sketch"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="120"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateSkitAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateSkitAction.instance"/>
+				<attr name="menuText" stringvalue="Skit"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="125"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreatePointAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreatePointAction.instance"/>
+				<attr name="menuText" stringvalue="Point"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="130"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateScrollAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateScrollAction.instance"/>
+				<attr name="menuText" stringvalue="Scroll"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="140"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateServiceAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateServiceAction.instance"/>
+				<attr name="menuText" stringvalue="Service"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="150"/>
+			</file>
+
+			<file name="com-nerduino-actions-CreateConversationAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateConversationAction.instance"/>
+				<attr name="menuText" stringvalue="Conversation"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="160"/>
+			</file>
+	    </folder>
+		
+		<folder name="View">
+			<file name="com-nerduino-actions-ShowExplorerAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowExplorerAction.instance"/>
+				<attr name="menuText" stringvalue="Explorer"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="100"/>
+			</file>
+			<file name="com-nerduino-actions-ShowPropertiesAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowPropertiesAction.instance"/>
+				<attr name="menuText" stringvalue="Properties"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="110"/>
+			</file>
+		</folder>
+
+		<folder name="Nerduino">
+<!--
+			<file name="com-nerduino-actions-CompileAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CompileAction.instance"/>
+				<attr name="menuText" stringvalue="Compile"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="100"/>
+			</file>
+
+			<file name="com-nerduino-actions-UploadAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-UploadAction.instance"/>
+				<attr name="menuText" stringvalue="Upload"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="110"/>
+			</file>
+-->
+			<file name="com-nerduino-actions-EngageAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-EngageAction.instance"/>
+				<attr name="menuText" stringvalue="Engage"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="130"/>
+			</file>
+		</folder>
+
+		<folder name="Browser">
+			<file name="com-nerduino-actions-ShowStartUpAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowStartUpAction.instance"/>
+				<attr name="menuText" stringvalue="StartUp"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="100"/>
+			</file>
+<!--
+			<file name="com-nerduino-actions-ShowArduinoAPIAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowArduinoAPIAction.instance"/>
+				<attr name="menuText" stringvalue="Arduino API"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="110"/>
+			</file>
+-->
+			<file name="com-nerduino-actions-ShowLocalhostAction.shadow">
+				<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowLocalhostAction.instance"/>
+				<attr name="menuText" stringvalue="Skits"/>
+				<attr name="priority" stringvalue="medium"/>
+				<attr name="position" intvalue="120"/>
+			</file>
+
+		</folder>
+
+		
+		<folder name="File_hidden">
+	    </folder>		
+		<folder name="Build_hidden">
+	    </folder>
+		<folder name="Debug_hidden">
+	    </folder>
+		<folder name="Source_hidden">
+	    </folder>
+		<folder name="Performance_hidden">
+	    </folder>
+
+    </folder>
+	
+	<!--
     <folder name="Ribbon">
 		<folder name="AppMenu">
 			<file name="SaveAction.shadow">
@@ -295,7 +440,7 @@
 		<folder name="TaskPanes">
 			<folder name="Home">
 				<attr name="position" intvalue="100"/>
-<!--
+<!-
 				<folder name="Host Settings">
 					<attr name="position" intvalue="100"/>
 
@@ -320,7 +465,7 @@
 						<attr name="position" intvalue="130"/>
 					</file>
 				</folder>
--->
+->
 				<folder name="Create New">
 					<attr name="position" intvalue="110"/>
 					
@@ -338,14 +483,14 @@
 						<attr name="position" intvalue="105"/>
 					</file>
 					
-					<!--
+<!-
 					<file name="com-nerduino-actions-CreateNerduinoXBeeAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoXBeeAction.instance"/>
 						<attr name="menuText" stringvalue="Nerduino XBee"/>
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="110"/>
 					</file>
-					-->
+->
 					
 					<file name="com-nerduino-actions-CreateNerduinoTCPAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/System/com-nerduino-actions-CreateNerduinoTCPAction.instance"/>
@@ -412,14 +557,6 @@
 						<attr name="priority" stringvalue="medium"/>
 						<attr name="position" intvalue="110"/>
 					</file>
-					<!--
-					<file name="com-nerduino-actions-TestAction.shadow">
-						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-TestAction.instance"/>
-						<attr name="menuText" stringvalue="Test"/>
-						<attr name="priority" stringvalue="medium"/>
-						<attr name="position" intvalue="150"/>
-					</file>
-					-->
 					<file name="com-nerduino-actions-ShowStartUpAction.shadow">
 						<attr name="originalFile" stringvalue="Actions/View/com-nerduino-actions-ShowStartUpAction.instance"/>
 						<attr name="menuText" stringvalue="StartUp"/>
@@ -489,8 +626,9 @@
 			</file>
 		</folder>
 	</folder>
-	
-    <folder name="Windows2">
+	-->	
+    
+	<folder name="Windows2">
         <folder name="Modes">
             <file name="bottomSlidingSide.wsmode" url="bottomSlidingSideWsmode.xml"/>
             <file name="editor.wsmode" url="editorWsmode.xml"/>

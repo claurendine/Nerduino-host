@@ -25,19 +25,11 @@ import com.nerduino.scrolls.ScrollManager;
 import com.nerduino.services.ServiceManager;
 import com.nerduino.skits.SkitManager;
 import com.nerduino.webhost.WebHost;
-import com.pinkmatter.api.flamingo.ResizableIcons;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import org.pushingpixels.flamingo.api.common.JCommandButton;
-import org.pushingpixels.flamingo.api.ribbon.JRibbon;
-import org.pushingpixels.flamingo.api.ribbon.JRibbonBand;
-import org.pushingpixels.flamingo.api.ribbon.RibbonApplicationMenu;
-import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
-import org.pushingpixels.flamingo.internal.ui.ribbon.JBandControlPanel;
-import org.pushingpixels.flamingo.internal.ui.ribbon.appmenu.JRibbonApplicationMenuButton;
 import org.tmatesoft.sqljet.core.table.ISqlJetTable;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
@@ -52,7 +44,6 @@ public final class AppManager
 	PointManager m_pointManager;
 	String m_dataPath = null;
 	String configFilename = "NerduinoHost.xml";
-	JRibbon m_ribbon;
 	ServiceManager m_scriptManager;
 	WebHost m_webHost;
 	
@@ -188,6 +179,7 @@ public final class AppManager
 		AppConfiguration.Current.setParameter("DataPath", value);
 	}
 
+	/*
 	public void setRibbon(JRibbon jRibbon)
 	{
 		m_ribbon = jRibbon; 
@@ -300,4 +292,5 @@ public final class AppManager
 			}
 		}
 	}
+	*/
 }

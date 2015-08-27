@@ -27,7 +27,6 @@ import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.JFrame;
 import javax.swing.table.TableColumnModel;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.swing.outline.Outline;
@@ -39,7 +38,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
-import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -51,7 +49,6 @@ import org.openide.util.actions.SystemAction;
 import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import org.pushingpixels.flamingo.api.ribbon.JRibbon;
 
 @ConvertAsProperties(
     dtd = "-//com.nerduino.core//Explorer//EN",
@@ -83,7 +80,7 @@ public final class ExplorerTopComponent extends TopComponent
 	LookupListener weakLookup;
 	TreeNode m_currentSelection;
 	
-	static JRibbon s_ribbon;
+	//static JRibbon s_ribbon;
 
 	public ExplorerTopComponent()
 	{
@@ -216,17 +213,20 @@ public final class ExplorerTopComponent extends TopComponent
 	{	
 		try
 		{
+			/*
 			// convenient time to get the instance of the jribbon class
 			Object obj = WindowManager.getDefault().getMainWindow();
 
 			JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
 
+			
 			if (frame.getRootPane().getLayeredPane().getComponent(0) instanceof JRibbon)
 			{
 				s_ribbon = (JRibbon) frame.getRootPane().getLayeredPane().getComponent(0);
 				
 				AppManager.Current.setRibbon(s_ribbon);
 			}
+			*/
 		}
 		catch(Exception e)
 		{

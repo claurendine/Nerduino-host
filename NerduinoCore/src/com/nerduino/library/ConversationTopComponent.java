@@ -79,8 +79,8 @@ public final class ConversationTopComponent extends TopComponent
 	public ConversationTopComponent()
 	{
 		initComponents();
-		setName(Bundle.CTL_ConversationTopComponent());
-		setToolTipText(Bundle.HINT_ConversationTopComponent());
+//		setName(Bundle.CTL_ConversationTopComponent());
+//		setToolTipText(Bundle.HINT_ConversationTopComponent());
 		m_commandHistory = new Vector<String>();
         
 		StyleContext sc = new StyleContext();
@@ -151,6 +151,13 @@ public final class ConversationTopComponent extends TopComponent
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ConversationTopComponent.class, "ConversationTopComponent.jLabel1.text")); // NOI18N
 
         editCommand.setText(org.openide.util.NbBundle.getMessage(ConversationTopComponent.class, "ConversationTopComponent.editCommand.text")); // NOI18N
+        editCommand.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                editCommandActionPerformed(evt);
+            }
+        });
         editCommand.addKeyListener(new java.awt.event.KeyAdapter()
         {
             public void keyPressed(java.awt.event.KeyEvent evt)
@@ -231,6 +238,11 @@ public final class ConversationTopComponent extends TopComponent
 		
 		
     }//GEN-LAST:event_OnKeyPressed
+
+    private void editCommandActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editCommandActionPerformed
+    {//GEN-HEADEREND:event_editCommandActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editCommandActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;

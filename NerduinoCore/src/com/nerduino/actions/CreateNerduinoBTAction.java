@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences(
 {
 })
-@Messages("CTL_CreateNerduinoBTAction=Nerduino")
+@Messages("CTL_CreateNerduinoBTAction=Create Nerduino BlueTooth")
 public final class CreateNerduinoBTAction implements ActionListener
 {
 	@Override

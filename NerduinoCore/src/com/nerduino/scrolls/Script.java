@@ -41,6 +41,7 @@ public class Script extends EventBase
 		if (m_time > lastTime && m_time <= currentTime)
 		{
 			ServiceManager.Current.execute(context, m_script);
+			return 1;
 		}
 		
 		return 0;

@@ -41,7 +41,7 @@ import org.openide.util.NbBundle;
 @ActionReferences(
 {
 })
-@NbBundle.Messages("CTL_EngageAction=Nerduino")
+@NbBundle.Messages("CTL_EngageAction=Engage Nerduino")
 public final class EngageAction implements ActionListener
 {
 	@Override

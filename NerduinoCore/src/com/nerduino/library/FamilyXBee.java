@@ -158,6 +158,7 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 			disconnect();
 		}
 
+		/*
 		if (getEnabled())
 		{
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Zigbee", "com/nerduino/resources/ZigbeeEnabled.png");
@@ -166,7 +167,7 @@ public class FamilyXBee extends FamilyBase implements FrameReceivedListener
 		{
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Zigbee", "com/nerduino/resources/ZigbeeDisabled.png");
 		}
-
+		*/
 		//AppManager.log("");
 	}
 

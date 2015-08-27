@@ -365,7 +365,14 @@ public class NerduinoBase extends TreeNode
 	{
 		if (m_nerduinoScope == null)
 		{
-			m_nerduinoScope = m_context.initStandardObjects(new NerduinoScope(this));
+//			if (m_context == null)
+//			{
+//				m_context = Context.enter();
+//			}
+			
+			
+			m_nerduinoScope = new NerduinoScope(this);
+//			m_nerduinoScope = m_context.initStandardObjects(new NerduinoScope(this));
 		}
 		
 		return m_nerduinoScope;

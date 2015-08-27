@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences(
 {
 })
-@Messages("CTL_CreateSkitAction=Skit")
+@Messages("CTL_CreateSkitAction=Create Skit")
 public final class CreateSkitAction implements ActionListener
 {
 	@Override

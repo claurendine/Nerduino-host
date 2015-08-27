@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences(
 {
 })
-@Messages("CTL_CreateScrollAction=Scroll")
+@Messages("CTL_CreateScrollAction=Create Scroll")
 public final class CreateScrollAction implements ActionListener
 {
 	@Override

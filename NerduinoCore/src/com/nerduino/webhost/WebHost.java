@@ -88,7 +88,8 @@ public class WebHost
 	public void setEnabled(Boolean value)
 	{
 		m_enabled = value;
-				
+		
+		/*
 		if (m_enabled)
 		{
 
@@ -97,7 +98,7 @@ public class WebHost
 		{			
 			AppManager.Current.setRibbonComponentImage("Home/Host Settings/Web", "com/nerduino/resources/HostDisabled.png");
 		}
-		
+		*/
 		AppConfiguration.Current.setParameter("WebHostEnabled", Boolean.toString(value));
 	}
 	

@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences(
 {
 })
-@Messages("CTL_CreatePointAction=Skit")
+@Messages("CTL_CreatePointAction=Create Point")
 public final class CreatePointAction implements ActionListener
 {
 	@Override

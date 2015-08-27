@@ -205,7 +205,8 @@ public class Container extends EventSpan
 				((EventBase) m_event).play(context, last, time);
 			}
 
-			if (currentTime < m_stopTime)
+			//if (currentTime < m_stopTime)
+			if (currentTime < m_span + m_startTime)
 			{
 				count++;
 			}
